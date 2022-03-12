@@ -9,7 +9,7 @@ export default {
   name: 'ProjectPage',
 
   components: { 
-    Table
+    Table,
   }
 }
 </script>
