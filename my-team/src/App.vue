@@ -1,7 +1,7 @@
 <template>
-    <h1>My-Team</h1>
     <div id="nav">
-        <router-link to = "/ProjectPage">ProjectPage</router-link>
+        <router-link to = "/ProjectPage">ProjectPage</router-link> | 
+        <router-link to = '/HomePage'>HomePage</router-link>
     </div>
     <router-view/>
 </template>
