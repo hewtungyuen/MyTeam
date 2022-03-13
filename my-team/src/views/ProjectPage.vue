@@ -1,15 +1,18 @@
 <template>
-  <Table/>
+  <ProjectLabel/>
+  <ProjectToggleBar/>
 </template>
 
 <script>
-import Table from '@/components/Table.vue';
+import ProjectLabel from '@/components/ProjectLabel.vue';
+import ProjectToggleBar from '@/components/ProjectToggleBar.vue'
 
 export default {
   name: 'ProjectPage',
 
   components: { 
-    Table,
+    ProjectLabel,
+    ProjectToggleBar
   }
 }
 </script>
