@@ -3,6 +3,8 @@
         <Sidebar />
         <h1>My-Team</h1>
         <router-view/>
+        <router-link to = "/ProjectPage">ProjectPage</router-link> | 
+        <router-link to = '/HomePage'>HomePage</router-link>
     </div>
 </template>
 
