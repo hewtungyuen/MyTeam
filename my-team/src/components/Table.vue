@@ -4,10 +4,10 @@
       <n-button @click="sortName">Sort By Name (Ascend)</n-button>
       <n-button @click="filterAddress">Filter Address (London)</n-button>
       <n-button @click="clearFilters">Clear Filters</n-button>
-      <n-button @click="clearSorter">Clear Sorter</n-button>
+      <n-button @click="clearSorter">Clear Sorter</n-button> 
     </n-space>
     <n-data-table
-      ref="dataTableInstRef"
+      ref="table"
       :columns="columns"
       :data="data"
       :pagination="pagination"
@@ -20,119 +20,103 @@ import { defineComponent, ref } from 'vue'
 
 const columns = [
   {
-    title: 'Name',
-    key: 'name'
+    title: 'S/N',
+    key: 'sn',
+    defaultSortOrder: 'ascend',
+    sorter: 'default'
   },
   {
-    title: 'Age',
-    key: 'age',
-    sorter: (row1, row2) => row1.age - row2.age
+    title: 'Task Name',
+    key: 'taskname',
+    defaultSortOrder: 'ascend',
+    sorter: 'default'
   },
   {
-    title: 'Chinese Score',
-    key: 'chinese',
-    defaultSortOrder: false,
-    sorter: {
-      compare: (a, b) => a.chinese - b.chinese,
-      multiple: 3
-    }
-  },
-  {
-    title: 'Math Score',
-    defaultSortOrder: false,
-    key: 'math',
-    sorter: {
-      compare: (a, b) => a.math - b.math,
-      multiple: 2
-    }
-  },
-  {
-    title: 'English Score',
-    defaultSortOrder: false,
-    key: 'english',
-    sorter: {
-      compare: (a, b) => a.english - b.english,
-      multiple: 1
-    }
-  },
-  {
-    title: 'Address',
-    key: 'address',
+    title: 'In Charge',
+    key: 'incharge',
+    defaultSortOrder: 'ascend',
+    sorter: 'default',
+    defaultFilterOptionValues: ['Yi Chen', 'Tung Yuen', 'Marvin'],
     filterOptions: [
       {
-        label: 'London',
-        value: 'London'
+        label: 'Yi Chen',
+        value: 'Yi Chen'
       },
       {
-        label: 'New York',
-        value: 'New York'
+        label: 'Tung Yuen',
+        value: 'Tung Yuen'
+      }, 
+      {
+        label: 'Marvin',
+        value: 'Marvin'
       }
     ],
     filter (value, row) {
-      return ~row.address.indexOf(value)
+      return ~row.incharge.indexOf(value)
     }
+  },
+  {
+    title: 'Deadline',
+    key: 'deadline',
+    defaultSortOrder: 'ascend',
+    sorter: 'default'
+  },
+  {
+    title: 'Progress Status',
+    key: 'progressstatus'
+  },
+  {
+    title: 'Update Status',
+    key: 'updatestatus'
   }
 ]
 
 const data = [
   {
     key: 0,
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    chinese: 98,
-    math: 60,
-    english: 70
+    sn: 1,
+    taskname: "Accounting report",
+    incharge: "Tung Yuen",
+    deadline: "15/3/2022"
   },
   {
-    key: 1,
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    chinese: 98,
-    math: 66,
-    english: 89
+    key: 0,
+    sn: 2,
+    taskname: "Finance report",
+    incharge: "Yi Chen",
+    deadline: "16/3/2022"
   },
   {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    chinese: 98,
-    math: 66,
-    english: 89
-  },
-  {
-    key: 3,
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-    chinese: 88,
-    math: 99,
-    english: 89
+    key: 0,
+    sn: 3,
+    taskname: "Marketing report",
+    incharge: "Marvin",
+    deadline: "17/3/2022"
   }
 ]
 
 export default defineComponent({
   setup () {
-    const dataTableInstRef = ref(null)
+    const tableRef = ref(null)
+
     return {
+      table: tableRef,
       data,
       columns,
-      pagination: ref({ pageSize: 5 }),
+      pagination: { pageSize: 5 },
       filterAddress () {
-        dataTableInstRef.value.filter({
-          address: ['London']
+        tableRef.value.filter({
+          incharge: ['Yi Chen']
         })
       },
       sortName () {
-        dataTableInstRef.value.sort('name', 'ascend')
+        tableRef.value.sort('name', 'ascend')
       },
       clearFilters () {
-        dataTableInstRef.value.filter(null)
+        tableRef.value.filter(null)
       },
       clearSorter () {
-        dataTableInstRef.value.sort(null)
+        tableRef.value.sort(null)
       }
     }
   }
