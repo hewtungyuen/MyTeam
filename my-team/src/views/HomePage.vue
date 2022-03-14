@@ -80,7 +80,8 @@ export default {
     },
     methods:{
         addNewProject(){
-            alert('Add a new project')
+            alert('Add a new project');
+            this.$router.push('/NewProjPage');
         }
     }
 }
