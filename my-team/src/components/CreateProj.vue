@@ -7,7 +7,7 @@
         <label for="name" >Project Name: </label> <br>
         <input type="text" id="name" required="" size = "30"> <br><br>
         <label for="details">Project Details: </label> <br>
-        <textarea id="details" name="details" rows="4" cols="40"></textarea>
+        <textarea id="details" name="details" rows="6" cols="40"></textarea>
         </form>
     </div>
     <div id = "add_member">
@@ -56,6 +56,7 @@ export default {
         position: absolute;
         top:50px;
         margin-left: 550px;
+        font-size:30px;
         
         
         /* Add a new project */
@@ -73,14 +74,14 @@ export default {
         }
         #proj_name{
             position: absolute;
-            top: 200px;
+            top: 180px;
             margin-left: 140px;
             height: 1000px;
             display:inline-block;
         }
         #add_member{
             position:absolute;
-            top: 200px;
+            top: 180px;
             left: 650px;
             height: 1000px;
             margin-left: 90px;
@@ -97,7 +98,7 @@ export default {
         }
         input, textarea{
             border: 1px solid black;
-            font-size: 20px;
+            font-size: 18px;
             font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         }
         #add_new{
