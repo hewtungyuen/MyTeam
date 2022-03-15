@@ -17,11 +17,14 @@
             <button id = 'add_new' round @click = "addMember()">
                 +
             </button> <br><br>
-            <label for="members">Team Members: </label> <br>
-            <textarea id="members" name="members" rows="4" cols="40"></textarea>
+            <label>Team Members: </label> <br>
+            <div id = "members">
+                <button>Alice Tan &#x2715;</button>
+                <button>Bob Lim &#x2715;</button>
+            </div>
         </form>
     </div>
-  <div>
+  <div id = "createBut">
       <button id = "create" round @click = "createProj()"> Create &raquo; </button>
   </div>
     </div>
@@ -46,10 +49,12 @@ export default {
 
 <style>
 #body{
-            position:fixed;
+            
             font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         }
         #heading{
+        position: absolute;
+        top:50px;
         margin-left: 550px;
         
         
@@ -57,6 +62,8 @@ export default {
         }
         
         #back{
+            position:absolute;
+            top:80px;
             margin-left: 100px;
             background-color: #04AA6D;
             color: white;
@@ -65,14 +72,24 @@ export default {
             display: inline-block
         }
         #proj_name{
+            position: absolute;
+            top: 200px;
             margin-left: 140px;
+            height: 1000px;
             display:inline-block;
         }
         #add_member{
-            margin-top:30px;
+            position:absolute;
+            top: 200px;
+            left: 650px;
+            height: 1000px;
             margin-left: 90px;
-            display: inline-block;
-            
+            display:inline-block;
+    
+        }
+        #createBut{
+            position:absolute;
+            top:500px
         }
         form{
             font-size: 20px;
@@ -84,8 +101,8 @@ export default {
             font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         }
         #add_new{
-            border-radius: 40%;
-            font-size: 25px;
+            border-radius: 10px;
+            font-size: 20px;
             position:relative;
             margin-left: 10px;
         }
@@ -95,11 +112,16 @@ export default {
             padding: 10px;
             font-size: 20px;
             margin-top: 50px;
-            margin-left: 1000px
+            margin-left: 1000px;
         }
         #create:hover, #back:hover{
             background-color: #ddd;
             color: black;
+        }
+        #members {
+            background-color:aqua;
+            height: 200px;
+            width: 500px;
         }
 
 </style>
