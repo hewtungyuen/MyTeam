@@ -19,8 +19,8 @@
             </button> <br><br>
             <label>Team Members: </label> <br>
             <div id = "members">
-                <button>Alice Tan &#x2715;</button>
-                <button>Bob Lim &#x2715;</button>
+                <button class = "memberBut">Alice Tan &#x2715;</button>
+                <button class = "memberBut">Bob Lim &#x2715;</button>
             </div>
         </form>
     </div>
@@ -119,9 +119,13 @@ export default {
             color: black;
         }
         #members {
-            background-color:aqua;
+            background-color:#04AA6D;
             height: 200px;
             width: 500px;
+        }
+        .memberBut{
+            margin: 10px;
+            font-size:16px;
         }
 
 </style>
