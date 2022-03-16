@@ -3,23 +3,52 @@
     <div class="row">
       <div class="col-md-3">Image</div>
       <n-space vertical>
-        <n-input round placeholder="Email" />
+        <n-input round v-model:value="email" placeholder="Email" />
         <n-input
           round
           type="password"
+          v-model:value="password"
           show-password-on="mousedown"
           placeholder="Password"
-          :maxlength="8"
         />
-        Not registered yet? Create an account Forget Password?
-        <n-button id= "login-btn" round type="primary"> Login </n-button>
+        Not registered yet?
+        <router-link to="/RegisterPage">Create an account</router-link>
+        <span>Forget Password?</span>
+        <n-button id="login-btn" round type="primary" v-on:click="login()">
+          Login
+        </n-button>
       </n-space>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
+export default {
+  name: "LoginBox",
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
+  methods: {
+    login() {
+      console.log("Entered Login");
+      console.log("Email entered: " + this.email)
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, this.email, this.password)
+        .then((user) => {
+          console.log(user.user);
+          this.$router.push({name:"HomePage"})
+        })
+        .catch((error) => {
+          console.log("Error in signing in" + error.message);
+        });
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -35,6 +64,6 @@ export default {};
 }
 
 #login-btn {
-    width:5 auto
+  width: 5 auto;
 }
 </style>
