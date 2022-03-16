@@ -1,22 +1,18 @@
 <template>
 <div>
+<Sidebar/>
 <h1 id = 'welcome'> Welcome, {{name}} </h1>
 <n-grid :cols = '2'>
-
     <n-gi id = 'projects'>
-
         <n-grid :cols = "2" id = 'titleAndButton'>
-
             <n-gi>
                 <h2 id = 'myProjectsTitle'>My Projects</h2>
             </n-gi>
-
             <n-gi>
                 <n-button id = 'addProjectButton' strong secondary round @click = 'addNewProject()'>
                     +
                 </n-button>
             </n-gi>
-
         </n-grid>
 
         <div id = 'projectsTable' >
@@ -67,11 +63,15 @@
 
 import DeadlinesAndMeetings from '@/components/DeadlinesAndMeetings.vue'
 import Table from '@/components/Table.vue'
+import Sidebar from '@/components/sidebar/Sidebar'
+import { sidebarWidth } from '@/components/sidebar/state'
+
 export default {
     name: 'HomePage',
     components:{
         DeadlinesAndMeetings,
-        Table
+        Table,
+        Sidebar,
     },
     data(){
         return {
@@ -83,6 +83,9 @@ export default {
             alert('Add a new project');
             this.$router.push('/NewProjPage');
         }
+    },
+    setup() {
+        return {sidebarWidth}
     }
 }
 </script>

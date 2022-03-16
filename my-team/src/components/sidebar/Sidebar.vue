@@ -8,7 +8,7 @@
           <span v-else> Vue Sidebar</span>
       </h1>
 
-      <SidebarLink to ="/" icon = "fas fa-home">Home</SidebarLink>
+      <SidebarLink to ="/" icon = "fas fa-home">Login Page</SidebarLink>
       <SidebarLink to = '/HomePage' icon = "fa-solid fa-house">Home Page</SidebarLink>
       <SidebarLink to = "/ProjectPage" icon = "fas fa-chart-bar">Project Page</SidebarLink>
       
