@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <div class="row">
+      <router-link to="/HomePage">Cheat Login to HomePage without an account!!!</router-link>
       <div class="col-md-3">Image</div>
       <n-space vertical>
         <n-input round v-model:value="email" placeholder="Email" />
