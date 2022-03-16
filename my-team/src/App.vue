@@ -11,7 +11,9 @@ import Sidebar from '@/components/sidebar/Sidebar'
 import { sidebarWidth } from '@/components/sidebar/state'
 export default {
     name: 'App',
-    components: { Sidebar },
+    components: { 
+        Sidebar,
+    },
 
     setup() {
         return {sidebarWidth}
