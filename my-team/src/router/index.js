@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import ProjectPage from '@/views/ProjectPage.vue'
 import HomePage from '@/views/HomePage.vue'
 import LoginPage from '@/views/LoginPage.vue'
+import NewProjPage from '@/views/NewProjPage.vue'
 
 const routes = [
     {
@@ -19,6 +20,12 @@ const routes = [
         path: '/HomePage',
         name:'HomePage',
         component: HomePage
+    },
+    
+    {
+        path: '/NewProjPage',
+        name: 'NewProjPage',
+        component: NewProjPage
     }
 ]
 
