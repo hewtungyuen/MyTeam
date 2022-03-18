@@ -1,6 +1,5 @@
 <template>
     <div id="nav">
-        <h1>My-Team</h1>
         <router-view/>
     </div>
 </template>
