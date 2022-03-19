@@ -23,9 +23,9 @@
         Not registered yet?
         <router-link to="/RegisterPage">Create an account</router-link>
         </div>
-        <div>
-        Forget Password?
-        </div>
+        
+        <router-link id = "forgetpass" to="/ForgetPassPage">Forget Password?</router-link>
+        
         <n-button id="login-btn" round type="primary" v-on:click="login()">
           Login
         </n-button>
@@ -88,6 +88,9 @@ html, body {
 
 #login-btn {
   width: 100%;
+}
+#forgetpass {
+  color:rgb(184, 16, 16);
 }
 #rightHalf {
    width: 55%;

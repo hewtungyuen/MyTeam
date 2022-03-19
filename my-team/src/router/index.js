@@ -4,6 +4,7 @@ import HomePage from '@/views/HomePage.vue'
 import LoginPage from '@/views/LoginPage.vue'
 import NewProjPage from '@/views/NewProjPage.vue'
 import RegisterPage from "@/views/RegisterPage.vue"
+import ForgetPassPage from "@/components/ForgetPassPage.vue"
 
 const routes = [
     {
@@ -15,6 +16,11 @@ const routes = [
         path: "/RegisterPage",
         name: "RegisterPage",
         component: RegisterPage
+    },
+    {
+        path: "/ForgetPassPage",
+        name: "ForgetPassPage",
+        component: ForgetPassPage
     },
     {
         path: '/ProjectPage',

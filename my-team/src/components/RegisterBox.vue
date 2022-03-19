@@ -109,7 +109,7 @@ export default {
                 LeadingProjects:[],
             })
             console.log(this.email +" details added");
-            alert("You have successfully signed up!");
+            alert("You have successfully signed up! Welcome to the Home Page!");
             this.$router.push({name:"HomePage"});
         })
         .catch((error) => {
@@ -155,7 +155,8 @@ html, body {
 }
 #login-btn {
   margin-top: 7px;
-  width:100%
+  width:100%;
+  background-color: rgb(77, 77, 77);
 }
 #create-btn {
   width:100%;
