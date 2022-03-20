@@ -1,16 +1,9 @@
 <template>
   <div class="sidebar" :style="{ width: sidebarWidth }">
-      <h1>
-          <span v-if ="collapsed">
-              <div>V</div>
-              <div>S</div>
-          </span>
-          <span v-else> Vue Sidebar</span>
-      </h1>
+    <img id = "logo" src="@/assets/logo.png">
 
-      <SidebarLink to ="/" icon = "fas fa-home">Home</SidebarLink>
-      <SidebarLink to = '/HomePage' icon = "fa-solid fa-house">Home Page</SidebarLink>
-      <SidebarLink to = "/ProjectPage" icon = "fas fa-chart-bar">Project Page</SidebarLink>
+      <SidebarLink to = '/HomePage' icon = "fa-solid fa-house">Home</SidebarLink>
+      <SidebarLink to = "/ProjectPage" icon = "fas fa-chart-bar">Projects</SidebarLink>
       
 
       <span class="collapse-icon" 
@@ -18,6 +11,8 @@
       @click="toggleSidebar">
           <i class = "fas fa-angle-double-left" />
       </span>
+
+      <SidebarLink id = "logout" to = "/" icon = "fa-solid fa-arrow-right-from-bracket">Logout</SidebarLink>
   </div>
 </template>
 
@@ -54,7 +49,6 @@ export default {
     left: 0;
     bottom: 0;
     padding: 0.5em;
-    overflow: hidden;
 
     transition: 0.3s ease-out;
 
@@ -65,7 +59,7 @@ export default {
 }
 
 .collapse-icon {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     padding: 0.75em;
 
@@ -77,6 +71,10 @@ export default {
 .rotate-180 {
     transform: rotate(180deg);
     transition: 0.2s linear;
+}
+
+#logo {
+    padding-bottom: 1em;
 }
 
 

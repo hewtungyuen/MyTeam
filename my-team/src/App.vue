@@ -1,7 +1,6 @@
 <template>
     <div id="nav">
         <Sidebar />
-        <h1>My-Team</h1>
         <router-view/>
     </div>
 </template>
