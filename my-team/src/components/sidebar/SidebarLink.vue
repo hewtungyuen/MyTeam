@@ -1,5 +1,5 @@
 <template>
-    <router-link :to="to" class="link" :class="{active: isActive}">
+    <router-link :to="to" class="link" :class="{active: isActive, expanded: !collapsed}">
         <i class = "icon" :class="icon"/>
         <transition name="fade">
             <span v-if ="!collapsed">
@@ -62,11 +62,15 @@ export default {
 .link.active {
     background-color: var(--sidebar-item-active);
 }
+.link.expanded {
+    padding: 0.8em;
+}
 
 .link .icon {
     flex-shrink: 0;
     width: 25px;
     margin-right: 10px;
 }
+
 
 </style>
