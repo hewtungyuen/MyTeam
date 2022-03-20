@@ -1,9 +1,16 @@
 <template>
   <div class="sidebar" :style="{ width: sidebarWidth }">
-    <img id = "logo" src="@/assets/logo.png">
+      <h1>
+          <span v-if ="collapsed">
+              <div>V</div>
+              <div>S</div>
+          </span>
+          <span v-else> Vue Sidebar</span>
+      </h1>
 
-      <SidebarLink to = '/HomePage' icon = "fa-solid fa-house">Home</SidebarLink>
-      <SidebarLink to = "/ProjectPage" icon = "fas fa-chart-bar">Projects</SidebarLink>
+      <SidebarLink to ="/" icon = "fas fa-home">Login Page</SidebarLink>
+      <SidebarLink to = '/HomePage' icon = "fa-solid fa-house">Home Page</SidebarLink>
+      <SidebarLink to = "/ProjectPage" icon = "fas fa-chart-bar">Project Page</SidebarLink>
       
 
       <span class="collapse-icon" 
