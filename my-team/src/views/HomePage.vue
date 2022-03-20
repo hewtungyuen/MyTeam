@@ -6,17 +6,17 @@
     <n-gi id = 'projects'>
         <n-grid :cols = "2" id = 'titleAndButton'>
             <n-gi>
-                <h2 id = 'myProjectsTitle'>My Projects</h2>
+                <h2 id = 'myTasksTitle'>My Tasks</h2>
             </n-gi>
             <n-gi>
                 <n-button id = 'addProjectButton' strong secondary round @click = 'addNewProject()'>
-                    +
+                    Create a new project +
                 </n-button>
             </n-gi>
         </n-grid>
 
         <div id = 'projectsTable' >
-            <Table/>
+            <ProjectsTable/>
         </div>
     </n-gi> 
     
@@ -62,7 +62,7 @@
 <script>
 
 import DeadlinesAndMeetings from '@/components/DeadlinesAndMeetings.vue'
-import Table from '@/components/Table.vue'
+import ProjectsTable from '@/components/ProjectsTable.vue'
 import Sidebar from '@/components/sidebar/Sidebar'
 import { sidebarWidth } from '@/components/sidebar/state'
 
@@ -70,7 +70,7 @@ export default {
     name: 'HomePage',
     components:{
         DeadlinesAndMeetings,
-        Table,
+        ProjectsTable,
         Sidebar,
     },
     data(){
