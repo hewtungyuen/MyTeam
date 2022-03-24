@@ -2,9 +2,6 @@
   <Sidebar/>
   <ProjectLabel/>
   <ProjectToggleBar/>
-  <n-button id = 'update' strong secondary round @click = 'update()'>
-      Update +
-  </n-button>
 </template>
 
 <script>
