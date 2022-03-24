@@ -5,6 +5,7 @@ import LoginPage from '@/views/LoginPage.vue'
 import NewProjPage from '@/views/NewProjPage.vue'
 import RegisterPage from "@/views/RegisterPage.vue"
 import ForgetPassPage from "@/components/ForgetPassPage.vue"
+import ProfilePage from "@/views/ProfilePage.vue"
 
 const routes = [
     {
@@ -38,6 +39,12 @@ const routes = [
         path: '/NewProjPage',
         name: 'NewProjPage',
         component: NewProjPage
+    },
+
+    {
+        path: '/ProfilePage',
+        name: 'ProfilePage',
+        component: ProfilePage
     }
 ]
 
