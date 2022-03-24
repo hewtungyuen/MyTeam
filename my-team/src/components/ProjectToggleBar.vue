@@ -6,6 +6,9 @@
     <n-tab-pane name="completed" tab="Completed">
       <Table/>
     </n-tab-pane>
+    <n-tab-pane name="Meetings" tab="Meetings">
+      <Table/>
+    </n-tab-pane>
   </n-tabs>
 </template>
 
