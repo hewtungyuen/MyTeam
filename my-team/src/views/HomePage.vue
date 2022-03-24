@@ -1,64 +1,70 @@
 <template>
 <div>
 <Sidebar/>
-<p>{{this.projects}}</p>
 <h1 id = 'welcome'> Not logged in </h1>
 <n-grid :cols = '2'>
+
+    <!-- 1st column -->
+
     <n-gi id = 'projects'>
+
+        <!-- Title and button  -->
         <n-grid :cols = "2" id = 'titleAndButton'>
             <n-gi>
-                <h2 id = 'myTasksTitle'>My Tasks</h2>
+                <h2 id = 'myTasksTitle'>My Projects</h2>
             </n-gi>
             <n-gi>
                 <n-button id = 'addProjectButton' strong secondary round @click = 'addNewProject()'>
                     Create a new project +
                 </n-button>
             </n-gi>
-            <n-gi>
-                <n-button id = 'update' strong secondary round @click = 'update()'>
-                    Update +
-                </n-button>
-            </n-gi>
         </n-grid>
+        <!-- end  -->
 
-        <div id = 'projectsTable' >
-            <ProjectsTable/>
+        <br>
+
+        <div >
+            <n-divider />
+            <n-collapse v-for = 'project in projects' :key = 'project.projectName'>
+                <n-collapse-item :title = "project.projectName">
+                    <ProjectsTable/>
+                    <template #header-extra>
+                        Deadline: {{project.projectDeadline}}
+                    </template>
+                </n-collapse-item>
+                <n-divider />
+            </n-collapse>
         </div>
     </n-gi> 
-    
+
+
+    <!-- 2nd column -->
     <n-gi>
 
         <div >
-            <h2 class = 'meetingsAndDeadlines' >Meetings</h2>
-            <n-layout class = 'meetingsAndDeadlines' id = 'meetings' >
-                
-                <n-layout-sider :native-scrollbar="false" bordered>
-                    <DeadlinesAndMeetings/>
-                    <DeadlinesAndMeetings/>
-                    <DeadlinesAndMeetings/>
-                    <DeadlinesAndMeetings/>
-                    <DeadlinesAndMeetings/>
-                    <DeadlinesAndMeetings/>
-                </n-layout-sider>
+            <div>
+                <h2 class = 'container' >Deadlines</h2>
+                <n-layout class = 'meetingsAndDeadlines' >
 
-            </n-layout>
+                    <n-layout-sider :native-scrollbar="true" bordered v-for = 'task in tasks' :key = 'task.title'> 
+                        <DeadlinesAndMeetings :title = "task.title" :deadline = "task.deadline" type = "Task" />
+                    </n-layout-sider>
 
+                </n-layout>
+            </div>
             <br>
-            
-            <h2 class = 'meetingsAndDeadlines'>Deadlines</h2>   
-            
-            <n-layout class = 'meetingsAndDeadlines' id = 'deadlines'>
+            <div>
 
-                <n-layout-sider :native-scrollbar="false" bordered>
-                    <DeadlinesAndMeetings/>
-                    <DeadlinesAndMeetings/>
-                    <DeadlinesAndMeetings/>
-                    <DeadlinesAndMeetings/>
-                    <DeadlinesAndMeetings/>
-                    <DeadlinesAndMeetings/>
-                </n-layout-sider>
+                <h2 class = 'container'>Meetings</h2>   
 
-            </n-layout>
+                <n-layout class = 'meetingsAndDeadlines' id = 'deadlines'>
+
+                    <n-layout-sider :native-scrollbar="false" bordered v-for = 'meeting in meetings' :key = 'meeting.title'>
+                        <DeadlinesAndMeetings :title = "meeting.title" :deadline = "meeting.deadline" type = "Meeting" />
+                    </n-layout-sider>
+
+                </n-layout>
+            </div>
         </div>
     </n-gi>
 </n-grid>
@@ -71,19 +77,22 @@ import DeadlinesAndMeetings from '@/components/DeadlinesAndMeetings.vue'
 import ProjectsTable from '@/components/ProjectsTable.vue'
 import Sidebar from '@/components/sidebar/Sidebar'
 import { sidebarWidth } from '@/components/sidebar/state'
-
+import { getAuth, onAuthStateChanged } from "firebase/auth"
+import firebaseApp from '../firebase.js'
+import { collection, getDocs, getFirestore } from 'firebase/firestore'
+var db = getFirestore(firebaseApp)
 
 export default {
     data(){
         return {
             name: '',
             user: false,
-            // projects: [
-            //     {projectName: 'Project 1', projectDeadline: '2022/04/01'},
-            //     {projectName: 'Project 2', projectDeadline: '2022/04/02'},
-            //     {projectName: 'Project 3', projectDeadline: '2022/04/03'},
-            // ],
-            projects: [],
+            projects: [
+                {projectName: 'Project 1', projectDeadline: '2022/04/01'},
+                {projectName: 'Project 2', projectDeadline: '2022/04/02'},
+                {projectName: 'Project 3', projectDeadline: '2022/04/03'},
+            ],
+            // projects: [],
             tasks: [
                 {title: 'Task 1', deadline: '2022/02/04'},
                 {title: 'Task 2', deadline: '2022/03/04'},
@@ -177,4 +186,8 @@ export default {
         margin-left: 30px
     }
 
+    .container {
+        left: 35%;
+        position: relative;
+    }
 </style>
