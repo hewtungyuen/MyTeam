@@ -18,7 +18,6 @@
 <script>
 import { defineComponent, ref } from 'vue'
 
-
 const columns = [
   {
     title: 'S/N',
@@ -71,6 +70,7 @@ const columns = [
     key: 'updatestatus'
   }
 ]
+
 
 const data = [
   {

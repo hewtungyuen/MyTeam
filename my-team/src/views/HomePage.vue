@@ -1,7 +1,8 @@
 <template>
 <div>
 <Sidebar/>
-<h1 id = 'welcome'> Welcome, {{name}} </h1>
+<p>{{this.projects}}</p>
+<h1 id = 'welcome'> Not logged in </h1>
 <n-grid :cols = '2'>
     <n-gi id = 'projects'>
         <n-grid :cols = "2" id = 'titleAndButton'>
@@ -73,16 +74,67 @@ import { sidebarWidth } from '@/components/sidebar/state'
 
 
 export default {
+    data(){
+        return {
+            name: '',
+            user: false,
+            // projects: [
+            //     {projectName: 'Project 1', projectDeadline: '2022/04/01'},
+            //     {projectName: 'Project 2', projectDeadline: '2022/04/02'},
+            //     {projectName: 'Project 3', projectDeadline: '2022/04/03'},
+            // ],
+            projects: [],
+            tasks: [
+                {title: 'Task 1', deadline: '2022/02/04'},
+                {title: 'Task 2', deadline: '2022/03/04'},
+                {title: 'Task 3', deadline: '2022/04/04'},
+                {title: 'Task 4', deadline: '2022/04/04'},
+                {title: 'Task 5', deadline: '2022/04/04'},
+
+            ],
+            meetings: [
+                {title: 'Meeting 1', deadline: '2022/02/04'},
+                {title: 'Meeting 2', deadline: '2022/03/04'},
+                {title: 'Meeting 3', deadline: '2022/04/04'},
+                {title: 'Meeting 4', deadline: '2022/04/04'},
+                {title: 'Meeting 5', deadline: '2022/04/04'},
+
+            ],
+        }
+    },
+    mounted() {
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.user = user;
+            }
+            
+        })
+
+
+        let allUsers = getDocs(collection(db, 'Users'))
+        console.log(allUsers)
+
+        allUsers.then((x) => {
+            console.log(x)
+        })
+        // allUsers.forEach((docs) => {
+        //     let data = docs.data()
+
+        //     if (data.Email == 'marvin.leow999@gmail.com'){
+        //         var allProjects = data.Projects
+        //         this.projects = allProjects
+        //     }
+        // })
+
+
+    },
+
     name: 'HomePage',
     components:{
         DeadlinesAndMeetings,
         ProjectsTable,
         Sidebar,
-    },
-    data(){
-        return {
-            name: 'John Snow'
-        }
     },
     methods:{
         addNewProject(){
