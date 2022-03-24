@@ -17,6 +17,8 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
+import { mapGetters } from 'vuex'
+
 const columns = [
   {
     title: 'S/N',
@@ -69,6 +71,7 @@ const columns = [
     key: 'updatestatus'
   }
 ]
+
 const data = [
   {
     key: 0,
@@ -115,6 +118,11 @@ export default defineComponent({
         tableRef.value.sort(null)
       }
     }
-  }
+  },
+  computed: {
+    ...mapGetters({
+      count: 'count'
+    })
+  },
 })
 </script>
