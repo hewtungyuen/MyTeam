@@ -17,7 +17,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
-import { mapGetters } from 'vuex'
+
 
 const columns = [
   {
@@ -118,11 +118,6 @@ export default defineComponent({
         tableRef.value.sort(null)
       }
     }
-  },
-  computed: {
-    ...mapGetters({
-      count: 'count'
-    })
   },
 })
 </script>
