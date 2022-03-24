@@ -13,10 +13,18 @@
       :pagination="pagination"
     />
   </n-space>
+  </div>
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref } from 'vue';
+import firebaseApp from '../firebase.js';
+import { getFirestore } from 'firebase/firestore';
+import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
+
+const db = getFirestore(firebaseApp);
+
+const tableData = await getDocs(collection(db, "Projects"));
 
 const columns = [
   {
@@ -96,7 +104,22 @@ const data = [
 ]
 
 export default defineComponent({
-  setup () {
+    name: "Table",
+
+    data() {
+        return {
+            project: false,
+        };
+    },
+    mounted() {
+        const auth = getAuth();
+        onAuthStateChanged(auth, (project) => {
+        if (project) {
+            this.project = project;
+            setup(project);
+    }});
+    
+  setup(project) {
     const tableRef = ref(null)
 
     return {
