@@ -4,10 +4,13 @@ import router from './router/index.js'
 import naive from 'naive-ui'
 
 import '@fortawesome/fontawesome-free/js/all'
+import store from "./store/store";
 
 const app = createApp(App)
 app.use(naive)
+app.use(router)
+app.use(store)
 
 
 
-app.use(router).mount('#app')
+app.mount('#app')

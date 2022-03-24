@@ -13,19 +13,10 @@
       :pagination="pagination"
     />
   </n-space>
-  </div>
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
-import firebaseApp from '../firebase.js';
-import { getFirestore } from 'firebase/firestore';
-import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
-
-const db = getFirestore(firebaseApp);
-
-const tableData = await getDocs(collection(db, "Projects"));
-
+import { defineComponent, ref } from 'vue'
 const columns = [
   {
     title: 'S/N',
@@ -78,7 +69,6 @@ const columns = [
     key: 'updatestatus'
   }
 ]
-
 const data = [
   {
     key: 0,
@@ -102,26 +92,9 @@ const data = [
     deadline: "17/3/2022"
   }
 ]
-
 export default defineComponent({
-    name: "Table",
-
-    data() {
-        return {
-            project: false,
-        };
-    },
-    mounted() {
-        const auth = getAuth();
-        onAuthStateChanged(auth, (project) => {
-        if (project) {
-            this.project = project;
-            setup(project);
-    }});
-    
-  setup(project) {
+  setup () {
     const tableRef = ref(null)
-
     return {
       table: tableRef,
       data,
