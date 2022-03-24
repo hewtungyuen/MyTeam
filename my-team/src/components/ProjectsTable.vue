@@ -10,15 +10,22 @@
       :columns="columns"
       :data="data"
       :pagination="pagination"
-      :row-props="rowProps"
+      :row-class-name="rowClassName"
     />
   </n-space>
 </template>
 
 <script>
 import { defineComponent, ref } from 'vue'
-
+// import DeadlinesAndMeetings from '@/components/DeadlinesAndMeetings.vue'
 const columns = [
+  {
+    type: 'expand',
+    expandable: () => true,
+    renderExpand: () => {
+      return 'string'
+    }
+  },
   {
     title: 'Project',
     key: 'project',
@@ -64,26 +71,20 @@ const data = [
     project: 'Project 1',
     taskname: "Accounting report",
     progressstatus: "50%",
-    deadline: "15/3/2022"
+    deadline: new Date('2022','2','20').toDateString()
   },
   {
     project: 'Project 2',
     taskname: "Finance report",
     progressstatus: "70%",
-    deadline: "16/3/2022"
+    deadline: new Date('2022','4','22').toDateString()
   },
   {
-    project: 'Project 1',
+    project: 'Project 3',
     taskname: "Marketing report",
     progressstatus: "80%",
-    deadline: "17/3/2022"
+    deadline: new Date('2022','4','22').toDateString()
   },
-    {
-    project: 'Project 2',
-    taskname: "Accounting report",
-    progressstatus: "50%",
-    deadline: "15/3/2022"
-  }
 ]
 
 export default defineComponent({
@@ -91,29 +92,42 @@ export default defineComponent({
     const tableRef = ref(null)
 
     return {
-      rowProps:() => {
-        return{
-          onClick: () => {
-            alert('go to task page') // change cursor 
-          }
-        }
-      },
+      // rowProps:() => {
+      //   return{
+      //     onClick: () => {
+      //       alert('go to project page') // change cursor 
+      //     }
+      //   }
+      // },
+
+      // filterProject () {
+      //   tableRef.value.filter({
+      //     project: ['Project 1']
+      //   })
+      // },
+      // clearFilters () {
+      //   tableRef.value.filter(null)
+      // },
+      // clearSorter () {
+      //   tableRef.value.sort(null)
+      // }
       table: tableRef,
       data,
       columns,
       pagination: { pageSize: 3 },
-      filterProject () {
-        tableRef.value.filter({
-          project: ['Project 1']
-        })
-      },
-      clearFilters () {
-        tableRef.value.filter(null)
-      },
-      clearSorter () {
-        tableRef.value.sort(null)
+      rowClassName(row){
+        if (new Date(row.deadline) < new Date()) {
+          return 'overdue'
+        }
+        return ''
       }
     }
   }
 })
 </script>
+
+<style scoped>
+  :deep(.overdue td) {
+    color: red;
+  }
+</style>
