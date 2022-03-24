@@ -1,70 +1,64 @@
 <template>
 <div>
 <Sidebar/>
+<p>{{this.projects}}</p>
 <h1 id = 'welcome'> Not logged in </h1>
 <n-grid :cols = '2'>
-
-    <!-- 1st column -->
-
     <n-gi id = 'projects'>
-
-        <!-- Title and button  -->
         <n-grid :cols = "2" id = 'titleAndButton'>
             <n-gi>
-                <h2 id = 'myTasksTitle'>My Projects</h2>
+                <h2 id = 'myTasksTitle'>My Tasks</h2>
             </n-gi>
             <n-gi>
                 <n-button id = 'addProjectButton' strong secondary round @click = 'addNewProject()'>
                     Create a new project +
                 </n-button>
             </n-gi>
+            <n-gi>
+                <n-button id = 'update' strong secondary round @click = 'update()'>
+                    Update +
+                </n-button>
+            </n-gi>
         </n-grid>
-        <!-- end  -->
 
-        <br>
-
-        <div >
-            <n-divider />
-            <n-collapse v-for = 'project in projects' :key = 'project.projectName'>
-                <n-collapse-item :title = "project.projectName">
-                    <ProjectsTable/>
-                    <template #header-extra>
-                        Deadline: {{project.projectDeadline}}
-                    </template>
-                </n-collapse-item>
-                <n-divider />
-            </n-collapse>
+        <div id = 'projectsTable' >
+            <ProjectsTable/>
         </div>
     </n-gi> 
     
-
-    <!-- 2nd column -->
     <n-gi>
 
         <div >
-            <div>
-                <h2 class = 'container' >Deadlines</h2>
-                <n-layout class = 'meetingsAndDeadlines' >
-                    
-                    <n-layout-sider :native-scrollbar="true" bordered v-for = 'task in tasks' :key = 'task.title'> 
-                        <DeadlinesAndMeetings :title = "task.title" :deadline = "task.deadline" type = "Task" />
-                    </n-layout-sider>
+            <h2 class = 'meetingsAndDeadlines' >Meetings</h2>
+            <n-layout class = 'meetingsAndDeadlines' id = 'meetings' >
+                
+                <n-layout-sider :native-scrollbar="false" bordered>
+                    <DeadlinesAndMeetings/>
+                    <DeadlinesAndMeetings/>
+                    <DeadlinesAndMeetings/>
+                    <DeadlinesAndMeetings/>
+                    <DeadlinesAndMeetings/>
+                    <DeadlinesAndMeetings/>
+                </n-layout-sider>
 
-                </n-layout>
-            </div>
+            </n-layout>
+
             <br>
-            <div>
-                
-                <h2 class = 'container'>Meetings</h2>   
-                
-                <n-layout class = 'meetingsAndDeadlines' id = 'deadlines'>
+            
+            <h2 class = 'meetingsAndDeadlines'>Deadlines</h2>   
+            
+            <n-layout class = 'meetingsAndDeadlines' id = 'deadlines'>
 
-                    <n-layout-sider :native-scrollbar="false" bordered v-for = 'meeting in meetings' :key = 'meeting.title'>
-                        <DeadlinesAndMeetings :title = "meeting.title" :deadline = "meeting.deadline" type = "Meeting" />
-                    </n-layout-sider>
+                <n-layout-sider :native-scrollbar="false" bordered>
+                    <DeadlinesAndMeetings/>
+                    <DeadlinesAndMeetings/>
+                    <DeadlinesAndMeetings/>
+                    <DeadlinesAndMeetings/>
+                    <DeadlinesAndMeetings/>
+                    <DeadlinesAndMeetings/>
+                </n-layout-sider>
 
-                </n-layout>
-            </div>
+            </n-layout>
         </div>
     </n-gi>
 </n-grid>
@@ -78,24 +72,8 @@ import ProjectsTable from '@/components/ProjectsTable.vue'
 import Sidebar from '@/components/sidebar/Sidebar'
 import { sidebarWidth } from '@/components/sidebar/state'
 
-import { getAuth, onAuthStateChanged } from "firebase/auth"
-import firebaseApp from '../firebase.js'
-import { collection, getDocs, getFirestore } from 'firebase/firestore'
 
-var db = getFirestore(firebaseApp)
-
-import { createStore } from 'vuex'
-const store = createStore({
-  state () {
-    return {
-      count: 0
-    }
-  }
-})
-
-console.log(store.state.count)
 export default {
-
     data(){
         return {
             name: '',
@@ -133,40 +111,45 @@ export default {
             
         })
 
-        async function getAllProjectIds(){
-            let allUsers = await getDocs(collection(db, 'Users'))
-            allUsers.forEach((docs) => {
-                let data = docs.data()
 
-                if (data.Email == 'marvin.leow999@gmail.com'){
-                    console.log(data.Projects)
+        let allUsers = getDocs(collection(db, 'Users'))
+        console.log(allUsers)
 
-                    // this.projects.push(data.Projects)
-                }
-            })
-            return
-        }
+        allUsers.then((x) => {
+            console.log(x)
+        })
+        // allUsers.forEach((docs) => {
+        //     let data = docs.data()
 
-        getAllProjectIds()
+        //     if (data.Email == 'marvin.leow999@gmail.com'){
+        //         var allProjects = data.Projects
+        //         this.projects = allProjects
+        //     }
+        // })
+
 
     },
+
     name: 'HomePage',
     components:{
         DeadlinesAndMeetings,
         ProjectsTable,
         Sidebar,
     },
-
     methods:{
         addNewProject(){
             alert('Add a new project');
             this.$router.push('/NewProjPage');
         },
-
+        update() {
+            this.$store.commit('update', "387UsydZXmACIAU9WQMk");
+            console.log(this.$store.state.projectID);
+            console.log(this.$store.state.name);
+        }
     },
     setup() {
         return {sidebarWidth}
-    }
+    },
 }
 </script>
 
@@ -175,21 +158,13 @@ export default {
         height: 400px;
         width: 300px;
     }
-    /* .n-collapse-item {
-        font-weight: bold;
-    } */
+
     #projects{
         margin-left: 30px;
     }
 
-    .container {
-        left: 35%;
-        position: relative;
-    }
-
     .meetingsAndDeadlines{
         left: 35%;
-        width: 300px;
         position: relative;
     }
 
