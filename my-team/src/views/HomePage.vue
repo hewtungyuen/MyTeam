@@ -1,6 +1,7 @@
 <template>
 <div>
 <Sidebar/>
+<p>{{this.projects}}</p>
 <h1 id = 'welcome'> Not logged in </h1>
 <n-grid :cols = '2'>
 
@@ -133,34 +134,22 @@ export default {
             
         })
 
-        // async function getAllProjectIds(){
-        //     let allUsers = await getDocs(collection(db, 'Users'))
-        //     var self = this
-        //     allUsers.forEach((docs) => {
-        //         let data = docs.data()
 
-        //         if (data.Email == 'marvin.leow999@gmail.com'){
-        //             var allProjects = data.Projects
+        let allUsers = getDocs(collection(db, 'Users'))
+        console.log(allUsers)
 
-        //             self.projects = allProjects
-        //         }
-        //     })
-        //     return
-        // }
-
-        let allProjects = getDocs(collection(db, 'Users'))
-        allProjects.then((response) => {
-            console.log(response.value)
-            response.data.forEach((docs) => {
-                let data = docs.data()
-                if (data.Email =='marvin.leow999@gmail.com') {
-                    console.log(data.Projects)
-                    this.projects = data.Projects
-                }
-            })
+        allUsers.then((x) => {
+            console.log(x)
         })
+        // allUsers.forEach((docs) => {
+        //     let data = docs.data()
 
-        
+        //     if (data.Email == 'marvin.leow999@gmail.com'){
+        //         var allProjects = data.Projects
+        //         this.projects = allProjects
+        //     }
+        // })
+
 
     },
     name: 'HomePage',
