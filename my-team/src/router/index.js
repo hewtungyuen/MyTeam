@@ -5,6 +5,7 @@ import LoginPage from '@/views/LoginPage.vue'
 import NewProjPage from '@/views/NewProjPage.vue'
 import RegisterPage from "@/views/RegisterPage.vue"
 import ForgetPassPage from "@/components/ForgetPassPage.vue"
+import AddAMeeting from "@/components/AddAMeeting.vue"
 
 const routes = [
     {
@@ -38,7 +39,13 @@ const routes = [
         path: '/NewProjPage',
         name: 'NewProjPage',
         component: NewProjPage
-    }
+    },
+
+    {
+        path: '/AddAMeeting',
+        name: 'AddAMeeting',
+        component: AddAMeeting
+    },
 ]
 
 const router = createRouter({
