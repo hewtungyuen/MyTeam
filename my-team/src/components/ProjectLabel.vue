@@ -1,11 +1,61 @@
 <template>
-  <n-card :bordered="false" title ="Ecommerce website">
-    Team Leader: Marvin
+  <h1>{{title}}</h1>
+  <n-card :bordered="false">  
+    Team Leader: {{teamleader}}
     <br>
-    Started on: 07/2/2022
+    Started on: {{date}}
     <br>
-    Team Members: Yi Chen, Tung Yuen
+    Team Members: {{memberTotal}}
     <br>
-    Details: Improving sales through website
+    Details: {{details}}
   </n-card>
 </template>
+
+<script>
+import firebaseApp from '../firebase.js';
+import {getAuth, onAuthStateChanged} from "firebase/auth";
+import {getFirestore} from "firebase/firestore";
+import {collection, getDocs} from "firebase/firestore";
+
+const db = getFirestore(firebaseApp);
+
+export default {
+    data(){
+        return {
+            user:false,
+            title:"",
+            teamleader:"hi",
+            date:"",
+            details:"",
+            memberTotal: ""
+        }
+    },
+    mounted(){
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if(user) {
+                this.user = user;
+            }
+        });
+    
+        let projectDetails = getDocs(collection(db, "Projects"));
+        console.log(projectDetails);
+
+        projectDetails.then((QuerySnapshot) => {
+          QuerySnapshot.forEach((doc) => {
+            if (doc.id == this.$store.state.projectID) {
+              let yy = doc.data();
+              this.teamleader = yy.Leader;
+              this.details = yy.Details;
+              this.date = yy.StartDate;
+              this.title = yy.Name;
+
+              yy.Members.forEach((mem) => {
+                this.memberTotal += mem + ", "
+              })
+            }
+          })
+        })
+    },
+}
+</script>

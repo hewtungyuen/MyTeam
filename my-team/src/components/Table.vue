@@ -71,6 +71,7 @@ const columns = [
   }
 ]
 
+
 const data = [
   {
     key: 0,
@@ -94,11 +95,9 @@ const data = [
     deadline: "17/3/2022"
   }
 ]
-
 export default defineComponent({
   setup () {
     const tableRef = ref(null)
-
     return {
       table: tableRef,
       data,
@@ -119,6 +118,6 @@ export default defineComponent({
         tableRef.value.sort(null)
       }
     }
-  }
+  },
 })
 </script>

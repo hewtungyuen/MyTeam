@@ -145,7 +145,7 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
 #body{
     margin-left: 20%;
     margin-right:20%;
