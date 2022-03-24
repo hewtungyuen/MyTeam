@@ -1,10 +1,11 @@
 <template>
-  <n-card :bordered="false" title = {{title}}>
+  <h1>{{title}}</h1>
+  <n-card :bordered="false">  
     Team Leader: {{teamleader}}
     <br>
     Started on: {{date}}
     <br>
-    Team Members: Yi Chen, Tung Yuen
+    Team Members: {{memberTotal}}
     <br>
     Details: {{details}}
   </n-card>
@@ -14,7 +15,7 @@
 import firebaseApp from '../firebase.js';
 import {getAuth, onAuthStateChanged} from "firebase/auth";
 import {getFirestore} from "firebase/firestore";
-import { doc, getDoc,collection } from "firebase/firestore";
+import {collection, getDocs} from "firebase/firestore";
 
 const db = getFirestore(firebaseApp);
 
@@ -23,7 +24,7 @@ export default {
         return {
             user:false,
             title:"",
-            teamleader:"",
+            teamleader:"hi",
             date:"",
             details:"",
             memberTotal: ""
@@ -34,23 +35,27 @@ export default {
         onAuthStateChanged(auth, (user) => {
             if(user) {
                 this.user = user;
-                console.log(this.user.email)
             }
+        });
+    
+        let projectDetails = getDocs(collection(db, "Projects"));
+        console.log(projectDetails);
+
+        projectDetails.then((QuerySnapshot) => {
+          QuerySnapshot.forEach((doc) => {
+            if (doc.id == this.$store.state.projectID) {
+              let yy = doc.data();
+              this.teamleader = yy.Leader;
+              this.details = yy.Details;
+              this.date = yy.StartDate;
+              this.title = yy.Name;
+
+              yy.Members.forEach((mem) => {
+                this.memberTotal += mem + ", "
+              })
+            }
+          })
         })
-
     },
-
-    async function display() {
-      let z = await getDocs(collection(db, this.$store.state.projectID));
-      let yy = docs.data();
-      this.teamleader = yy.Leader;
-      this.details = yy.Details;
-      this.date = yy.StartDate;
-      this.title = yy.Name;
-      
-      yy.Members.forEach((docs) => {
-        this.memberTotal += docs ", "
-      })
-    }
 }
 </script>
