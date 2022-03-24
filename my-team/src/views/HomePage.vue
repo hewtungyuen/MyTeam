@@ -133,21 +133,34 @@ export default {
             
         })
 
-        async function getAllProjectIds(){
-            let allUsers = await getDocs(collection(db, 'Users'))
-            allUsers.forEach((docs) => {
+        // async function getAllProjectIds(){
+        //     let allUsers = await getDocs(collection(db, 'Users'))
+        //     var self = this
+        //     allUsers.forEach((docs) => {
+        //         let data = docs.data()
+
+        //         if (data.Email == 'marvin.leow999@gmail.com'){
+        //             var allProjects = data.Projects
+
+        //             self.projects = allProjects
+        //         }
+        //     })
+        //     return
+        // }
+
+        let allProjects = getDocs(collection(db, 'Users'))
+        allProjects.then((response) => {
+            console.log(response.value)
+            response.data.forEach((docs) => {
                 let data = docs.data()
-
-                if (data.Email == 'marvin.leow999@gmail.com'){
+                if (data.Email =='marvin.leow999@gmail.com') {
                     console.log(data.Projects)
-
-                    // this.projects.push(data.Projects)
+                    this.projects = data.Projects
                 }
             })
-            return
-        }
+        })
 
-        getAllProjectIds()
+        
 
     },
     name: 'HomePage',
