@@ -17,7 +17,6 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
-// import { mapGetters } from 'vuex'
 
 const columns = [
   {
@@ -72,8 +71,6 @@ const columns = [
   }
 ]
 
-// //console.log(count)
-// console.log(this.count)
 
 const data = [
   {
@@ -98,11 +95,9 @@ const data = [
     deadline: "17/3/2022"
   }
 ]
-
 export default defineComponent({
   setup () {
     const tableRef = ref(null)
-
     return {
       table: tableRef,
       data,
@@ -124,10 +119,5 @@ export default defineComponent({
       }
     }
   },
-  // computed: {
-  //   ...mapGetters({
-  //     count: 'count'
-  //   })
-  // },
 })
 </script>
