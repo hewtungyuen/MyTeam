@@ -16,9 +16,15 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { h, defineComponent, ref } from 'vue'
+import { NButton,NProgress } from 'naive-ui'
+// import firebaseApp from '../firebase.js';
+// import {getAuth, onAuthStateChanged} from "firebase/auth";
+// import {getFirestore} from "firebase/firestore";
+// import {collection, getDocs} from "firebase/firestore";
 
-const columns = [
+// const db = getFirestore(firebaseApp);
+const createColumns = ({ updateProgress }) => [
   {
     title: 'S/N',
     key: 'sn',
@@ -63,16 +69,35 @@ const columns = [
   },
   {
     title: 'Progress Status',
-    key: 'progressstatus'
+    key: 'progressstatus',
+    render () {
+      return h(
+        NProgress,
+        {
+          percentage: "50",
+
+        }
+      )
+    }
   },
   {
     title: 'Update Status',
-    key: 'updatestatus'
+    key: 'updatestatus',
+    render () {
+      return h(
+        NButton,
+        {
+          size: 'small',
+          onClick: () => updateProgress(),
+        },
+        { default: () => 'Update Progress (10%)' }
+      )
+    }
   }
 ]
 
 
-const data = [
+const createData = () => [
   {
     key: 0,
     sn: 1,
@@ -97,14 +122,24 @@ const data = [
 ]
 export default defineComponent({
   setup () {
-    const tableRef = ref(null)
+    const tableRef = ref(null);
+    const percentageRef = ref(0);
+
     return {
+      percentage: percentageRef,
       table: tableRef,
-      data,
-      columns,
+      data: createData(),
+      columns: createColumns({
+        updateProgress() {
+          percentageRef.value += 10;
+          if (percentageRef.value > 100) {
+            percentageRef.value = 100;
+          } 
+        }
+      }),
       pagination: { pageSize: 5 },
       filterAddress () {
-        tableRef.value.filter({
+        tableRef.value.filter({ 
           incharge: ['Yi Chen']
         })
       },
@@ -116,7 +151,13 @@ export default defineComponent({
       },
       clearSorter () {
         tableRef.value.sort(null)
-      }
+      },
+      // updateProgress () {
+      //   percentageRef.value += 10;
+      //   if (percentageRef.value > 100) {
+      //     percentageRef.value = 0;
+      //   }
+      // },
     }
   },
 })
