@@ -9,16 +9,16 @@
         <div id = "left">
         <form>
         <label>Project Name:</label><br>
-        <n-input round type = "text" v-model:value = "name" size = "large"/><br><br>
+        <n-input round type = "text" v-model:value = "name" size = "large" clearable/><br><br>
         <label>Project Details:</label><br>
-        <n-input round type = "textarea" size = "large" rows = "5"  /> <br><br>
+        <n-input round type = "textarea" v-model:value = "details" size = "large" rows = "5" clearable /> <br><br>
 
         </form>
         </div>
         <div id="right">
-        <form>
-            <label for="add" >Add New Members: </label> <br>
-            <n-input type="text" round placeholder="Enter Email" size = "large" v-model:value = "member"/>
+        <form id = "addMemForm">
+            <label >Add New Members: </label> <br>
+            <n-input type="text" id = "emailInput" round placeholder="Enter Email" size = "large" v-model:value = "member" autosize style="min-width: 80%" clearable/>
             <n-button strong secondary round type = "success" id = 'addBut' @click = "addMember()" >
                 +
             </n-button> <br><br>
@@ -63,14 +63,6 @@ export default {
         backHome(){
             this.$router.push('/HomePage');
         },
-        deleteMember(array, email){
-            confirm("Going to delete this member!")
-            const index = array.indexOf(email)
-            array.splice(index, 1)
-            this.memberTotal = array
-            let elem = document.getElementById(email)
-            elem.remove()
-        },
         async addMember(){
             let z = await getDoc(doc(db, "Users", this.member));
             if (z.exists()) {
@@ -82,7 +74,8 @@ export default {
             bu.type = "button"
             bu.className = "memberBut"
             bu.id = String(yy.Email)
-            bu.innerHTML = yy.FullName + "&#x2715"
+            bu.style = "margin:10px; font-size:120%"
+            bu.innerHTML = yy.FullName + " &#x2715"
             let email = String(yy.Email)
             let array = this.memberTotal
             bu.onclick = function() {
@@ -100,13 +93,16 @@ export default {
         } else {
             alert("User does not exist!")
         }
-        document.getElementById("addMemForm").reset()
+        document.getElementById("addMemForm").reset();
         },
         async createProj(){
             var projname = this.name;
             var projdetails = this.details;
             var projmembers = this.memberTotal;
             var projleader = String(this.user.email);
+            if(projname == "") {
+                alert("Please input a project name!")
+            }else{
             alert("Create Project: " + projname)
             try{
                 const docRef = await addDoc(collection(db, "Projects"), {
@@ -136,8 +132,8 @@ export default {
             catch(error){
                 console.error("Error adding document:", error);
             }
-            this.$router.push('/ProjectPage');
-
+            this.$router.push('/HomePage');
+            }
         }
     }
 }
@@ -159,19 +155,34 @@ export default {
 #createAdd{
     border:solid rgb(72, 134, 72) 1px;
     margin-top:30px;
-    padding:20px
+    padding:20px;
+    padding-bottom:40px
+
 }
 #left{
     width:45%;
     float:left;
 }
 #right{
-    width:50%;
+    width:45%;
     display:inline-block;
     float:left;
+    margin-left: 40px;
     
 }
 #members{
     height:150px;
+    background-color:rgb(165, 233, 210);
 }
+#emailInput{
+    position:relative;
+    top:-5px;
+}
+#create{
+    margin-top:30px;
+    left:30%
+}
+.memberBut{
+}
+
 </style>
