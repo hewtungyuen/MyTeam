@@ -19,7 +19,6 @@
 import { h, defineComponent, ref } from 'vue'
 import { NButton,NProgress } from 'naive-ui'
 
-
 import firebaseApp from '../firebase.js';
 import {getAuth, onAuthStateChanged} from "firebase/auth";
 import {getFirestore} from "firebase/firestore";
@@ -60,7 +59,7 @@ const createColumns = ({ updateProgress }) => [
       }
     ],
     filter (value, row) {
-      return ~row.incharge.indexOf(value)
+      return ~row.InCharge.indexOf(value)
     }
   },
   {
@@ -74,17 +73,13 @@ const createColumns = ({ updateProgress }) => [
     key: 'ProgressStatus',
     render () {
       return h(
-        NProgress,
-        {
-          percentage: "10",
-
-        }
+        NProgress
       )
     }
   },
   {
     title: 'Update Status',
-    key: 'updatestatus',
+    key: 'UpdateStatus',
     render () {
       return h(
         NButton,
@@ -98,65 +93,93 @@ const createColumns = ({ updateProgress }) => [
   }
 ]
 
-const createData = []
+
+const createData = [
+  {
+    key: 0,
+    sn: 1,
+    TaskName: "Accounting report",
+    InCharge: "Tung Yuen",
+    DeadLine: "15/3/2022"
+  },
+  {
+    key: 0,
+    sn: 2,
+    TaskName: "Finance report",
+    InCharge: "Yi Chen",
+    DeadLine: "16/3/2022"
+  },
+  {
+    key: 0,
+    sn: 3,
+    TaskName: "Marketing report",
+    InCharge: "Marvin",
+    DeadLine: "17/3/2022"
+  }
+]
+
 
 export default defineComponent({
-    mounted() {
-      const auth = getAuth();
-      onAuthStateChanged(auth, (user) => {
-          if(user) {
+  mounted(){
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+        if(user) {
             this.user = user;
-          }
-      });
+        }
+    });
 
-      let taskDetails = getDocs(collection(db, "Tasks"));
-      console.log("Tasks" + taskDetails);
+    let taskDetails = getDocs(collection(db, "Tasks"));
+    console.log(taskDetails);
 
-      taskDetails.then((QuerySnapshot) => {
+    taskDetails.then((QuerySnapshot) => {
+      QuerySnapshot.forEach((doc) => {
+        let yy = doc.data();
+        if (yy.ProjectID == this.$store.state.projectID) {
+          createData.push(yy);
+          console.log(createData);
+        }
+      })
+    })
+  },
+  setup () {
+    const tableRef = ref(null);
+    const percentageRef = ref(0);
+    console.log("hi");
 
-        QuerySnapshot.forEach((doc) => {
-          let yy = doc.data();
-          if (yy.ProjectID == this.$store.state.projectID) {
-            createData.push(yy);
-            //console.log(this.dataStore);
-          }
+    return {
+      percentage: percentageRef,
+      table: tableRef,
+      data: createData,
+      columns: createColumns({
+        updateProgress() {
+          percentageRef.value += 10;
+          if (percentageRef.value > 100) {
+            percentageRef.value = 100;
+          } 
+        }
+      }),
+      pagination: { pageSize: 5 },
+      filterAddress () {
+        tableRef.value.filter({ 
+          incharge: ['Yi Chen']
         })
-      });
-      console.log(createData);
-      console.log("hi 2");
-    },
-    setup() {
-      const tableRef = ref(null);
-      const percentageRef = ref(0);
-
-      return {
-        percentage: percentageRef,
-        table: tableRef,
-        data: createData,
-        columns: createColumns({
-          updateProgress() {
-            percentageRef.value += 10;
-            if (percentageRef.value > 100) {
-              percentageRef.value = 100;
-            } 
-          }
-        }),
-        pagination: { pageSize: 5 },
-        filterAddress () {
-          tableRef.value.filter({ 
-            incharge: ['Yi Chen']
-          })
-        },
-        sortName () {
-          tableRef.value.sort('name', 'ascend')
-        },
-        clearFilters () {
-          tableRef.value.filter(null)
-        },
-        clearSorter () {
-          tableRef.value.sort(null)
-        },
-      }
+      },
+      sortName () {
+        tableRef.value.sort('name', 'ascend')
+      },
+      clearFilters () {
+        tableRef.value.filter(null)
+      },
+      clearSorter () {
+        tableRef.value.sort(null)
+      },
+      // updateProgress () {
+      //   percentageRef.value += 10;
+      //   if (percentageRef.value > 100) {
+      //     percentageRef.value = 0;
+      //   }
+      // },
     }
+  },
 })
 </script>
