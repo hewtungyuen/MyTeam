@@ -10,13 +10,19 @@ import '@fortawesome/fontawesome-free/js/all'
 const store = createStore({
     state () {
       return {
-          projectID : "387UsydZXmACIAU9WQMk",
+          projectID : "",
           data : []
       }
     },
     mutations: {
       update(state, ID) {
         state.projectID = ID;
+      },
+      updateData(state, z) {
+        state.data = z;
+      },
+      refreshData(state) {
+        state.data = []
       }
     }
 })
