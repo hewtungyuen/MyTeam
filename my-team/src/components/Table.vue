@@ -142,7 +142,7 @@ export default defineComponent({
       });
 
       console.log(z);
-      this.$store.state.data = ref(z);
+      this.$store.state.data = z;
     },
   setup () {
     const tableRef = ref(null);
