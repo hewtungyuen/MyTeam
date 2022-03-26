@@ -127,10 +127,10 @@ export default defineComponent({
       });
 
       let taskDetails = getDocs(collection(db, "Tasks"));
-      const z = [];
+      this.$store.commit('refreshData');
 
       taskDetails.then((QuerySnapshot) => {
-
+        const z = [];
         QuerySnapshot.forEach((doc) => {
           let yy = doc.data();
           if (yy.ProjectID == this.$store.state.projectID) {
