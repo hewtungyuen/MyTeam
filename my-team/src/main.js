@@ -11,7 +11,7 @@ const store = createStore({
     state () {
       return {
           projectID : "387UsydZXmACIAU9WQMk",
-          name : "ty"
+          data : []
       }
     },
     mutations: {
@@ -19,7 +19,7 @@ const store = createStore({
         state.projectID = ID;
       }
     }
-  })
+})
 
 const app = createApp(App)
 app.use(naive)

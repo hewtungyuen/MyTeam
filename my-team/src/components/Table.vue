@@ -9,16 +9,22 @@
     <n-data-table
       ref="table"
       :columns="columns"
-      :data="data"
+      :data="this.$store.state.data"
       :pagination="pagination"
     />
   </n-space>
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { h, defineComponent, ref } from 'vue'
+import { NButton,NProgress } from 'naive-ui'
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import firebaseApp from '../firebase.js';
+import {getFirestore} from "firebase/firestore";
+import {collection, getDocs} from "firebase/firestore";
+const db = getFirestore(firebaseApp);
 
-const columns = [
+const createColumns = ({ updateProgress }) => [
   {
     title: 'S/N',
     key: 'sn',
@@ -27,13 +33,13 @@ const columns = [
   },
   {
     title: 'Task Name',
-    key: 'taskname',
+    key: 'TaskName',
     defaultSortOrder: 'ascend',
     sorter: 'default'
   },
   {
     title: 'In Charge',
-    key: 'incharge',
+    key: 'InCharge',
     defaultSortOrder: 'ascend',
     sorter: 'default',
     defaultFilterOptionValues: ['Yi Chen', 'Tung Yuen', 'Marvin'],
@@ -52,59 +58,110 @@ const columns = [
       }
     ],
     filter (value, row) {
-      return ~row.incharge.indexOf(value)
+      return ~row.InCharge.indexOf(value)
     }
   },
   {
     title: 'Deadline',
-    key: 'deadline',
+    key: 'DeadLine',
     defaultSortOrder: 'ascend',
     sorter: 'default'
   },
   {
     title: 'Progress Status',
-    key: 'progressstatus'
+    key: 'ProgressStatus',
+    render () {
+      return h(
+        NProgress
+      )
+    }
   },
   {
     title: 'Update Status',
-    key: 'updatestatus'
+    key: 'UpdateStatus',
+    render () {
+      return h(
+        NButton,
+        {
+          size: 'small',
+          onClick: () => updateProgress(),
+        },
+        { default: () => 'Update Progress (10%)' }
+      )
+    }
   }
 ]
 
 
-const data = [
-  {
-    key: 0,
-    sn: 1,
-    taskname: "Accounting report",
-    incharge: "Tung Yuen",
-    deadline: "15/3/2022"
-  },
-  {
-    key: 0,
-    sn: 2,
-    taskname: "Finance report",
-    incharge: "Yi Chen",
-    deadline: "16/3/2022"
-  },
-  {
-    key: 0,
-    sn: 3,
-    taskname: "Marketing report",
-    incharge: "Marvin",
-    deadline: "17/3/2022"
-  }
-]
+// const createData = [
+//   {
+//     key: 0,
+//     sn: 1,
+//     TaskName: "Accounting report",
+//     InCharge: "Tung Yuen",
+//     DeadLine: "15/3/2022"
+//   },
+//   {
+//     key: 0,
+//     sn: 2,
+//     TaskName: "Finance report",
+//     InCharge: "Yi Chen",
+//     DeadLine: "16/3/2022"
+//   }
+// ]
+
+
 export default defineComponent({
+    data() {
+      return {
+        user: false,
+        output: []
+      }
+    },
+    mounted() {
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+          if(user) {
+            this.user = user;
+          }
+      });
+
+      let taskDetails = getDocs(collection(db, "Tasks"));
+      console.log("Tasks" + taskDetails);
+      const z = [];
+
+      taskDetails.then((QuerySnapshot) => {
+
+        QuerySnapshot.forEach((doc) => {
+          let yy = doc.data();
+          if (yy.ProjectID == this.$store.state.projectID) {
+            z.push(yy);
+            console.log(yy);
+          }
+        })
+      });
+
+      console.log(z);
+      this.$store.state.data = z;
+    },
   setup () {
-    const tableRef = ref(null)
+    const tableRef = ref(null);
+    const percentageRef = ref(0);
+
     return {
+      percentage: percentageRef,
       table: tableRef,
-      data,
-      columns,
+      columns: createColumns({
+        updateProgress() {
+          percentageRef.value += 10;
+          if (percentageRef.value > 100) {
+            percentageRef.value = 100;
+          } 
+        }
+      }),
       pagination: { pageSize: 5 },
       filterAddress () {
-        tableRef.value.filter({
+        tableRef.value.filter({ 
           incharge: ['Yi Chen']
         })
       },
@@ -116,7 +173,13 @@ export default defineComponent({
       },
       clearSorter () {
         tableRef.value.sort(null)
-      }
+      },
+      // updateProgress () {
+      //   percentageRef.value += 10;
+      //   if (percentageRef.value > 100) {
+      //     percentageRef.value = 0;
+      //   }
+      // },
     }
   },
 })
