@@ -42,24 +42,24 @@ const createColumns = ({ updateProgress }) => [
     key: 'InCharge',
     defaultSortOrder: 'ascend',
     sorter: 'default',
-    defaultFilterOptionValues: ['Yi Chen', 'Tung Yuen', 'Marvin'],
-    filterOptions: [
-      {
-        label: 'Yi Chen',
-        value: 'Yi Chen'
-      },
-      {
-        label: 'Tung Yuen',
-        value: 'Tung Yuen'
-      }, 
-      {
-        label: 'Marvin',
-        value: 'Marvin'
-      }
-    ],
-    filter (value, row) {
-      return ~row.InCharge.indexOf(value)
-    }
+    // defaultFilterOptionValues: ['Yi Chen', 'Tung Yuen', 'Marvin'],
+    // filterOptions: [
+    //   {
+    //     label: 'Yi Chen',
+    //     value: 'Yi Chen'
+    //   },
+    //   {
+    //     label: 'Tung Yuen',
+    //     value: 'Tung Yuen'
+    //   }, 
+    //   {
+    //     label: 'Marvin',
+    //     value: 'Marvin'
+    //   }
+    // ],
+    // filter (value, row) {
+    //   return ~row.InCharge.indexOf(value)
+    // }
   },
   {
     title: 'Deadline',
@@ -127,7 +127,6 @@ export default defineComponent({
       });
 
       let taskDetails = getDocs(collection(db, "Tasks"));
-      console.log("Tasks" + taskDetails);
       const z = [];
 
       taskDetails.then((QuerySnapshot) => {
@@ -136,13 +135,11 @@ export default defineComponent({
           let yy = doc.data();
           if (yy.ProjectID == this.$store.state.projectID) {
             z.push(yy);
-            console.log(yy);
+            this.$store.commit('updateData', z);
+            console.log(this.$store.state.data);
           }
         })
       });
-
-      console.log(z);
-      this.$store.state.data = z;
     },
   setup () {
     const tableRef = ref(null);
