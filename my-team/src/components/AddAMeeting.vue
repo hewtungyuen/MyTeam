@@ -1,45 +1,56 @@
 <template>
-<Sidebar/>
+  <Sidebar />
   <h1 id="heading">Create a New Meeting</h1>
   <button id="back" @click="backHome()">&#8249; Home</button>
   <div id="body" v-if="user">
-    <div id="proj_name">
+    <div id="meeting_details">
       <form>
-        <label class ="label" for="name">Meeting Title: </label> <br />
-        <input type="text" id="name" required="" size="30" v-model="name" />
-        <br /> <br/>
-        <label class ="label" for="datetime">Date and Time: </label> <br />
-        <input type="datetime-local" id="datetime" required="" size="30" v-model="datetime" />
-        <br /> <br/>
-        <label class ="label" for="details">Meeting Details: </label> <br />
-        <textarea
-          id="details"
-          name="details"
-          rows="6"
-          cols="40"
-          v-model="details"
-        ></textarea>        
+        <label>Meeting Name:</label><br />
+        <n-input
+          type="text"
+          v-model:value="name"
+          size="large"
+          clearable
+        /><br /><br />
+        <label>Meeting Details:</label><br />
+        <n-input
+          round
+          type="textarea"
+          v-model:value="details"
+          size="large"
+          rows="4"
+          clearable
+        />
+        <br /><br />
+        <label class="label" for="datetime">Date and Time: </label> <br />
+        <n-input
+          type="datetime-local"
+          v-model:value="datetime"
+          size="large"
+          placeholder=""
+          clearable
+        /><br /><br />
       </form>
     </div>
     <div id="add_member">
       <form id="addMemForm">
-        <label class ="label" for="add">Add New Members: </label> <br />
-        <input
+        <label class="label" for="add">Add New Members: </label> <br />
+        <n-input
+          round
           type="text"
           id="add"
-          required=""
           placeholder="Enter Email"
-          size="20"
-          v-model="member"
+          size="large"
+          v-model:value="member"
         />
         <button id="addBut" type="button" @click="addMember()">+</button>
         <br /><br />
-        <label class ="label">Team Members: </label> <br />
+        <label class="label">Team Members: </label> <br />
         <div id="members"></div>
       </form>
     </div>
   </div>
-  <button id="create" round @click="createProj()">Create &raquo;</button>
+  <button id="create" round @click="createMeeting()">Create &raquo;</button>
 </template>
 
 <script>
@@ -54,39 +65,43 @@ import {
   updateDoc,
   arrayUnion,
 } from "firebase/firestore";
-import Sidebar from '@/components/sidebar/Sidebar'
-import { sidebarWidth } from '@/components/sidebar/state'
+import Sidebar from "@/components/sidebar/Sidebar";
+import { sidebarWidth } from "@/components/sidebar/state";
 
 const db = getFirestore(firebaseApp);
 export default {
   name: "AddAMeeting",
-  components:{
-        Sidebar,
-    },
+  components: {
+    Sidebar,
+  },
   data() {
     return {
       user: false,
       name: "",
       details: "",
+      datetime: "",
       member: "",
       memberTotal: new Array(),
-      datetime: "",
     };
   },
+
   setup() {
-        return {sidebarWidth}
-    },
+    return {
+      sidebarWidth,
+    };
+  },
 
   mounted() {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.user = user;
-        console.log(this.user.email);
+        console.log("Current user email: " + this.user.email);
       }
     });
   },
   methods: {
+    
     backHome() {
       this.$router.push("/HomePage");
     },
@@ -98,6 +113,7 @@ export default {
       let elem = document.getElementById(email);
       elem.remove();
     },
+
     async addMember() {
       let z = await getDoc(doc(db, "Users", this.member));
       if (z.exists()) {
@@ -105,6 +121,8 @@ export default {
         console.log(yy);
         this.memberTotal.push(String(yy.Email));
         console.log(this.memberTotal.length);
+
+        // Add a button in list
         var bu = document.createElement("button");
         bu.type = "button";
         bu.className = "memberBut";
@@ -117,7 +135,9 @@ export default {
           const index = array.indexOf(email);
           array.splice(index, 1);
           this.memberTotal = array;
-          console.log(this.memberTotal.length);
+          console.log("New length: " + this.memberTotal.length);
+
+          // Deleting the element in the team member box
           let elem = document.getElementById(email);
           elem.remove();
         };
@@ -129,37 +149,42 @@ export default {
       }
       document.getElementById("addMemForm").reset();
     },
-    async createProj() {
-      var projname = this.name;
-      var projdetails = this.details;
-      var projmembers = this.memberTotal;
-      var projleader = String(this.user.email);
-      alert("Create Project: " + projname);
+
+    // Create a meeting and push to database
+    async createMeeting() {
+      var meetingName = this.name;
+      var meetingDetails = this.details;
+      this.memberTotal.push(this.user.email);
+      var meetingMembers = this.memberTotal;
+      var leader = String(this.user.email);
+      var datetime = this.datetime;
+      alert("Create Meeting: " + meetingName);
       try {
-        const docRef = await addDoc(collection(db, "Projects"), {
-          Name: projname,
-          Details: projdetails,
-          Leader: projleader,
+        const docRef = await addDoc(collection(db, "Meetings"), {
+          Name: meetingName,
+          Details: meetingDetails,
+          Leader: leader,
           StartDate: new Date().toLocaleDateString(),
-          Members: projmembers,
-          Tasks: new Array(),
+          Members: meetingMembers,
+          DateTime: datetime,
           CompletionStatus: "In Progress",
         });
-        console.log(docRef.id);
-        var projid = docRef.id;
-        const leaderRef = doc(db, "Users", projleader);
-        await updateDoc(leaderRef, {
-          LeadingProjects: arrayUnion(projid),
-        });
-        for (let i = 0; i < projmembers.length; i++) {
-          await updateDoc(doc(db, "Users", projmembers[i]), {
-            Projects: arrayUnion(projid),
+        console.log("DocRef id: " + docRef.id);
+        var meetingid = docRef.id;
+
+        // Add this meeting into each member's ongoing Meetings
+        for (let i = 0; i < meetingMembers.length; i++) {
+          if (i == 0) {
+            console.log("Added into Members ongoing meetings list");
+          }
+          await updateDoc(doc(db, "Users", meetingMembers[i]), {
+            OngoingMeetings: arrayUnion(meetingid),
           });
         }
       } catch (error) {
         console.error("Error adding document:", error);
       }
-      this.$router.push("/ProjectPage");
+      // this.$router.push("/ProjectPage");
     },
   },
 };
@@ -167,14 +192,27 @@ export default {
 
 <style scoped>
 .label {
-    font-size: 20px;
+  font-size: 20px;
 }
 
+.example-showcase .el-dropdown + .el-dropdown {
+  margin-left: 15px;
+}
+.example-showcase .el-dropdown-link {
+  cursor: pointer;
+  color: var(--el-color-primary);
+  display: flex;
+  align-items: center;
+}
+
+#add {
+  width: 350px;
+}
 #body {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   /* background-color: grey; */
   border: 1px solid black;
-  padding:12px;
+  padding: 12px;
   position: absolute;
   width: 70%;
   top: 50%;
@@ -198,7 +236,7 @@ export default {
   font-size: 18px;
   display: inline-block;
 }
-#proj_name {
+#meeting_details {
   margin-top: 15px;
   /* background-color: red; */
   height: 100%;
@@ -240,7 +278,7 @@ textarea {
   color: black;
 }
 #members {
-border: 1px solid black;
+  border: 1px solid black;
   height: 150px;
   width: 350px;
 }
