@@ -10,7 +10,8 @@ import '@fortawesome/fontawesome-free/js/all'
 const store = createStore({
     state () {
       return {
-          projectID : "387UsydZXmACIAU9WQMk"
+          projectID : "387UsydZXmACIAU9WQMk",
+          data : []
       }
     },
     mutations: {

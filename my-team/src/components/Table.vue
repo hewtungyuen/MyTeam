@@ -9,7 +9,7 @@
     <n-data-table
       ref="table"
       :columns="columns"
-      :data="data"
+      :data="this.$store.state.data"
       :pagination="pagination"
     />
   </n-space>
@@ -18,9 +18,8 @@
 <script>
 import { h, defineComponent, ref } from 'vue'
 import { NButton,NProgress } from 'naive-ui'
-
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from '../firebase.js';
-import {getAuth, onAuthStateChanged} from "firebase/auth";
 import {getFirestore} from "firebase/firestore";
 import {collection, getDocs} from "firebase/firestore";
 const db = getFirestore(firebaseApp);
@@ -94,62 +93,64 @@ const createColumns = ({ updateProgress }) => [
 ]
 
 
-const createData = [
-  {
-    key: 0,
-    sn: 1,
-    TaskName: "Accounting report",
-    InCharge: "Tung Yuen",
-    DeadLine: "15/3/2022"
-  },
-  {
-    key: 0,
-    sn: 2,
-    TaskName: "Finance report",
-    InCharge: "Yi Chen",
-    DeadLine: "16/3/2022"
-  },
-  {
-    key: 0,
-    sn: 3,
-    TaskName: "Marketing report",
-    InCharge: "Marvin",
-    DeadLine: "17/3/2022"
-  }
-]
+// const createData = [
+//   {
+//     key: 0,
+//     sn: 1,
+//     TaskName: "Accounting report",
+//     InCharge: "Tung Yuen",
+//     DeadLine: "15/3/2022"
+//   },
+//   {
+//     key: 0,
+//     sn: 2,
+//     TaskName: "Finance report",
+//     InCharge: "Yi Chen",
+//     DeadLine: "16/3/2022"
+//   }
+// ]
 
 
 export default defineComponent({
-  mounted(){
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-        if(user) {
+    data() {
+      return {
+        user: false,
+        output: []
+      }
+    },
+    mounted() {
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+          if(user) {
             this.user = user;
-        }
-    });
+          }
+      });
 
-    let taskDetails = getDocs(collection(db, "Tasks"));
-    console.log(taskDetails);
+      let taskDetails = getDocs(collection(db, "Tasks"));
+      console.log("Tasks" + taskDetails);
+      const z = [];
 
-    taskDetails.then((QuerySnapshot) => {
-      QuerySnapshot.forEach((doc) => {
-        let yy = doc.data();
-        if (yy.ProjectID == this.$store.state.projectID) {
-          createData.push(yy);
-          console.log(createData);
-        }
-      })
-    })
-  },
+      taskDetails.then((QuerySnapshot) => {
+
+        QuerySnapshot.forEach((doc) => {
+          let yy = doc.data();
+          if (yy.ProjectID == this.$store.state.projectID) {
+            z.push(yy);
+            console.log(yy);
+          }
+        })
+      });
+
+      console.log(z);
+      this.$store.state.data = ref(z);
+    },
   setup () {
     const tableRef = ref(null);
     const percentageRef = ref(0);
-    console.log("hi");
 
     return {
       percentage: percentageRef,
       table: tableRef,
-      data: createData,
       columns: createColumns({
         updateProgress() {
           percentageRef.value += 10;
