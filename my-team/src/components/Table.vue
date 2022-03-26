@@ -18,12 +18,14 @@
 <script>
 import { h, defineComponent, ref } from 'vue'
 import { NButton,NProgress } from 'naive-ui'
-// import firebaseApp from '../firebase.js';
-// import {getAuth, onAuthStateChanged} from "firebase/auth";
-// import {getFirestore} from "firebase/firestore";
-// import {collection, getDocs} from "firebase/firestore";
 
-// const db = getFirestore(firebaseApp);
+
+import firebaseApp from '../firebase.js';
+import {getAuth, onAuthStateChanged} from "firebase/auth";
+import {getFirestore} from "firebase/firestore";
+import {collection, getDocs} from "firebase/firestore";
+const db = getFirestore(firebaseApp);
+
 const createColumns = ({ updateProgress }) => [
   {
     title: 'S/N',
@@ -33,13 +35,13 @@ const createColumns = ({ updateProgress }) => [
   },
   {
     title: 'Task Name',
-    key: 'taskname',
+    key: 'TaskName',
     defaultSortOrder: 'ascend',
     sorter: 'default'
   },
   {
     title: 'In Charge',
-    key: 'incharge',
+    key: 'InCharge',
     defaultSortOrder: 'ascend',
     sorter: 'default',
     defaultFilterOptionValues: ['Yi Chen', 'Tung Yuen', 'Marvin'],
@@ -63,18 +65,18 @@ const createColumns = ({ updateProgress }) => [
   },
   {
     title: 'Deadline',
-    key: 'deadline',
+    key: 'DeadLine',
     defaultSortOrder: 'ascend',
     sorter: 'default'
   },
   {
     title: 'Progress Status',
-    key: 'progressstatus',
+    key: 'ProgressStatus',
     render () {
       return h(
         NProgress,
         {
-          percentage: "50",
+          percentage: "10",
 
         }
       )
@@ -96,69 +98,65 @@ const createColumns = ({ updateProgress }) => [
   }
 ]
 
+const createData = []
 
-const createData = () => [
-  {
-    key: 0,
-    sn: 1,
-    taskname: "Accounting report",
-    incharge: "Tung Yuen",
-    deadline: "15/3/2022"
-  },
-  {
-    key: 0,
-    sn: 2,
-    taskname: "Finance report",
-    incharge: "Yi Chen",
-    deadline: "16/3/2022"
-  },
-  {
-    key: 0,
-    sn: 3,
-    taskname: "Marketing report",
-    incharge: "Marvin",
-    deadline: "17/3/2022"
-  }
-]
 export default defineComponent({
-  setup () {
-    const tableRef = ref(null);
-    const percentageRef = ref(0);
+    mounted() {
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+          if(user) {
+            this.user = user;
+          }
+      });
 
-    return {
-      percentage: percentageRef,
-      table: tableRef,
-      data: createData(),
-      columns: createColumns({
-        updateProgress() {
-          percentageRef.value += 10;
-          if (percentageRef.value > 100) {
-            percentageRef.value = 100;
-          } 
-        }
-      }),
-      pagination: { pageSize: 5 },
-      filterAddress () {
-        tableRef.value.filter({ 
-          incharge: ['Yi Chen']
+      let taskDetails = getDocs(collection(db, "Tasks"));
+      console.log("Tasks" + taskDetails);
+
+      taskDetails.then((QuerySnapshot) => {
+
+        QuerySnapshot.forEach((doc) => {
+          let yy = doc.data();
+          if (yy.ProjectID == this.$store.state.projectID) {
+            createData.push(yy);
+            //console.log(this.dataStore);
+          }
         })
-      },
-      sortName () {
-        tableRef.value.sort('name', 'ascend')
-      },
-      clearFilters () {
-        tableRef.value.filter(null)
-      },
-      clearSorter () {
-        tableRef.value.sort(null)
-      },
-      // updateProgress () {
-      //   percentageRef.value += 10;
-      //   if (percentageRef.value > 100) {
-      //     percentageRef.value = 0;
-      //   }
-      // },
+      });
+      console.log(createData);
+      console.log("hi 2");
+    },
+    setup() {
+      const tableRef = ref(null);
+      const percentageRef = ref(0);
+
+      return {
+        percentage: percentageRef,
+        table: tableRef,
+        data: createData,
+        columns: createColumns({
+          updateProgress() {
+            percentageRef.value += 10;
+            if (percentageRef.value > 100) {
+              percentageRef.value = 100;
+            } 
+          }
+        }),
+        pagination: { pageSize: 5 },
+        filterAddress () {
+          tableRef.value.filter({ 
+            incharge: ['Yi Chen']
+          })
+        },
+        sortName () {
+          tableRef.value.sort('name', 'ascend')
+        },
+        clearFilters () {
+          tableRef.value.filter(null)
+        },
+        clearSorter () {
+          tableRef.value.sort(null)
+        },
+      }
     }
-  },
 })
 </script>
