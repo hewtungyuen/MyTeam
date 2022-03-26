@@ -17,6 +17,9 @@ const store = createStore({
     mutations: {
       update(state, ID) {
         state.projectID = ID;
+      },
+      updateData(state, z) {
+        state.data = z;
       }
     }
 })
