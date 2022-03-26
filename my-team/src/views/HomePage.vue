@@ -1,7 +1,7 @@
 <template>
 <div>
 <Sidebar/>
-<h1 id = 'welcome'> Not logged in </h1>
+<h1 id = 'welcome'> Welcome, {{name}} </h1>
 <n-grid :cols = '2'>
 
     <!-- 1st column -->
@@ -25,11 +25,12 @@
 
         <div >
             <n-divider />
-            <n-collapse v-for = 'project in projects' :key = 'project.projectName'>
-                <n-collapse-item :title = "project.projectName">
+            <n-collapse v-for = 'index in 2' :key = 'index'>
+                <n-collapse-item :title = "projectNames[index-1]">
                     <ProjectsTable/>
                     <template #header-extra>
-                        Deadline: {{project.projectDeadline}}
+                        <button @click = 'goToProjectsPage(this.projectIds[index-1])'>Go to project</button>
+                        <!-- Deadline: {{projectDeadlines[index-1]}} -->
                     </template>
                 </n-collapse-item>
                 <n-divider />
@@ -79,7 +80,7 @@ import Sidebar from '@/components/sidebar/Sidebar'
 import { sidebarWidth } from '@/components/sidebar/state'
 import { getAuth, onAuthStateChanged } from "firebase/auth"
 import firebaseApp from '../firebase.js'
-import { collection, getDocs, getFirestore } from 'firebase/firestore'
+import { collection, getDocs, getFirestore} from 'firebase/firestore'
 var db = getFirestore(firebaseApp)
 
 export default {
@@ -87,12 +88,14 @@ export default {
         return {
             name: '',
             user: false,
-            projects: [
-                {projectName: 'Project 1', projectDeadline: '2022/04/01'},
-                {projectName: 'Project 2', projectDeadline: '2022/04/02'},
-                {projectName: 'Project 3', projectDeadline: '2022/04/03'},
-            ],
-            // projects: [],
+            // projects: [
+            //     {projectName: 'Project 1', projectDeadline: '2022/04/01'},
+            //     {projectName: 'Project 2', projectDeadline: '2022/04/02'},
+            //     {projectName: 'Project 3', projectDeadline: '2022/04/03'},
+            // ],
+            projectIds: null,
+            projectNames: [],
+            projectDeadlines: [],
             tasks: [
                 {title: 'Task 1', deadline: '2022/02/04'},
                 {title: 'Task 2', deadline: '2022/03/04'},
@@ -112,21 +115,46 @@ export default {
         }
     },
     mounted() {
+    
         const auth = getAuth();
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 this.user = user;
             }
-            
         })
 
 
         let allUsers = getDocs(collection(db, 'Users'))
-        console.log(allUsers)
+        let allProjects = getDocs(collection(db,'Projects'))
+        // console.log(allUsers)
+        
 
-        allUsers.then((x) => {
-            console.log(x)
+        allUsers.then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+
+                let docData = doc.data()
+
+                if (docData.Email == 'marvin.leow999@gmail.com') {
+                    this.projectIds = docData.Projects
+                    this.name = docData.FullName
+
+                    this.projectIds.forEach((x) => {
+                        allProjects.then((q) => {
+                            q.forEach((d) => {
+                                if (x == d.id) {
+                                    var projectData = d.data()
+                                    this.projectNames.push(projectData.Name)
+                                    // console.log(projectData.Name)
+                                    this.projectDeadlines.push(projectData.StartDate)
+                                }
+                            })
+                        })
+                    })
+                }
+            })
         })
+
+
         // allUsers.forEach((docs) => {
         //     let data = docs.data()
 
@@ -138,7 +166,6 @@ export default {
 
 
     },
-
     name: 'HomePage',
     components:{
         DeadlinesAndMeetings,
@@ -150,10 +177,15 @@ export default {
             alert('Add a new project');
             this.$router.push('/NewProjPage');
         },
-        update() {
-            this.$store.commit('update', "387UsydZXmACIAU9WQMk");
-            console.log(this.$store.state.projectID);
-            console.log(this.$store.state.name);
+        // update() {
+        //     this.$store.commit('update', "387UsydZXmACIAU9WQMk");
+        //     // console.log(this.$store.state.projectID);
+        //     // console.log(this.$store.state.name);
+        // },
+        goToProjectsPage(projectIds) {
+            this.$store.commit('update', projectIds);
+            console.log(projectIds)
+            this.$router.push('/ProjectPage')
         }
     },
     setup() {

@@ -1,9 +1,10 @@
 <template>
   <div class="sidebar" :style="{ width: sidebarWidth }">
     <img id = "logo" src="@/assets/logo.png">
-      <SidebarLink to ="/" icon = "fas fa-home">Login Page</SidebarLink>
-      <SidebarLink to = '/HomePage' icon = "fa-solid fa-house">Home Page</SidebarLink>
-      <SidebarLink to = "/ProjectPage" icon = "fas fa-chart-bar">Project Page</SidebarLink>
+    
+      <SidebarLink to = '/HomePage' icon = "fa-solid fa-house" >Home</SidebarLink>
+      <SidebarLink to = "/ProfilePage" icon = "fa-solid fa-address-card" >Profile</SidebarLink>
+      <SidebarLink to = "/ColleaguesPage" icon = "fa-solid fa-magnifying-glass" >Colleagues</SidebarLink>
       
 
       <span class="collapse-icon" 
@@ -12,18 +13,18 @@
           <i class = "fas fa-angle-double-left" />
       </span>
 
-      <SidebarLink id = "logout" to = "/" icon = "fa-solid fa-arrow-right-from-bracket">Logout</SidebarLink>
+      <SidebarLink id = "logout" to = "/" icon = "fa-solid fa-arrow-right-from-bracket" >Logout</SidebarLink>
   </div>
 </template>
 
 <script>
 import SidebarLink from './SidebarLink.vue'
-import { collapsed, toggleSidebar, sidebarWidth } from './state'
+import { collapsed, toggleSidebar, sidebarWidth} from './state'
 export default {
     props: {},
     components: {SidebarLink},
     setup() {
-        return { collapsed, toggleSidebar, sidebarWidth }
+        return { collapsed, toggleSidebar, sidebarWidth}
     }
 }
 </script>
@@ -65,12 +66,12 @@ export default {
 
     color: raba(255,255,255,0.7);
 
-    transition: 0.2s linear;
+    transition: 0.2s ease-out;
 }
 
 .rotate-180 {
     transform: rotate(180deg);
-    transition: 0.2s linear;
+    transition: 0.2s ease-out;
 }
 
 #logo {
