@@ -1,11 +1,13 @@
 <template>
   <Sidebar/>
   <ProfileInfo/>
+  <ProfileProjectTable/>
 </template>
 
 <script>
 import Sidebar from '@/components/sidebar/Sidebar.vue'
 import ProfileInfo from '@/components/ProfileInfo.vue'
+import ProfileProjectTable from '@/components/ProfileProjectTable.vue'
 import { sidebarWidth } from '@/components/sidebar/state'
 export default {
   name: 'ProfilePage',
@@ -13,6 +15,7 @@ export default {
   components: { 
     Sidebar,
     ProfileInfo,
+    ProfileProjectTable
   },
 
  
