@@ -35,14 +35,17 @@
     <div id="add_member">
       <form id="addMemForm">
         <label class="label" for="add">Add New Members: </label> <br />
-        <n-input
-          round
-          type="text"
-          id="add"
-          placeholder="Enter Email"
-          size="large"
-          v-model:value="member"
-        />
+        <div class="dropdown">
+          <button class="dropbtn">Add your members</button>
+          <div class="dropdown-content">
+            <a
+              @click="addMember2(email)"
+              v-for="email in membersInProject"
+              :key="email.id"
+              >{{ email }}
+            </a>
+          </div>
+        </div>
         <button id="addBut" type="button" @click="addMember()">+</button>
         <br /><br />
         <label class="label">Team Members: </label> <br />
@@ -82,6 +85,7 @@ export default {
       datetime: "",
       member: "",
       memberTotal: new Array(),
+      membersInProject: ["No Member in this project"],
     };
   },
 
@@ -99,11 +103,23 @@ export default {
         console.log("Current user email: " + this.user.email);
       }
     });
+    const docRef = doc(db, "Projects", "387UsydZXmACIAU9WQMk");
+    const docSnap = getDoc(docRef);
+    docSnap.then ((item) => {
+      // console.log(item.data().Members);
+      this.membersInProject = item.data().Members;
+    })
   },
   methods: {
-    
+    typeOf(obj) {
+  return {}.toString.call(obj).split(' ')[1].slice(0, -1).toLowerCase();
+},
     backHome() {
       this.$router.push("/HomePage");
+    },
+    addMember2(email) {
+      this.member = email;
+      this.addMember();
     },
     deleteMember(array, email) {
       confirm("Going to delete this member!");
@@ -191,18 +207,53 @@ export default {
 </script>
 
 <style scoped>
-.label {
-  font-size: 20px;
+/* Style The Dropdown Button */
+.dropbtn {
+  background-color: #4caf50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
 }
 
-.example-showcase .el-dropdown + .el-dropdown {
-  margin-left: 15px;
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
 }
-.example-showcase .el-dropdown-link {
-  cursor: pointer;
-  color: var(--el-color-primary);
-  display: flex;
-  align-items: center;
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
 }
 
 #add {
