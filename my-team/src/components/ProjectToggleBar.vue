@@ -1,25 +1,26 @@
 <template>
   <n-tabs type="segment">
     <n-tab-pane name="inprogress" tab="In Progress">
-      <Table/>
+      <InProgressTable/>
     </n-tab-pane>
     <n-tab-pane name="completed" tab="Completed">
-      <Table/>
+      <CompletedTable/>
     </n-tab-pane>
     <n-tab-pane name="Meetings" tab="Meetings">
-      <Table/>
     </n-tab-pane>
   </n-tabs>
 </template>
 
 <script>
-import Table from '@/components/Table.vue';
+import InProgressTable from '@/components/InProgressTable.vue';
+import CompletedTable from '@/components/CompletedTable.vue';
 
 export default {
   name: 'ProjectToggleBar',
 
   components: { 
-    Table
+    InProgressTable,
+    CompletedTable
   }
 }
 </script>
