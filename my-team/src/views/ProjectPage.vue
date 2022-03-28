@@ -2,6 +2,7 @@
   <Sidebar/>
   <ProjectLabel/>
   <AddTask/>
+  <AddAMeeting />
   <ProjectToggleBar/>
 </template>
 
@@ -10,6 +11,7 @@ import ProjectLabel from '@/components/ProjectLabel.vue';
 import ProjectToggleBar from '@/components/ProjectToggleBar.vue'
 import Sidebar from '@/components/sidebar/Sidebar'
 import AddTask from '@/components/AddTask.vue'
+import AddAMeeting from '@/components/AddAMeeting.vue'
 import { sidebarWidth } from '@/components/sidebar/state'
 
 export default {
@@ -19,7 +21,8 @@ export default {
     ProjectLabel,
     ProjectToggleBar,
     Sidebar,
-    AddTask
+    AddTask,
+    AddAMeeting
   },
 
   setup() {

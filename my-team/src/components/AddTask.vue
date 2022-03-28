@@ -121,7 +121,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 #addTaskBut{
   margin-top:10px;
   float:right;
