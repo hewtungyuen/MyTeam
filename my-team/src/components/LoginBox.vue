@@ -45,8 +45,8 @@ export default {
   name: "LoginBox",
   data() {
     return {
-      email: "",
-      password: "",
+      email: "marvin.leow999@gmail.com",
+      password: "123456",
     };
   },
   methods: {
