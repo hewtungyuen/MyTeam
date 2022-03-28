@@ -80,7 +80,7 @@ export default {
         document.getElementById("errormessage1").innerHTML = "- Password must be at least 6 letters!";
         pass = false;
       }
-      if (this.mobileNo.length < 8 || this.mobileNo[0] != 9 || this.mobileNo[0] != 8) {
+      if (this.mobileNo.length < 8 || (this.mobileNo[0] != 9 && this.mobileNo[0] != 8)) {
         document.getElementById("errormessage2").innerHTML = "- Mobile Number must be 8 digits and starts with 8/9";
         pass = false;
       }

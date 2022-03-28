@@ -1,4 +1,5 @@
 <template>
+
   <n-space vertical :size="12">
     <br>
     <!-- <n-space>
@@ -8,7 +9,7 @@
     <n-data-table
       ref="table"
       :columns="columns"
-      :data="data"
+      :data="tasksToDisplay"
       :pagination="pagination"
       :row-class-name="rowClassName"
     />
@@ -20,77 +21,38 @@ import { defineComponent, ref } from 'vue'
 // import DeadlinesAndMeetings from '@/components/DeadlinesAndMeetings.vue'
 const columns = [
   {
-    type: 'expand',
-    expandable: () => true,
-    renderExpand: () => {
-      return 'string'
-    }
-  },
-  {
-    title: 'Project',
-    key: 'project',
-    defaultSortOrder: 'ascend',
-    sorter: 'default',
-    filterOptions: [
-      {
-        label: 'Project 1',
-        value: 'Project 1'
-      },
-      {
-        label: 'Project 2',
-        value: 'Project 2'
-      }
-    ],
-    filter (value, row) {
-      return ~row.project.indexOf(value)
-    }
-  },
-  {
     title: 'Task Name',
-    key: 'taskname',
+    key: 'TaskName',
     defaultSortOrder: 'ascend',
     sorter: 'default'
   },
   {
     title: 'Progress Status',
-    key: 'progressstatus',
+    key: 'ProgressStatus',
     defaultSortOrder: 'ascend',
     sorter: 'default'
   },
   {
     title: 'Deadline',
-    key: 'deadline',
+    key: 'DeadLine',
     defaultSortOrder: 'ascend',
     sorter: 'default'
   },
 
 ]
 
-const data = [
-  {
-    project: 'Project 1',
-    taskname: "Accounting report",
-    progressstatus: "50%",
-    deadline: new Date('2022','2','20').toDateString()
-  },
-  {
-    project: 'Project 2',
-    taskname: "Finance report",
-    progressstatus: "70%",
-    deadline: new Date('2022','4','22').toDateString()
-  },
-  {
-    project: 'Project 3',
-    taskname: "Marketing report",
-    progressstatus: "80%",
-    deadline: new Date('2022','4','22').toDateString()
-  },
-]
+// const data = this.tasksToDisplay
 
 export default defineComponent({
+  props:{
+    tasksToDisplay:Object,
+  },
+  mounted(){
+    console.log(this.tasksToDisplay)
+    console.log('mounted')
+  },
   setup () {
     const tableRef = ref(null)
-
     return {
       // rowProps:() => {
       //   return{
@@ -112,7 +74,7 @@ export default defineComponent({
       //   tableRef.value.sort(null)
       // }
       table: tableRef,
-      data,
+      // data,
       columns,
       pagination: { pageSize: 3 },
       rowClassName(row){

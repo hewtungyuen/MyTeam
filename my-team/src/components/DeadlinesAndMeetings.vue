@@ -2,7 +2,7 @@
 <div>
   <n-card embedded :bordered="false">
     <h3 v-if = "type == 'Meeting'" @click = 'goToMeetings()'>{{title}}</h3>
-    <h3 v-if = "type == 'Task'" @click = 'goToProjects()'>{{title}}</h3>
+    <h3 v-if = "type == 'Deadline'" @click = 'goToProjects()'>{{title}}</h3>
     {{deadline}} 
   </n-card>
 </div>
@@ -12,7 +12,6 @@
 <script>
 // need to calculate how many days left to the meeting 
 export default {
-
     methods:{
         goToProjects(){
             alert('go to project page')
