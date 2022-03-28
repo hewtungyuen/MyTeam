@@ -125,15 +125,18 @@ export default defineComponent({
             this.user = user;
           }
       });
+      console.log("Table");
 
       let taskDetails = getDocs(collection(db, "Tasks"));
       this.$store.commit('refreshData');
 
       taskDetails.then((QuerySnapshot) => {
+        console.log("Entered task details");
         const z = [];
         QuerySnapshot.forEach((doc) => {
           let yy = doc.data();
           if (yy.ProjectID == this.$store.state.projectID) {
+            console.log("Table entered");
             z.push(yy);
             this.$store.commit('updateData', z);
             console.log(this.$store.state.data);

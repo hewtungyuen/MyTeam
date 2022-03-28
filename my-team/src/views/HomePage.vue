@@ -30,6 +30,7 @@
                 <n-collapse-item :title = "projectNames[index-1]">
                     <ProjectsTable :tasksToDisplay = "this.tasks[index-1]" />
                     <template #header-extra>
+                        <router-link to="/ProjectPage/HbqOJOXYeJZWnuhbY1XK">Go to Home</router-link>
                         <button @click = 'goToProjectsPage(this.projectIds[index-1])'>Go to project</button>
                         <!-- Deadline: {{projectDeadlines[index-1]}} -->
                     </template>
@@ -237,10 +238,10 @@ export default {
         //     // console.log(this.$store.state.projectID);
         //     // console.log(this.$store.state.name);
         // },
-        goToProjectsPage(projectIds) {
-            this.$store.commit('update', projectIds);
+        goToProjectsPage(projectId) {
+            this.$store.commit('update', projectId);
             // console.log(projectIds)
-            this.$router.push('/ProjectPage')
+            this.$router.push('/ProjectPage/' + projectId);
         },
 
     },

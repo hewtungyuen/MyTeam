@@ -24,7 +24,7 @@ export default {
         return {
             user:false,
             title:"",
-            teamleader:"hi",
+            teamleader:"",
             date:"",
             details:"",
             memberTotal: ""
@@ -38,14 +38,18 @@ export default {
             }
         });
     
+    
         let projectDetails = getDocs(collection(db, "Projects"));
         console.log(projectDetails);
 
         projectDetails.then((QuerySnapshot) => {
           QuerySnapshot.forEach((doc) => {
-            if (doc.id == this.$store.state.projectID) {
+            if (doc.id == this.$route.params.id) {
+              console.log("Found the project in database")
               let yy = doc.data();
+              
               this.teamleader = yy.Leader;
+              console.log(this.teamleader);
               this.details = yy.Details;
               this.date = yy.StartDate;
               this.title = yy.Name;
