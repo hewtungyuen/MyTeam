@@ -121,11 +121,13 @@ export default defineComponent({
             this.user = user;
           }
       });
+      console.log("Table");
 
       let taskDetails = getDocs(collection(db, "Tasks"));
       this.$store.commit('refreshData');
 
       taskDetails.then((QuerySnapshot) => {
+        console.log("Entered task details");
         const z = [];
         QuerySnapshot.forEach((doc) => {
           let yy = doc.data();

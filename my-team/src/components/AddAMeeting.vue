@@ -15,7 +15,7 @@
           type="text"
           v-model:value="name"
           size="large"
-          required =""
+          required=""
           clearable
         /><br /><br />
         <label>Meeting Description:</label><br />
@@ -25,7 +25,7 @@
           v-model:value="details"
           size="large"
           rows="4"
-          required =""
+          required=""
           clearable
         />
         <br /><br />
@@ -35,7 +35,7 @@
           v-model:value="datetime"
           size="large"
           placeholder=""
-          required =""
+          required=""
           clearable
         />
         <br /><br />
@@ -51,8 +51,11 @@
               >{{ email }}
             </a>
           </div>
-        </div> <br/>
-        <label class="label" for="add">Total Number of Members: {{memberInMeeting.length}} </label>
+        </div>
+        <br />
+        <label class="label" for="add"
+          >Total Number of Members: {{ memberInMeeting.length }}
+        </label>
 
         <br />
         <div id="members"></div>
@@ -69,57 +72,6 @@
       </n-button>
     </n-card>
   </n-modal>
-  <!-- <div id="body" v-if="user">
-    <div id="meeting_details">
-      <form>
-        <label>Meeting Name:</label><br />
-        <n-input
-          type="text"
-          v-model:value="name"
-          size="large"
-          clearable
-        /><br /><br />
-        <label>Meeting Details:</label><br />
-        <n-input
-          round
-          type="textarea"
-          v-model:value="details"
-          size="large"
-          rows="4"
-          clearable
-        />
-        <br /><br />
-        <label class="label" for="datetime">Date and Time: </label> <br />
-        <n-input
-          type="datetime-local"
-          v-model:value="datetime"
-          size="large"
-          placeholder=""
-          clearable
-        /><br /><br />
-      </form>
-    </div>
-    <div id="add_member">
-      <form id="addMemForm">
-        <label class="label" for="add">Add New Members: </label> <br />
-        <div class="dropdown">
-          <button class="dropbtn">Add your members</button>
-          <div class="dropdown-content">
-            <a
-              @click="addMember2(email)"
-              v-for="email in membersInProject"
-              :key="email.id"
-              >{{ email }}
-            </a>
-          </div>
-        </div>
-        <button id="addBut" type="button" @click="addMember()">+</button>
-        <br /><br />
-        <label class="label">Team Members: </label> <br />
-        <div id="members"></div>
-      </form>
-    </div>
-  </div> -->
 </template>
 
 <script>
@@ -156,6 +108,13 @@ export default defineComponent({
       showModal: ref(false),
     };
   },
+  watch: {
+    showModal: function (newVal) {
+      if (newVal == false) {
+        this.resetData();
+      }
+    },
+  },
 
   mounted() {
     // Get User information
@@ -167,6 +126,7 @@ export default defineComponent({
       }
     });
     console.log("Project Id: " + this.projId);
+
     // Get all the project members and put into membersInProject
     const docRef = doc(db, "Projects", this.projId);
     const docSnap = getDoc(docRef);
@@ -182,16 +142,23 @@ export default defineComponent({
     });
   },
   methods: {
+    resetData() {
+      this.name = "";
+      this.details = "";
+      this.datetime = "";
+      this.memberInMeeting = new Array();
+    },
+
     show() {
       this.showModal = true;
       this.addMember(this.user.email);
       // document.getElementById("addMemberForm").reset();
     },
+    unshow() {
+      this.showModal = false;
+    },
     typeOf(obj) {
       return {}.toString.call(obj).split(" ")[1].slice(0, -1).toLowerCase();
-    },
-    backHome() {
-      this.$router.push("/HomePage");
     },
     deleteMember(array, email) {
       confirm("Going to delete this member!");
@@ -209,36 +176,35 @@ export default defineComponent({
         if (this.memberInMeeting.includes(member)) {
           alert("Member is already in the meeting");
         } else {
+          this.memberInMeeting.push(String(yy.Email));
+          console.log("Member added: " + member);
 
-        this.memberInMeeting.push(String(yy.Email));
-        console.log("Member added: " + member);
+          // Add a button in list
+          var bu = document.createElement("button");
+          bu.type = "button";
+          bu.className = "memberBut";
+          bu.id = String(yy.Email);
+          if (member === this.user.email) {
+            bu.innerHTML = yy.FullName + " (Myself)";
+          } else {
+            bu.innerHTML = yy.FullName + "&#x2715";
+            let email = String(yy.Email);
+            let array = this.memberInMeeting;
+            bu.onclick = function () {
+              confirm("Going to delete this member!");
+              const index = array.indexOf(email);
+              array.splice(index, 1);
+              this.memberInMeeting = array;
+              console.log("New length: " + this.memberInMeeting.length);
 
-        // Add a button in list
-        var bu = document.createElement("button");
-        bu.type = "button";
-        bu.className = "memberBut";
-        bu.id = String(yy.Email);
-        if (member === this.user.email) {
-          bu.innerHTML = yy.FullName + " (Myself)";
-        } else {
-          bu.innerHTML = yy.FullName + "&#x2715";
-          let email = String(yy.Email);
-          let array = this.memberInMeeting;
-          bu.onclick = function () {
-            confirm("Going to delete this member!");
-            const index = array.indexOf(email);
-            array.splice(index, 1);
-            this.memberInMeeting = array;
-            console.log("New length: " + this.memberInMeeting.length);
+              // Deleting the element in the team member box
+              let elem = document.getElementById(email);
+              elem.remove();
+            };
+          }
 
-            // Deleting the element in the team member box
-            let elem = document.getElementById(email);
-            elem.remove();
-          };
-        }
-
-        let memberTable = document.getElementById("members");
-        memberTable.appendChild(bu);
+          let memberTable = document.getElementById("members");
+          memberTable.appendChild(bu);
         }
       } else {
         alert("User does not exist!");
@@ -274,18 +240,14 @@ export default defineComponent({
             OngoingMeetings: arrayUnion(meetingid),
           });
         }
-
         // Reset the data to preset
-        this.name = "";
-        this.details = "";
-        this.datetime = "";
-        this.memberInMeeting = new Array();
+        this.resetData();
 
       } catch (error) {
         console.error("Error adding document:", error);
       }
 
-      this.$router.push("/ProjectPage");
+      this.unshow();
     },
   },
 });
@@ -359,12 +321,6 @@ export default defineComponent({
   background-color: green;
 }
 
-#back {
-  position: absolute;
-  top: 50px;
-  font-size: 18px;
-  display: inline-block;
-}
 #meeting_details {
   margin-top: 15px;
   /* background-color: red; */

@@ -38,13 +38,15 @@ export default {
             }
         });
     
+    
         let projectDetails = getDocs(collection(db, "Projects"));
         //let userDetails = getDocs(collection(db, "Users"));
         console.log(projectDetails);
 
         projectDetails.then((QuerySnapshot) => {
           QuerySnapshot.forEach((doc) => {
-            if (doc.id == this.$store.state.projectID) {
+            if (doc.id == this.$route.params.id) {
+              console.log("Found the project in database")
               let yy = doc.data();
 
               //get name of each
