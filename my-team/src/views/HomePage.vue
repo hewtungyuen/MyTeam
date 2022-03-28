@@ -1,8 +1,8 @@
 <template>
 <div>
-    <!-- {{tasks}} -->
 <Sidebar/>
 <h1 id = 'welcome'> Welcome, {{name}} </h1>
+<!-- {{this.tasks}} -->
 <n-grid :cols = '2'>
 
     <!-- 1st column -->
@@ -26,11 +26,17 @@
 
         <div >
             <n-divider />
-            <n-collapse v-for = 'index in 2' :key = 'index'>
+
+            <div v-if = "this.projectIds.length === 0">
+                <h2>You have no projects at the moment.</h2>
+            </div>
+            <n-collapse v-else v-for = 'index in this.projectIds.length - 1' :key = 'index'>
+
                 <n-collapse-item :title = "projectNames[index-1]">
+                    {{this.tasks}}
                     <ProjectsTable :tasksToDisplay = "this.tasks[index-1]" />
                     <template #header-extra>
-                        <button @click = 'goToProjectsPage(this.projectIds[index-1])'>Go to project</button>
+                        <button @click = 'goToProjectsPage(this.projectIds[index])'>Go to project</button>
                         <!-- Deadline: {{projectDeadlines[index-1]}} -->
                     </template>
                 </n-collapse-item>
@@ -46,11 +52,10 @@
         <div >
             <div>
                 <h2 class = 'container' >Deadlines</h2>
-                <n-layout class = 'meetingsAndDeadlines'>
+                <n-layout class = 'meetingsAndDeadlines' >
                     <div v-for= 'task in this.tasks' :key = 'task'>
-                        <n-layout-sider :native-scrollbar="false" bordered v-for = 'subTask in task' :key = 'subTask.TaskName'> 
+                        <n-layout-sider :native-scrollbar="true" bordered v-for = 'subTask in task' :key = 'subTask'> 
                             <!-- <div v-for = 'subTask in task' :key = 'subTask.TaskName'> -->
-                            
                             <DeadlinesAndMeetings :title = "subTask.TaskName" :deadline = "subTask.DeadLine" type = "Deadline"/>
                             <!-- </div> -->
                         </n-layout-sider>
@@ -88,25 +93,9 @@ import { collection, getDocs, getFirestore} from 'firebase/firestore'
 var db = getFirestore(firebaseApp)
 
 export default {
-    data(){
-        return {
-            name: '',
-            user: false,
-            projectIds: [],
-            projectNames: [],
-            projectDeadlines: [],
-            tasks: false,
-            meetings: [
-                {title: 'Meeting 1', deadline: '2022/02/04'},
-                {title: 'Meeting 2', deadline: '2022/03/04'},
-                {title: 'Meeting 3', deadline: '2022/04/04'},
-                {title: 'Meeting 4', deadline: '2022/04/04'},
-                {title: 'Meeting 5', deadline: '2022/04/04'},
-            ],
-        }
-    },
+
     mounted() {
-    
+        console.log('mounted')
         const auth = getAuth();
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -117,19 +106,19 @@ export default {
         var allUsers = getDocs(collection(db, 'Users'))
         var allProjects = getDocs(collection(db,'Projects'))
         var allTasks = getDocs(collection(db,'Tasks'))
-        
+
         allUsers.then((querySnapshot) => {
             var myProjects = []
-            var myTasks = []
+            
             querySnapshot.forEach((doc) => {
                 var docData = doc.data()
-
-                if (docData.Email == 'marvin.leow999@gmail.com') {
+                if (docData.Email == this.user.email) {
                     this.name = docData.FullName
-                    myProjects.push(docData.Projects)
+                    myProjects = myProjects.concat(docData.Projects)
+                    myProjects = myProjects.concat(docData.LeadingProjects)
                 }
             })
-            this.projectIds = myProjects[0]
+            this.projectIds = myProjects
 
             this.projectIds.forEach((projId) => {
                 
@@ -145,24 +134,24 @@ export default {
                                 allTasks.then((querySnapshot) => {
                                     querySnapshot.forEach((doc) => {
                                         if (doc.id == taskId) {
-                                            intermediate.push(doc.data())
-                                            // console.log(taskData)
+                                            if (doc.data().InCharge == this.user.email) {
+                                                intermediate.push(doc.data())
+                                            }
                                         }
                                     })
                                 })
-                                // console.log(taskId)
                             })
-                            myTasks.push(intermediate)
-                            // console.log(intermediate)
+                            this.tasks.push(intermediate)
                         }
                     })
 
                 })
             })
-            // console.log(myTasks)
-            this.tasks = myTasks
+            // var myTasks = []
+            // this.tasks = myTasks
+            // console.log(this.tasks)
         })
-
+        
 
 
         // allUsers.then((querySnapshot) => {
@@ -221,6 +210,23 @@ export default {
         // console.log(this.tasks)
         // console.log(typeof(this.tasks))
     },
+    data(){
+        return {
+            name: '',
+            user: false,
+            projectIds: [],
+            projectNames: [],
+            projectDeadlines: [],
+            tasks: [],
+            meetings: [
+                {title: 'Meeting 1', deadline: '2022/02/04'},
+                {title: 'Meeting 2', deadline: '2022/03/04'},
+                {title: 'Meeting 3', deadline: '2022/04/04'},
+                {title: 'Meeting 4', deadline: '2022/04/04'},
+                {title: 'Meeting 5', deadline: '2022/04/04'},
+            ],
+        }
+    },
     name: 'HomePage',
     components:{
         DeadlinesAndMeetings,
@@ -229,7 +235,6 @@ export default {
     },
     methods:{
         addNewProject(){
-            alert('Add a new project');
             this.$router.push('/NewProjPage');
         },
         // update() {
@@ -239,9 +244,12 @@ export default {
         // },
         goToProjectsPage(projectIds) {
             this.$store.commit('update', projectIds);
+            console.log('here')
+            console.log(projectIds)
             // console.log(projectIds)
             this.$router.push('/ProjectPage')
         },
+
 
     },
     setup() {
