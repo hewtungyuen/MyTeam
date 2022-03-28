@@ -10,8 +10,6 @@
       ref="table"
       :columns="columns"
       :data="data"
-      :pagination="pagination"
-      :row-class-name="rowClassName"
     />
   </n-space>
 </template>
