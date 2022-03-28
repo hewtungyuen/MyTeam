@@ -40,6 +40,7 @@ export default {
     
     
         let projectDetails = getDocs(collection(db, "Projects"));
+        //let userDetails = getDocs(collection(db, "Users"));
         console.log(projectDetails);
 
         projectDetails.then((QuerySnapshot) => {
@@ -47,15 +48,24 @@ export default {
             if (doc.id == this.$route.params.id) {
               console.log("Found the project in database")
               let yy = doc.data();
-              
-              this.teamleader = yy.Leader;
-              console.log(this.teamleader);
+
+              //get name of each
+              // userDetails.then((getShot) => {
+              //   getShot.forEach((val) => {
+              //     let zz = val.data();
+              //     if (yy.leader == zz.Email) {
+              //       this.teamleader += zz.FullName;
+              //     }
+              //   })
+              // })
+
+              this.teamleader = "(" + yy.Leader + ")";
               this.details = yy.Details;
               this.date = yy.StartDate;
               this.title = yy.Name;
 
               yy.Members.forEach((mem) => {
-                this.memberTotal += mem + ", "
+                this.memberTotal += "(" + mem + ") "
               })
             }
           })
