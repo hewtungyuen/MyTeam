@@ -47,10 +47,6 @@ export default defineComponent({
   props:{
     tasksToDisplay:Object,
   },
-  mounted(){
-    console.log(this.tasksToDisplay)
-    console.log('mounted')
-  },
   setup () {
     const tableRef = ref(null)
     return {
