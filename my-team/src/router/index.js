@@ -25,7 +25,7 @@ const routes = [
         component: ForgetPassPage
     },
     {
-        path: '/ProjectPage',
+        path: '/ProjectPage/:id',
         name: 'ProjectPage',
         component: ProjectPage
     },

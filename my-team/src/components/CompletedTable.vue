@@ -26,12 +26,6 @@ const db = getFirestore(firebaseApp);
 
 const createColumns = ({ updateProgress }) => [
   {
-    title: 'S/N',
-    key: 'sn',
-    defaultSortOrder: 'ascend',
-    sorter: 'default'
-  },
-  {
     title: 'Task Name',
     key: 'TaskName',
     defaultSortOrder: 'ascend',
@@ -42,24 +36,12 @@ const createColumns = ({ updateProgress }) => [
     key: 'InCharge',
     defaultSortOrder: 'ascend',
     sorter: 'default',
-    // defaultFilterOptionValues: ['Yi Chen', 'Tung Yuen', 'Marvin'],
-    // filterOptions: [
-    //   {
-    //     label: 'Yi Chen',
-    //     value: 'Yi Chen'
-    //   },
-    //   {
-    //     label: 'Tung Yuen',
-    //     value: 'Tung Yuen'
-    //   }, 
-    //   {
-    //     label: 'Marvin',
-    //     value: 'Marvin'
-    //   }
-    // ],
-    // filter (value, row) {
-    //   return ~row.InCharge.indexOf(value)
-    // }
+  },
+  {
+    title: 'Expected Hours',
+    key: 'ExpectedHours',
+    defaultSortOrder: 'ascend',
+    sorter: 'default',
   },
   {
     title: 'Deadline',
@@ -73,6 +55,20 @@ const createColumns = ({ updateProgress }) => [
     render () {
       return h(
         NProgress
+      )
+    }
+  },
+  {
+    title: 'Task Details',
+    key: 'ProgressStatus',
+    render () {
+      return h(
+        NButton,
+        {
+          size: 'small',
+          onClick: () => updateProgress(),
+        },
+        { default: () => 'Task details' }
       )
     }
   },
@@ -125,19 +121,21 @@ export default defineComponent({
             this.user = user;
           }
       });
+      console.log("Table");
 
       let taskDetails = getDocs(collection(db, "Tasks"));
       this.$store.commit('refreshData');
 
       taskDetails.then((QuerySnapshot) => {
+        console.log("Entered task details");
         const z = [];
         QuerySnapshot.forEach((doc) => {
           let yy = doc.data();
-          if (yy.ProjectID == this.$store.state.projectID) {
+          if (yy.ProjectID == this.$store.state.projectID && yy.CompletionStatus == "Completed") {
             z.push(yy);
             this.$store.commit('updateData', z);
             console.log(this.$store.state.data);
-          }
+          } 
         })
       });
     },
