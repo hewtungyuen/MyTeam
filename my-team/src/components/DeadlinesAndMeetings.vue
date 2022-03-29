@@ -1,11 +1,14 @@
 <template>
 <div>
-  <n-card embedded :bordered="false">
-    <h3 v-if = "type == 'Meeting'" @click = 'goToMeetings()'>{{title}}</h3>
+  <n-card id = 'card' embedded :bordered="false" >
+    <h3 v-if = "type == 'Meeting'" @click = 'goToProjects()'>{{title}}</h3>
     <h3 v-if = "type == 'Deadline'" @click = 'goToProjects()'>{{title}}</h3>
     Project: {{this.name}}
     <br>
-    Deadline: {{deadline}} 
+    <div v-if = "type == 'Deadline'"> Deadline: {{date.toDateString()}}  </div> 
+    <div v-if = "type == 'Meeting'"> Date: {{date.toDateString()}}  </div> 
+    <div v-if = "type == 'Meeting'"> Time: {{date.toTimeString().slice(0,8)}}  </div> 
+
     <br>
   </n-card>
 </div>
@@ -21,6 +24,9 @@ var db = getFirestore(firebaseApp)
 export default {
     mounted(){
         this.getProjectName()
+        if (this.isOverDue()) {
+            document.getElementById('card').style.background = '#FFCCCB'
+        }
     },
     data(){
         return {
@@ -30,12 +36,7 @@ export default {
     methods:{
         goToProjects(){
             this.$store.commit('update', this.projectId);
-            // console.log(projectIds)
             this.$router.push('/ProjectPage/' + this.projectId);
-        },
-        goToMeetings(){
-
-            alert('go to meetings tab in project page')
         },
         getProjectName(){
             var allProjects = getDocs(collection(db,'Projects'))
@@ -46,12 +47,17 @@ export default {
                     }
                 })
             })
+        },
+        isOverDue(){
+            if (this.date < new Date()) {
+                return true
+            }
         }
 
     },
     props:{
         title:String,
-        deadline:String,
+        date:Date,
         type:String,
         projectId:String,
     }

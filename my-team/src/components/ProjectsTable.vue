@@ -34,7 +34,7 @@ const columns = [
   },
   {
     title: 'Deadline',
-    key: 'DeadLine',
+    key: 'DeadLineString',
     defaultSortOrder: 'ascend',
     sorter: 'default'
   },
@@ -74,7 +74,7 @@ export default defineComponent({
       columns,
       pagination: { pageSize: 3 },
       rowClassName(row){
-        if (new Date(row.deadline) < new Date()) {
+        if (new Date(row.DeadLineString) < new Date()) {
           return 'overdue'
         }
         return ''
