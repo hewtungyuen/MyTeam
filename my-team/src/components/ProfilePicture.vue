@@ -1,8 +1,5 @@
 <template>
-  <img
-    id ="profile"
-    src="../assets/marvin.jpeg"
-  />
+
 <h3>{{name}}</h3>
 </template>
 
@@ -19,27 +16,24 @@ export default {
         }
     },
 
+
     mounted() {
         const auth = getAuth();
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 this.user = user;
             }
-            
         })
-        console.log(this.user)
-        console.log("test")
+
         let allUsers = getDocs(collection(db, 'Users'))
 
         allUsers.then((querySnapshot) => {
-
             querySnapshot.forEach((doc) => {
 
                 let docData = doc.data()
-                
-
-                if (docData.Email == this.user.Email) {
+                if (docData.Email == this.user.email) {
                     this.name = docData.FullName
+
                 }
             })
         })
@@ -49,10 +43,7 @@ export default {
 </script>
 
 <style scoped>
-#profile {
-    border-radius: 100%;
-    height: 100px;
-}
+
 
 
 </style>
