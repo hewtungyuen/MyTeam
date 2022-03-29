@@ -251,7 +251,8 @@ export default {
         // },
         goToProjectsPage(projectId) {
             this.$store.commit('update', projectId);
-            // console.log(projectIds)
+            console.log('here')
+            console.log(projectId)
             this.$router.push('/ProjectPage/' + projectId);
         },
         retrieveData(){
