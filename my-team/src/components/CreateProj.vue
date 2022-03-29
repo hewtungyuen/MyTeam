@@ -65,9 +65,13 @@ export default {
         },
         async addMember(){
             let z = await getDoc(doc(db, "Users", this.member));
+            this.member = ""
             if (z.exists()) {
             let yy = z.data()
             console.log(yy)
+            if(this.user.email == yy.Email){
+                alert("You cannot add yourself!")
+            }else{
             this.memberTotal.push(String(yy.Email))
             console.log(this.memberTotal.length)
             var bu = document.createElement("button")
@@ -79,21 +83,21 @@ export default {
             let email = String(yy.Email)
             let array = this.memberTotal
             bu.onclick = function() {
-                confirm("Going to delete this member!")
+                let check = confirm("Going to delete this member!")
+                if (check == true){
                 const index = array.indexOf(email)
                 array.splice(index, 1)
                 this.memberTotal = array
                 console.log(this.memberTotal.length)
                 let elem = document.getElementById(email)
                 elem.remove()
-            }
+            }}
             
         let memberTable = document.getElementById("members")
         memberTable.appendChild(bu)
-        } else {
+        }} else {
             alert("User does not exist!")
         }
-        document.getElementById("addMemForm").reset();
         },
         async createProj(){
             var projname = this.name;
