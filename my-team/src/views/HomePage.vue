@@ -63,7 +63,7 @@
                 <h2 class = 'container' >Deadlines</h2>
                 <n-layout class = 'meetingsAndDeadlines' >
                         <n-layout-sider :native-scrollbar="true" bordered v-for = 'subTask in allMyTasks' :key = 'subTask.ProjectID'> 
-                            <DeadlinesAndMeetings :title = "subTask.TaskName" :deadline = "subTask.DeadLine" type = "Deadline" :projectId = "subTask.ProjectID"/>
+                            <DeadlinesAndMeetings :title = "subTask.TaskName" :date = "subTask.DeadLine" type = "Deadline" :projectId = "subTask.ProjectID"/>
                         </n-layout-sider>
                 </n-layout>
             </div>
@@ -71,11 +71,10 @@
             <div>
 
                 <h2 class = 'container'>Meetings</h2>   
-
                 <n-layout class = 'meetingsAndDeadlines' id = 'deadlines'>
 
-                    <n-layout-sider :native-scrollbar="false" bordered v-for = 'meeting in meetings' :key = 'meeting.title'>
-                        <DeadlinesAndMeetings :title = "meeting.title" :deadline = "meeting.deadline" type = "Meeting" />
+                    <n-layout-sider :native-scrollbar="false" bordered v-for = 'meeting in allMyMeetingDetails' :key = 'meeting.title'>
+                        <DeadlinesAndMeetings :title = "meeting.Name" :date = "new Date(meeting.DateTime)" type = "Meeting" :projectId = 'meeting.ProjectID' />
                     </n-layout-sider>
 
                 </n-layout>
@@ -100,121 +99,95 @@ var db = getFirestore(firebaseApp)
 export default {
 
     mounted() {
-        this.retrieveData()
-        // console.log('mounted')
-        // const auth = getAuth();
-        // onAuthStateChanged(auth, (user) => {
-        //     if (user) {
-        //         this.user = user;
-        //     }
-        // })
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.user = user;
+            }
+        })
 
-        // var allUsers = getDocs(collection(db, 'Users'))
-        // var allProjects = getDocs(collection(db,'Projects'))
-        // var allTasks = getDocs(collection(db,'Tasks'))
+        var allUsers = getDocs(collection(db, 'Users'))
+        var allProjects = getDocs(collection(db,'Projects'))
+        var allTasks = getDocs(collection(db,'Tasks'))
+        var allMeetings = getDocs(collection(db, 'Meetings'))
 
-        // allUsers.then((querySnapshot) => {
-        //     var myProjects = []
+        allUsers.then((querySnapshot) => {
+            var myProjects = []
             
-        //     querySnapshot.forEach((doc) => {
-        //         var docData = doc.data()
-        //         if (docData.Email == this.user.email) {
-        //             this.name = docData.FullName
-        //             myProjects = myProjects.concat(docData.Projects)
-        //             myProjects = myProjects.concat(docData.LeadingProjects)
-        //         }
-        //     })
-        //     this.projectIds = myProjects
+            querySnapshot.forEach((doc) => {
+                var docData = doc.data()
+                if (docData.Email == this.user.email) {
+                    this.name = docData.FullName
+                    if (docData.Projects) {
+                        myProjects = myProjects.concat(docData.Projects)
+                    }
 
-        //     this.projectIds.forEach((projId) => {
+                    if (docData.LeadingProjects) {
+                        myProjects = myProjects.concat(docData.LeadingProjects)
+                    }
+
+                    if (docData.OngoingMeetings){
+                        this.allMyMeetings = docData.OngoingMeetings
+
+                        allMeetings.then((querySnapshot) => {
+                            querySnapshot.forEach((doc) => {
+                                let taskData = doc.data()
+                                let DateTime = new Date(taskData.DateTime)
+                                let ProjectID = taskData.ProjectID
+                                let Name = taskData.Name
+                                let obj = {DateTime: DateTime, ProjectID: ProjectID, Name: Name}
+                                this.allMyMeetingDetails.push(obj)
+                            })
+
+                            this.allMyMeetingDetails.sort((a,b) => (a.DateTime > b.DateTime) ? 1 : ((b.DateTime > a.DateTime) ? -1 : 0))
+
+                        })
+
+                    }
+                }
+            })
+            this.projectIds = myProjects
+
+            this.projectIds.forEach((projId) => {
                 
-        //         allProjects.then((querySnapshot) => {
-        //             querySnapshot.forEach((doc) => {
-        //                 if (doc.id == projId) {
-        //                     var projData = doc.data()
-        //                     this.projectNames.push(projData.Name)
-        //                     this.projectDeadlines.push(projData.StartDate)
+                allProjects.then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        if (doc.id == projId) {
+                            var projData = doc.data()
+                            this.projectNames.push(projData.Name)
+                            this.projectDeadlines.push(projData.StartDate)
 
-        //                     var intermediate = []
-        //                     projData.Tasks.forEach((taskId) => {
-        //                         allTasks.then((querySnapshot) => {
-        //                             querySnapshot.forEach((doc) => {
-        //                                 if (doc.id == taskId) {
-        //                                     if (doc.data().InCharge == this.user.email) {
-        //                                         intermediate.push(doc.data())
-        //                                     }
-        //                                 }
-        //                             })
-        //                         })
-        //                     })
-        //                     this.tasks.push(intermediate)
-        //                 }
-        //             })
+                            var intermediate = new Array()
+                            projData.Tasks.forEach((taskId) => {
+                                allTasks.then((querySnapshot) => {
+                                    querySnapshot.forEach((doc) => {
+                                        if (doc.id == taskId) {
+                                            if (doc.data().InCharge == this.user.email) {
 
-        //         })
-        //     })
-        //     // var myTasks = []
-        //     // this.tasks = myTasks
-        //     // console.log(this.tasks)
-        // })
-        
+                                                let taskData = doc.data()
+                                                let TaskName = taskData.TaskName
+                                                let DeadLine = new Date(taskData.DeadLine)
+                                                let DeadLineString = new Date(taskData.DeadLine).toDateString()
+                                                let ProjectID = taskData.ProjectID
+                                                let ProgressStatus = taskData.ProgressStatus
+                                                let obj = {TaskName:TaskName, DeadLine:DeadLine, ProjectID:ProjectID, ProgressStatus:ProgressStatus,DeadLineString:DeadLineString}
 
+                                                intermediate.push(obj)
+                                                this.allMyTasks.push(obj)
+                                            }
+                                        }
+                                    })
+                                    this.allMyTasks.sort((a,b) => (a.DeadLine > b.DeadLine) ? 1 : ((b.DeadLine > a.DeadLine) ? -1 : 0))
+                                })
+                            })
+                            this.myCurrentTasks.push(intermediate)
+                        }
+                    })
 
-        // allUsers.then((querySnapshot) => {
-        //     querySnapshot.forEach((doc) => {
+                })
+            })
+        })
 
-        //         let docData = doc.data()
-
-        //         if (docData.Email == 'marvin.leow999@gmail.com') {
-        //             this.projectIds = docData.Projects
-        //             this.name = docData.FullName
-
-        //             var myTasks = []
-        //             // for each project ID that the user has,
-        //             this.projectIds.forEach((projId) => {
-        //                 // console.log(projId)
-        //                 // extract all projects from database
-        //                 allProjects.then((allProj) => {
-        //                     // for each project in the database,
-        //                     allProj.forEach((d) => {
-        //                         // if the project matches with the user's project
-        //                         if (projId == d.id) {
-        //                             // obtain project data and update 
-        //                             var projectData = d.data()
-        //                             // this.taskIds.push(projectData.Tasks)
-        //                             this.projectNames.push(projectData.Name)
-        //                             this.projectDeadlines.push(projectData.StartDate)
-        //                             // console.log(this.taskIds)
-        //                             // for each taskId that the user has,
-        //                             projectData.Tasks.forEach((t) => {
-        //                                 // console.log(t)
-        //                                 // for all the tasks in the databse, 
-        //                                 allTasks.then((allTask) => {
-        //                                     allTask.forEach((task) => {
-        //                                         // if the database task match the project task, 
-        //                                         if (task.id == t) {
-        //                                             var taskData = task.data()
-        //                                             myTasks.push(taskData)
-        //                                             // console.log('taskdata')
-        //                                             // console.log(taskData)
-        //                                             // console.log(this.tasks)
-        //                                             // console.log(type(this.tasks))
-        //                                         }
-        //                                     })
-        //                                 })
-        //                             })
-        //                         }
-        //                     })
-        //                 })
-        //                 // console.log(myTasks)
-        //             })
-        //             // console.log(myTasks)
-        //         }
-        //         // this.tasks.push(myTasks)
-        //     })
-        // })
-        // console.log(this.tasks)
-        // console.log(typeof(this.tasks))
     },
     data(){
         return {
@@ -223,15 +196,10 @@ export default {
             projectIds: [],
             projectNames: [],
             projectDeadlines: [],
-            myCurrentTasks: [],
-            allMyTasks:[],
-            // meetings: [
-            //     {title: 'Meeting 1', deadline: '2022/02/04'},
-            //     {title: 'Meeting 2', deadline: '2022/03/04'},
-            //     {title: 'Meeting 3', deadline: '2022/04/04'},
-            //     {title: 'Meeting 4', deadline: '2022/04/04'},
-            //     {title: 'Meeting 5', deadline: '2022/04/04'},
-            // ],
+            myCurrentTasks: [], // 2d array, separated by project 
+            allMyTasks:[], // 1d array
+            allMyMeetingDetails: [],  // objects of meeting details
+            allMyMeetings:[] // ids
         }
     },
     name: 'HomePage',
@@ -255,68 +223,11 @@ export default {
             console.log(projectId)
             this.$router.push('/ProjectPage/' + projectId);
         },
-        retrieveData(){
-            const auth = getAuth();
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    this.user = user;
-                }
-            })
+        sortByDate(){
+            this.allMyTasks.sort((a,b) => (a.ExpectedHours > b.ExpectedHours) ? -1 : ((b.ExpectedHours > a.ExpectedHours) ? 1 : 0))
 
-            var allUsers = getDocs(collection(db, 'Users'))
-            var allProjects = getDocs(collection(db,'Projects'))
-            var allTasks = getDocs(collection(db,'Tasks'))
-
-            allUsers.then((querySnapshot) => {
-                var myProjects = []
-                
-                querySnapshot.forEach((doc) => {
-                    var docData = doc.data()
-                    if (docData.Email == this.user.email) {
-                        this.name = docData.FullName
-                        if (docData.Projects) {
-                            myProjects = myProjects.concat(docData.Projects)
-                        }
-
-                        if (docData.LeadingProjects) {
-                            myProjects = myProjects.concat(docData.LeadingProjects)
-                        }
-                    }
-                })
-                this.projectIds = myProjects
-
-                this.projectIds.forEach((projId) => {
-                    
-                    allProjects.then((querySnapshot) => {
-                        querySnapshot.forEach((doc) => {
-                            if (doc.id == projId) {
-                                var projData = doc.data()
-                                this.projectNames.push(projData.Name)
-                                this.projectDeadlines.push(projData.StartDate)
-
-                                var intermediate = new Array()
-                                projData.Tasks.forEach((taskId) => {
-                                    allTasks.then((querySnapshot) => {
-                                        querySnapshot.forEach((doc) => {
-                                            if (doc.id == taskId) {
-                                                if (doc.data().InCharge == this.user.email) {
-                                                    intermediate.push(doc.data())
-                                                    this.allMyTasks.push(doc.data())
-                                                }
-                                            }
-                                        })
-                                    })
-                                })
-                                this.myCurrentTasks.push(intermediate)
-                                console.log(this.myCurrentTasks)
-                            }
-                        })
-
-                    })
-                })
-            })
-        }
-
+            console.log(this.allMyTasks)
+        },
     },
     setup() {
         return {sidebarWidth}
