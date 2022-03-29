@@ -13,6 +13,28 @@
       :pagination="pagination"
     />
   </n-space>
+
+  <n-button @click="showModal = true">
+    Start Me up
+  </n-button>
+  <n-modal v-model:show="showModal">
+    <n-card
+      style="width: 600px"
+      title="Modal"
+      :bordered="false"
+      size="huge"
+      role="dialog"
+      aria-modal="true"
+    >
+      <template #header-extra>
+        Oops!
+      </template>
+      Content
+      <template #footer>
+        Footer
+      </template>
+    </n-card>
+  </n-modal>
 </template>
 
 <script>
@@ -24,7 +46,8 @@ import {getFirestore} from "firebase/firestore";
 import {collection, getDocs} from "firebase/firestore";
 const db = getFirestore(firebaseApp);
 
-const createColumns = ({ updateProgress }) => [
+const createColumns = ({ updateProgress, show }) => {
+ return [
   {
     title: 'Task Name',
     key: 'TaskName',
@@ -66,9 +89,9 @@ const createColumns = ({ updateProgress }) => [
         NButton,
         {
           size: 'small',
-          onClick: () => updateProgress(),
+          onClick: () => show(),
         },
-        { default: () => 'Task details' }
+        { default: () => 'More Details' }
       )
     }
   },
@@ -101,6 +124,7 @@ const createColumns = ({ updateProgress }) => [
     }
   }
 ]
+}
 
 
 // const createData = [
@@ -125,9 +149,15 @@ export default defineComponent({
     data() {
       return {
         user: false,
-        output: []
+        output: [],
       }
     },
+    // methods: {
+    //   show() {
+    //     console.log("entered show");
+    //   this.showModal = true;
+    //   },
+    // },
     mounted() {
       const auth = getAuth();
       onAuthStateChanged(auth, (user) => {
@@ -156,8 +186,10 @@ export default defineComponent({
   setup () {
     const tableRef = ref(null);
     const percentageRef = ref(0);
+    
 
     return {
+      showModal: ref(false),
       percentage: percentageRef,
       table: tableRef,
       columns: createColumns({
@@ -166,7 +198,11 @@ export default defineComponent({
           if (percentageRef.value > 100) {
             percentageRef.value = 100;
           } 
-        }
+        },
+        show() {
+        console.log("entered show");
+                },
+
       }),
       pagination: { pageSize: 5 },
       filterAddress () {
@@ -183,6 +219,7 @@ export default defineComponent({
       clearSorter () {
         tableRef.value.sort(null)
       },
+      
       // updateProgress () {
       //   percentageRef.value += 10;
       //   if (percentageRef.value > 100) {
