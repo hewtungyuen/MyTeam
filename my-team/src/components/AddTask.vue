@@ -74,13 +74,13 @@ export default defineComponent({
                 console.log(this.user.email)
                 console.log(this.projid)
                 checkleader(this.user.email, this.projid).then((x)=>{this.leader = x})
-                console.log(this.leader)
             }
         })
         async function checkleader(user, projid) {
-        let z = await getDoc(doc(db, "Users", user));
-        let leadingproj = z.data().LeadingProjects
-        return leadingproj.includes(projid)
+        let z = await getDoc(doc(db, "Projects", projid));
+        let leaderemail = String(z.data().Leader)
+        console.log("leader of this proj" + leaderemail)
+        return (leaderemail == user)
     }
     // Get all the project members and put into membersInProject
     const docRef = doc(db, "Projects", this.projid);

@@ -17,7 +17,7 @@ export default {
         return{
         user:false,
         projid: this.$store.state.projectID,
-        leader:false
+        leader:false,
     }},
     mounted(){
         const auth = getAuth();
@@ -25,13 +25,17 @@ export default {
             if(user) {
                 this.user = user;
                 checkleader(this.user.email, this.projid).then((x)=>{this.leader = x})
-                console.log(this.leader)
             }
         })
         async function checkleader(user, projid) {
         let z = await getDoc(doc(db, "Users", user));
         let leadingproj = z.data().LeadingProjects
-        return leadingproj.includes(projid)
+        let a = await getDoc(doc(db,"Projects",projid))
+        if (leadingproj.includes(projid) == true && a.data().CompletionStatus == "In Progress"){
+            return true
+        }else{
+            return false
+        }
     }
     },
     methods:{
