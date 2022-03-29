@@ -8,7 +8,6 @@
     Team Members: {{ memberTotal }}
     <br />
     Details: {{ details }}
-    <button @click="click()">xxxx</button>
   </n-card>
 </template>
 

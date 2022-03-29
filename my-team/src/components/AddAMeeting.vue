@@ -99,7 +99,7 @@ export default defineComponent({
       datetime: "",
       memberInMeeting: new Array(),
       membersInProject: ["No Member in this project"],
-      projId: this.$store.state.projectID,
+      projId: this.$route.params.id,
     };
   },
 
@@ -228,6 +228,7 @@ export default defineComponent({
           Members: meetingMembers,
           DateTime: datetime,
           CompletionStatus: "In Progress",
+          ProjectID: this.projId,
         });
         var meetingid = docRef.id;
         console.log("Meeting successfully created: " + docRef.id);
