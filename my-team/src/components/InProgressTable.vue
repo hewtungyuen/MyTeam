@@ -145,7 +145,7 @@ export default defineComponent({
         const z = [];
         QuerySnapshot.forEach((doc) => {
           let yy = doc.data();
-          if (yy.ProjectID == this.$store.state.projectID && yy.CompletionStatus == "In Progress") {
+          if (yy.ProjectID == this.$route.params.id && yy.CompletionStatus == "In Progress") {
             z.push(yy);
             this.$store.commit('updateData', z);
             console.log(this.$store.state.data);

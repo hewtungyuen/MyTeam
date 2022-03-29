@@ -242,11 +242,10 @@ export default {
         //     // console.log(this.$store.state.projectID);
         //     // console.log(this.$store.state.name);
         // },
-        goToProjectsPage(projectIds) {
-            this.$store.commit('update', projectIds);
+        goToProjectsPage(projectId) {
+            this.$store.commit('update', projectId);
             console.log('here')
-            console.log(projectIds)
-            // console.log(projectIds)
+            console.log(projectId)
             this.$router.push('/ProjectPage/' + projectId);
         },
 
