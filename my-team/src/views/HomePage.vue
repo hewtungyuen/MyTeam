@@ -247,7 +247,7 @@ export default {
             console.log('here')
             console.log(projectIds)
             // console.log(projectIds)
-            this.$router.push('/ProjectPage/' + projectId);
+            this.$router.push('/ProjectPage/' + projectIds);
         },
 
 
