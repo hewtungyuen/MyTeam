@@ -161,12 +161,14 @@ export default defineComponent({
       return {}.toString.call(obj).split(" ")[1].slice(0, -1).toLowerCase();
     },
     deleteMember(array, email) {
-      confirm("Going to delete this member!");
-      const index = array.indexOf(email);
-      array.splice(index, 1);
-      this.memberInMeeting = array;
-      let elem = document.getElementById(email);
-      elem.remove();
+      let result = confirm("Going to delete this member!");
+      if (result == true) {
+        const index = array.indexOf(email);
+        array.splice(index, 1);
+        this.memberInMeeting = array;
+        let elem = document.getElementById(email);
+        elem.remove();
+      }
     },
 
     async addMember(member) {

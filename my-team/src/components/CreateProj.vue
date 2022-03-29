@@ -1,64 +1,119 @@
 <template>
-  <div id = "body">
-      <div>
-      <n-button strong secondary round type = "success" id = "back" @click = "backHome()"> &#8249; Home </n-button>
-      
-    <h1 id = "heading"> Create a new project </h1>
+  <div id="body">
+    <div>
+      <n-button
+        strong
+        secondary
+        round
+        type="success"
+        id="back"
+        @click="backHome()"
+      >
+        &#8249; Home
+      </n-button>
+
+      <h1 id="heading">Create a new project</h1>
     </div>
-    <div id = "createAdd">
-        <div id = "left">
+    <div id="createAdd">
+      <div id="left">
         <form>
-        <label>Project Name:</label><br>
-        <n-input round type = "text" v-model:value = "name" size = "large" clearable/><br><br>
-        <label>Project Details:</label><br>
-        <n-input round type = "textarea" v-model:value = "details" size = "large" rows = "5" clearable /> <br><br>
-
+          <label>Project Name:</label><br />
+          <n-input
+            round
+            type="text"
+            v-model:value="name"
+            size="large"
+            clearable
+          /><br /><br />
+          <label>Project Details:</label><br />
+          <n-input
+            round
+            type="textarea"
+            v-model:value="details"
+            size="large"
+            rows="5"
+            clearable
+          />
+          <br /><br />
         </form>
-        </div>
-        <div id="right">
-        <form id = "addMemForm">
-            <label >Add New Members: </label> <br>
-            <n-input type="text" id = "emailInput" round placeholder="Enter Email" size = "large" v-model:value = "member" autosize style="min-width: 80%" clearable/>
-            <n-button strong secondary round type = "success" id = 'addBut' @click = "addMember()" >
-                +
-            </n-button> <br><br>
-            <label>Team Members: </label> <br>
-            <div id = "members">
-            </div>
+      </div>
+      <div id="right">
+        <form id="addMemForm">
+          <label>Add New Members: </label> <br />
+          <n-input
+            type="text"
+            id="emailInput"
+            round
+            placeholder="Enter Email"
+            size="large"
+            v-model:value="member"
+            autosize
+            style="min-width: 80%"
+            clearable
+          />
+          <n-button
+            strong
+            secondary
+            round
+            type="success"
+            id="addBut"
+            @click="addMember()"
+          >
+            +
+          </n-button>
+          <br /><br />
+          <label>Team Members: </label> <br />
+          <div id="members"></div>
         </form>
-        </div>
- <n-button strong secondary round type = "success" id = "create" @click = "createProj()"> Create &raquo; </n-button>
-
+      </div>
+      <n-button
+        strong
+        secondary
+        round
+        type="success"
+        id="create"
+        @click="createProj()"
+      >
+        Create &raquo;
+      </n-button>
     </div>
-    </div>
+  </div>
 </template>
 
 <script>
-import firebaseApp from '../firebase.js';
-import {getAuth, onAuthStateChanged} from "firebase/auth";
-import {getFirestore} from "firebase/firestore";
-import {doc, getDoc,collection,addDoc, updateDoc,arrayUnion} from "firebase/firestore";
+import firebaseApp from "../firebase.js";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  addDoc,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
 const db = getFirestore(firebaseApp);
 export default {
-    data(){
-        return {
-            user:false,
-            name:"",
-            details:"",
-            member:"",
-            memberTotal: new Array()
-        }
-    },
+  data() {
+    return {
+      user: false,
+      name: "",
+      details: "",
+      member: "",
+      memberTotal: new Array(),
+    };
+  },
 
-    mounted(){
-        const auth = getAuth();
-        onAuthStateChanged(auth, (user) => {
-            if(user) {
-                this.user = user;
-                console.log(this.user.email)
-            }
-        })
-    },
+  mounted() {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.user = user;
+        console.log(this.user.email);
+      }
+    });
+  },
+  
     methods:{
         backHome(){
             this.$router.push('/HomePage');
@@ -146,47 +201,43 @@ export default {
 </script>
 
 <style scoped>
-#body{
-    margin-left: 20%;
-    margin-right:20%;
-    margin-top:2%;
-    
+#body {
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-top: 2%;
 }
-#heading{
-    text-align: center;
-    font-size:20px;
+#heading {
+  text-align: center;
+  font-size: 20px;
 }
-#createAdd{
-    border:solid rgb(72, 134, 72) 1px;
-    margin-top:30px;
-    padding:20px;
-    padding-bottom:40px
-
+#createAdd {
+  border: solid rgb(72, 134, 72) 1px;
+  margin-top: 30px;
+  padding: 20px;
+  padding-bottom: 40px;
 }
-#left{
-    width:45%;
-    float:left;
+#left {
+  width: 45%;
+  float: left;
 }
-#right{
-    width:45%;
-    display:inline-block;
-    float:left;
-    margin-left: 40px;
-    
+#right {
+  width: 45%;
+  display: inline-block;
+  float: left;
+  margin-left: 40px;
 }
-#members{
-    height:150px;
-    background-color:rgb(165, 233, 210);
+#members {
+  height: 150px;
+  background-color: rgb(165, 233, 210);
 }
-#emailInput{
-    position:relative;
-    top:-5px;
+#emailInput {
+  position: relative;
+  top: -5px;
 }
-#create{
-    margin-top:30px;
-    left:30%
+#create {
+  margin-top: 30px;
+  left: 30%;
 }
-.memberBut{
+.memberBut {
 }
-
 </style>
