@@ -1,7 +1,7 @@
 <template>
   <div id = "completeproj" v-if = "leader">
   <n-button strong secondary round type = "success" id="completeBut" @click="complete()">
-    Complete Project
+    Mark As Completed
   </n-button>
   </div>
 </template>
