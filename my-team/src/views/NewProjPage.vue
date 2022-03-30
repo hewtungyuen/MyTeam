@@ -1,6 +1,7 @@
 <template>
   <Sidebar />
   <CreateProj />
+
 </template>
 
 <script>
