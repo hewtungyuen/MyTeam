@@ -25,10 +25,10 @@
         <!-- {{this.projectIds}} -->
         <div >
             <n-divider />
-            <div v-if = "this.projectIds.length === 0">
+            <div v-if = "this.projectNames.length === 0">
                 <h2>You have no projects at the moment.</h2>
             </div>
-            <n-collapse v-else-if='this.projectIds.length === 1'>
+            <n-collapse v-else-if='this.projectNames.length === 1'>
                 <n-collapse-item :title = "projectNames[0]">
                     <ProjectsTable :tasksToDisplay = "this.myCurrentTasks[0]" />
                     <template #header-extra>
@@ -37,7 +37,7 @@
                 </n-collapse-item>
                 <n-divider />
             </n-collapse>
-            <n-collapse v-else v-for = 'index in this.projectIds.length' :key = 'index'>
+            <n-collapse v-else v-for = 'index in this.projectNames.length' :key = 'index'>
                 <!-- {{index}} -->
                 <n-collapse-item :title = "projectNames[index-1]">
                     <ProjectsTable :tasksToDisplay = "this.myCurrentTasks[index-1]" />
@@ -131,15 +131,24 @@ export default {
 
                         allMeetings.then((querySnapshot) => {
                             querySnapshot.forEach((doc) => {
-                                let taskData = doc.data()
-                                let DateTime = new Date(taskData.DateTime)
-                                let ProjectID = taskData.ProjectID
-                                let Name = taskData.Name
-                                let obj = {DateTime: DateTime, ProjectID: ProjectID, Name: Name}
-                                this.allMyMeetingDetails.push(obj)
-                            })
+                                var taskData = doc.data()
+                                var ProjectID = taskData.ProjectID
 
-                            this.allMyMeetingDetails.sort((a,b) => (a.DateTime > b.DateTime) ? 1 : ((b.DateTime > a.DateTime) ? -1 : 0))
+                                allProjects.then((querySnapshot) => {
+                                    querySnapshot.forEach((doc) => {
+                                        
+                                        if (doc.id == ProjectID && doc.data().CompletionStatus == 'In Progress') {
+                                            let DateTime = new Date(taskData.DateTime)
+                                            let Name = taskData.Name
+                                            let obj = {DateTime: DateTime, ProjectID: ProjectID, Name: Name}
+                                            this.allMyMeetingDetails.push(obj)
+                                        }
+                                    })
+                                this.allMyMeetingDetails.sort((a,b) => (a.DateTime > b.DateTime) ? 1 : ((b.DateTime > a.DateTime) ? -1 : 0))
+
+                                })
+
+                            })
 
                         })
 
@@ -154,33 +163,36 @@ export default {
                     querySnapshot.forEach((doc) => {
                         if (doc.id == projId) {
                             var projData = doc.data()
-                            this.projectNames.push(projData.Name)
-                            this.projectDeadlines.push(projData.StartDate)
+                            if (projData.CompletionStatus == 'In Progress') {
+                                this.projectNames.push(projData.Name)
+                                this.projectDeadlines.push(projData.StartDate)
 
-                            var intermediate = new Array()
-                            projData.Tasks.forEach((taskId) => {
-                                allTasks.then((querySnapshot) => {
-                                    querySnapshot.forEach((doc) => {
-                                        if (doc.id == taskId) {
-                                            if (doc.data().InCharge == this.user.email) {
+                                var intermediate = new Array()
+                                projData.Tasks.forEach((taskId) => {
+                                    allTasks.then((querySnapshot) => {
+                                        querySnapshot.forEach((doc) => {
+                                            if (doc.id == taskId) {
+                                                if (doc.data().InCharge == this.user.email) {
 
-                                                let taskData = doc.data()
-                                                let TaskName = taskData.TaskName
-                                                let DeadLine = new Date(taskData.DeadLine)
-                                                let DeadLineString = new Date(taskData.DeadLine).toDateString()
-                                                let ProjectID = taskData.ProjectID
-                                                let ProgressStatus = taskData.ProgressStatus
-                                                let obj = {TaskName:TaskName, DeadLine:DeadLine, ProjectID:ProjectID, ProgressStatus:ProgressStatus,DeadLineString:DeadLineString}
+                                                    let taskData = doc.data()
+                                                    let TaskName = taskData.TaskName
+                                                    let DeadLine = new Date(taskData.DeadLine)
+                                                    let DeadLineString = new Date(taskData.DeadLine).toDateString()
+                                                    let ProjectID = taskData.ProjectID
+                                                    let ProgressStatus = taskData.ProgressStatus
+                                                    let obj = {TaskName:TaskName, DeadLine:DeadLine, ProjectID:ProjectID, ProgressStatus:ProgressStatus,DeadLineString:DeadLineString}
 
-                                                intermediate.push(obj)
-                                                this.allMyTasks.push(obj)
+                                                    intermediate.push(obj)
+                                                    this.allMyTasks.push(obj)
+                                                }
                                             }
-                                        }
+                                        })
+                                        this.allMyTasks.sort((a,b) => (a.DeadLine > b.DeadLine) ? 1 : ((b.DeadLine > a.DeadLine) ? -1 : 0))
                                     })
-                                    this.allMyTasks.sort((a,b) => (a.DeadLine > b.DeadLine) ? 1 : ((b.DeadLine > a.DeadLine) ? -1 : 0))
                                 })
-                            })
-                            this.myCurrentTasks.push(intermediate)
+                                this.myCurrentTasks.push(intermediate)
+                            }
+
                         }
                     })
 

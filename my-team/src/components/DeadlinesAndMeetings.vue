@@ -1,16 +1,22 @@
 <template>
 <div>
-  <n-card id = 'card' embedded :bordered="false" >
-    <h3 v-if = "type == 'Meeting'" @click = 'goToProjects()'>{{title}}</h3>
-    <h3 v-if = "type == 'Deadline'" @click = 'goToProjects()'>{{title}}</h3>
+
+  <n-card id = 'Deadline' embedded v-if = "type == 'Deadline'">
+    <h3 @click = 'goToProjects()'>{{title}}</h3>
     Project: {{this.name}}
     <br>
-    <div v-if = "type == 'Deadline'"> Deadline: {{date.toDateString()}}  </div> 
-    <div v-if = "type == 'Meeting'"> Date: {{date.toDateString()}}  </div> 
-    <div v-if = "type == 'Meeting'"> Time: {{date.toTimeString().slice(0,8)}}  </div> 
-
-    <br>
+    Deadline: {{date.toDateString()}} 
   </n-card>
+
+  <n-card embedded v-if = "type == 'Meeting' && !this.isOverDue()">
+    <h3 @click = 'goToProjects()'>{{title}}</h3>
+    Project: {{this.name}}
+    <br>
+    Date: {{date.toDateString()}}
+    <br>
+    Time: {{date.toTimeString().slice(0,8)}}
+  </n-card>
+  
 </div>
 
 </template>
@@ -25,7 +31,7 @@ export default {
     mounted(){
         this.getProjectName()
         if (this.isOverDue()) {
-            document.getElementById('card').style.background = '#FFCCCB'
+            document.getElementById('Deadline').style.background = '#FFCCCB'
         }
     },
     data(){
