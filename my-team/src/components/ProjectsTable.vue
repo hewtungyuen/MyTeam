@@ -1,5 +1,4 @@
 <template>
-
   <n-space vertical :size="12">
     <br>
     <!-- <n-space>
@@ -46,6 +45,7 @@ const columns = [
 export default defineComponent({
   props:{
     tasksToDisplay:Object,
+    empty:Boolean,
   },
   setup () {
     const tableRef = ref(null)

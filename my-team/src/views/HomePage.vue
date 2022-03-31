@@ -29,25 +29,40 @@
                 <h2>You have no projects at the moment.</h2>
             </div>
             <n-collapse v-else-if='this.projectNames.length === 1'>
-                <n-collapse-item :title = "projectNames[0]">
-                    <ProjectsTable :tasksToDisplay = "this.myCurrentTasks[0]" />
-                    <template #header-extra>
-                        <button @click = 'goToProjectsPage(this.projectIds[0])'>Go to project</button>
-                    </template>
-                </n-collapse-item>
-                <n-divider />
-            </n-collapse>
-            <n-collapse v-else v-for = 'index in this.projectNames.length' :key = 'index'>
-                <!-- {{index}} -->
-                <n-collapse-item :title = "projectNames[index-1]">
-                    <ProjectsTable :tasksToDisplay = "this.myCurrentTasks[index-1]" />
-                    <template #header-extra>
-                <!-- {{this.projectIds[index-1]}} -->
 
-                        <button @click = 'goToProjectsPage(this.projectIds[index-1])'>Go to project</button>
+                <n-collapse-item :title = "projectNames[0]">
+
+                    <div v-if = 'this.myCurrentTasks[index-1].length == 0'>
+                        <i>You have no pending tasks at the moment. </i>
+                    </div>
+
+                    <div v-else>
+                    <ProjectsTable :tasksToDisplay = "this.myCurrentTasks[0]" />
+                    </div>
+
+                    <template #header-extra>
+                        <button @click = 'goToProjectsPage(this.projectIdsWithoutCompleted[0])'>Go to project</button>
                     </template>
-                </n-collapse-item>
-                <n-divider />
+                </n-collapse-item><n-divider />
+
+            </n-collapse>
+
+            <n-collapse v-else v-for = 'index in this.projectNames.length' :key = 'index'>
+                <n-collapse-item :title = "projectNames[index-1]">
+                    
+                    <div v-if = 'this.myCurrentTasks[index-1].length == 0'>
+                        <i>You have no pending tasks at the moment. </i>
+
+                    </div>
+
+                    <div v-else>
+                        <ProjectsTable :tasksToDisplay = "this.myCurrentTasks[index-1]" :empty = "this.myCurrentTasks.length == 0"/>
+                    </div>
+                    <template #header-extra>
+                        <button @click = 'goToProjectsPage(this.projectIdsWithoutCompleted[index-1])'>Go to project</button>
+                    </template>
+                </n-collapse-item><n-divider />
+
             </n-collapse>
             
         </div>
@@ -60,20 +75,20 @@
         <div >
             <div>
                 
-                <h2 class = 'container' >Deadlines</h2>
+                <h2 class = 'container' >My tasks</h2>
                 <n-layout class = 'meetingsAndDeadlines' >
-                        <n-layout-sider :native-scrollbar="true" bordered v-for = 'subTask in allMyTasks' :key = 'subTask.ProjectID'> 
-                            <DeadlinesAndMeetings :title = "subTask.TaskName" :date = "subTask.DeadLine" type = "Deadline" :projectId = "subTask.ProjectID"/>
-                        </n-layout-sider>
+                    <div v-if = 'allMyTasks.length == 0'> <i>You have no upcoming tasks.</i></div>
+                    <n-layout-sider :native-scrollbar="true" v-else bordered v-for = 'subTask in allMyTasks' :key = 'subTask.ProjectID'> 
+                        <DeadlinesAndMeetings :title = "subTask.TaskName" :date = "subTask.DeadLine" type = "Deadline" :projectId = "subTask.ProjectID"/>
+                    </n-layout-sider>
                 </n-layout>
             </div>
             <br>
             <div>
-
-                <h2 class = 'container'>Meetings</h2>   
+                <h2 class = 'container'>Upcoming meetings</h2>   
                 <n-layout class = 'meetingsAndDeadlines' id = 'deadlines'>
-
-                    <n-layout-sider :native-scrollbar="false" bordered v-for = 'meeting in allMyMeetingDetails' :key = 'meeting.title'>
+                    <div v-if = 'allMyMeetingDetails.length == 0'> <i>You have no upcoming meetings.</i></div>
+                    <n-layout-sider :native-scrollbar="false" bordered v-else v-for = 'meeting in allMyMeetingDetails' :key = 'meeting.title'>
                         <DeadlinesAndMeetings :title = "meeting.Name" :date = "new Date(meeting.DateTime)" type = "Meeting" :projectId = 'meeting.ProjectID' />
                     </n-layout-sider>
 
@@ -155,15 +170,17 @@ export default {
                     }
                 }
             })
+
             this.projectIds = myProjects
 
-            this.projectIds.forEach((projId) => {
+            this.projectIds.forEach((projId) => {    
                 
                 allProjects.then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         if (doc.id == projId) {
                             var projData = doc.data()
                             if (projData.CompletionStatus == 'In Progress') {
+                                this.projectIdsWithoutCompleted.push(doc.id)
                                 this.projectNames.push(projData.Name)
                                 this.projectDeadlines.push(projData.StartDate)
 
@@ -172,7 +189,7 @@ export default {
                                     allTasks.then((querySnapshot) => {
                                         querySnapshot.forEach((doc) => {
                                             if (doc.id == taskId) {
-                                                if (doc.data().InCharge == this.user.email) {
+                                                if (doc.data().InCharge == this.user.email && doc.data().CompletionStatus == 'In Progress') {
 
                                                     let taskData = doc.data()
                                                     let TaskName = taskData.TaskName
@@ -198,6 +215,7 @@ export default {
 
                 })
             })
+
         })
 
     },
@@ -206,6 +224,7 @@ export default {
             name: '',
             user: false,
             projectIds: [],
+            projectIdsWithoutCompleted:[],
             projectNames: [],
             projectDeadlines: [],
             myCurrentTasks: [], // 2d array, separated by project 

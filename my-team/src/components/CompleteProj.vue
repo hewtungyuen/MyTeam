@@ -44,7 +44,8 @@ export default {
             if (check == true){
             const projRef = doc(db, "Projects", this.projid)
             await updateDoc(projRef, {
-              CompletionStatus: "Completed"
+              CompletionStatus: "Completed",
+              CompletionDate: new Date().toLocaleDateString()
               });
             this.$router.push('/HomePage');
             }

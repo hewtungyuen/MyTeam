@@ -1,10 +1,10 @@
 <template>
   <Sidebar/>
-  <ProjectLabel/>
-  <AddMember/>
-  <AddTask/>
+  <AddMember  @addedMem="change"/>
+  <ProjectLabel :key="refreshComp"/>
+  <AddTask @addedTask = "change2"/>
   <AddAMeeting />
-  <ProjectToggleBar/>
+  <ProjectToggleBar :key = "refresh2"/>
 </template>
 
 <script>
@@ -31,5 +31,21 @@ export default {
   setup() {
         return {sidebarWidth}
   },
+  data() {
+    return{
+      refreshComp:0,
+      refresh2:0
+    
+    }
+  },
+   methods:{
+    change(){
+      this.refreshComp += 1
+      console.log("refreshComp is" +this.refreshComp)
+    },
+    change2(){
+      this.refresh2 += 1
+    }
+  }
 }
 </script>
