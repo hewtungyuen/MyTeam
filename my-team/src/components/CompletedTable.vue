@@ -13,22 +13,6 @@
       :pagination="pagination"
     />
   </n-space>
-
-  <n-button @click="showModal = true"> Start Me up </n-button>
-  <n-modal v-model:show="showModal">
-    <n-card
-      style="width: 600px"
-      title="Modal"
-      :bordered="false"
-      size="huge"
-      role="dialog"
-      aria-modal="true"
-    >
-      <template #header-extra> Oops! </template>
-      Content
-      <template #footer> Footer </template>
-    </n-card>
-  </n-modal>
 </template>
 
 <script>
@@ -58,10 +42,17 @@ export default defineComponent({
     });
 
     var taskDetails = getDocs(collection(db, "Tasks"));
-    this.$store.commit("refreshData");
-
+    this.$store.commit("refreshData");    
+    
     const createColumns = () => {
       return [
+        {
+          type: 'expand',
+          expandable: (row) => row.TaskName,  
+          renderExpand: (row) => {
+            return row.Description
+          }
+        },
         {
           title: "Task Name",
           key: "TaskName",
@@ -85,11 +76,7 @@ export default defineComponent({
           key: "DeadLine",
           defaultSortOrder: "ascend",
           sorter: "default",
-        },
-        {
-          title: "Task Details",
-          key: "TaskDetails",
-        },
+        }
       ];
     };
 

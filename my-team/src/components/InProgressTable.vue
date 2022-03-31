@@ -9,31 +9,14 @@
     <n-data-table
       ref="table"
       :columns="this.column"
-      :data="this.$store.state.data"
+      :data="this.data"
       :pagination="pagination"
-      :key="componentKey"
     />
   </n-space>
-
-  <n-button @click="showModal = true"> Start Me up </n-button>
-  <n-modal v-model:show="showModal">
-    <n-card
-      style="width: 600px"
-      title="Modal"
-      :bordered="false"
-      size="huge"
-      role="dialog"
-      aria-modal="true"
-    >
-      <template #header-extra> Oops! </template>
-      Content
-      <template #footer> Footer </template>
-    </n-card>
-  </n-modal>
 </template>
 
 <script>
-import { h, defineComponent, ref } from "vue";
+import { h, ref } from "vue";
 import { NButton, NProgress } from "naive-ui";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from "../firebase.js";
@@ -44,18 +27,13 @@ const db = getFirestore(firebaseApp);
 
 
 
-export default defineComponent({
+export default {
   data() {
     return {
       user: false,
-      componentKey: 0,
-      column: []
+      column: [],
+      data: []
     };
-  },
-  methods: {
-    forceRerender() {
-      this.componentKey += 1;
-    }
   },
   mounted() {
     const auth = getAuth();
@@ -72,10 +50,11 @@ export default defineComponent({
       return [
         {
           type: 'expand',
-          expandable: (row) => row.TaskName,
-          renderExpand: (row) => {
-            return row.Description
-          }
+          key: "TaskName",
+          expandable: (rowData) => rowData.TaskName,
+          renderExpand: (rowData) => {
+            return rowData.Description
+          } 
         },
         {
           title: "Task Name",
@@ -113,10 +92,6 @@ export default defineComponent({
           },
         },
         {
-          title: "Task Details",
-          key: "TaskDetails",
-        },
-        {
           title: "Update Status",
           key: "UpdateStatus",
           render (row) {
@@ -148,7 +123,6 @@ export default defineComponent({
                       }
                     })
                   })
-
                 }
               },
               { default: () => 'Update Progress (10%)'}
@@ -191,7 +165,7 @@ export default defineComponent({
     };
 
     //this.$store.commit("updateColumn", createColumns());
-    this.column = createColumns();
+    this.column = createColumns(this.forceRerender);
 
 
     taskDetails.then((QuerySnapshot) => {
@@ -204,17 +178,18 @@ export default defineComponent({
         ) {
           z.push(yy);
           this.$store.commit("updateData", z);
-          console.log(this.$store.state.data);
+          this.data = this.$store.state.data;
         }
       });
     });
   },
   setup() {
     const tableRef = ref(null);
+    var val = 0;
 
     return {
-      showModal: ref(false),
       table: tableRef,
+      value: val,
       pagination: { pageSize: 5 },
       filterAddress() {
         tableRef.value.filter({
@@ -229,8 +204,8 @@ export default defineComponent({
       },
       clearSorter() {
         tableRef.value.sort(null);
-      },
+      }
     };
   },
-});
+};
 </script>
