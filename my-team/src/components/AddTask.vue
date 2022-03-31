@@ -61,7 +61,7 @@ export default defineComponent({
             incharge:"",
             ddl: null,
             hours:"",
-            projid: this.$store.state.projectID,
+            projid: this.$route.params.id,
             membersInProject:new Array()
         }
   },

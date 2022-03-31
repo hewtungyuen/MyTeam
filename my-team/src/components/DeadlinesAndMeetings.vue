@@ -1,7 +1,7 @@
 <template>
 <div>
 
-  <n-card id = 'Deadline' embedded v-if = "type == 'Deadline'">
+  <n-card id = 'Deadline' embedded v-if = "type == 'Deadline'" v-bind:class="{overdue:isOverdue}">
     <h3 @click = 'goToProjects()'>{{title}}</h3>
     Project: {{this.name}}
     <br>
@@ -30,13 +30,14 @@ var db = getFirestore(firebaseApp)
 export default {
     mounted(){
         this.getProjectName()
-        if (this.isOverDue()) {
-            document.getElementById('Deadline').style.background = '#FFCCCB'
-        }
+        // if (this.isOverDue()) {
+        //     document.getElementById('Deadline').style.background = '#FFCCCB'
+        // }
     },
     data(){
         return {
-            name: ''
+            name: '',
+            isOverdue: this.isOverDue()
         }
     },
     methods:{
@@ -72,9 +73,9 @@ export default {
 </script>
 
 <style scoped>
-    /* .n-card {
-    background-color: #2f855a;
-    } */
+    .overdue {
+    background-color: #FFCCCB;
+    }
 
     h3:hover{
         color:blue;
