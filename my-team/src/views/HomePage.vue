@@ -172,7 +172,7 @@ export default {
                                     allTasks.then((querySnapshot) => {
                                         querySnapshot.forEach((doc) => {
                                             if (doc.id == taskId) {
-                                                if (doc.data().InCharge == this.user.email) {
+                                                if (doc.data().InCharge == this.user.email && doc.data().CompletionStatus == 'In Progress') {
 
                                                     let taskData = doc.data()
                                                     let TaskName = taskData.TaskName
