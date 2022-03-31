@@ -71,6 +71,13 @@ export default defineComponent({
     const createColumns = () => {
       return [
         {
+          type: 'expand',
+          expandable: (row) => row.TaskName,
+          renderExpand: (row) => {
+            return row.Description
+          }
+        },
+        {
           title: "Task Name",
           key: "TaskName",
           defaultSortOrder: "ascend",
