@@ -4,10 +4,8 @@ import router from './router/index.js'
 import naive from 'naive-ui'
 import { createStore } from 'vuex'
 
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-
 import '@fortawesome/fontawesome-free/js/all'
+
 
 // Create a new store instance.
 const store = createStore({
@@ -38,7 +36,6 @@ const app = createApp(App)
 app.use(naive)
 app.use(store)
 app.use(router)
-app.use(ElementPlus)
 
 
 app.mount('#app')
