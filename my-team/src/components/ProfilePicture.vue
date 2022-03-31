@@ -1,6 +1,7 @@
 <template>
   <div>
-    <img id="profilepic" src="../assets/defaultprofile.jpg" />
+    <img class="profilepic" v-if="this.url != ''" :src="url" />
+    <img class="profilepic" v-else src="../assets/defaultprofile.jpg" />
     <h3>{{ name }}</h3>
     <input
       style="display: none"
@@ -9,21 +10,15 @@
       ref="fileInput"
       accept="image/"
     />
-    <n-button
-      @click="
-        $refs.fileInput.click();
-      "
-      >Update Photo</n-button
-    >
+    <n-button @click="$refs.fileInput.click()">Update Photo</n-button>
   </div>
 </template>
 
 <script>
-// import firebase from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from "../firebase.js";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 var db = getFirestore(firebaseApp);
 export default {
   data() {
@@ -31,6 +26,7 @@ export default {
       name: "",
       user: false,
       file: null,
+      url: "",
     };
   },
 
@@ -42,41 +38,39 @@ export default {
     },
 
     uploadToStorage() {
-      console.log("Entered upload click");
       const storage = getStorage();
-      const storageRef = ref(storage,'users/' + this.user.uid + '/profile.jpg');
+      const storageRef = ref(storage, "users/" + this.name + "/profile.jpg");
       uploadBytes(storageRef, this.file).then((snapshot) => {
         console.log("Uploaded a blob or file!" + snapshot);
+        this.updatePhoto();
       });
+    },
 
-      // const auth = getAuth()
-
-      // console.log(firebase.storage())
-
-      // .ref('users/' + auth.user.uid + '/profile.jpg')
-      // .put(this.file).then(function () {
-      //     console.log('successfully uploaded')
-      // }).catch(error => {
-      //     console.log(error.message);
-      // })
+    updatePhoto() {
+      const storage = getStorage();
+      getDownloadURL(ref(storage, "users/" + this.name + "/profile.jpg")).then(
+        (url) => {
+          console.log("photoupdated");
+          this.url = url;
+        }
+      );
     },
   },
 
   mounted() {
-    // let img = document.getElementById('profilepic')
+    console.log("hi");
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
-      console.log(user);
-      // if (user) {
-      //     this.user = user;
-      //     firebase.storage().ref('users/' + auth.user.uid + '/profile.jpg').getDownloadURL()
-      //     .then(imgUrl => {
-      //         img.src = imgUrl;
-      //     }).catch((e) => {
-      //         console.log(e);
-      //     })
+      if (user) {
+        this.user = user;
+        this.email = this.user.email;
 
-      // }
+        //  let img = document.getElementById('profilepic')
+        //  const storage = getStorage();
+        //  getDownloadURL(ref(storage,'users/' + this.name + '/profile.jpg'))
+        //   .then((url) => { this.url = url;
+        //   })
+      }
     });
 
     let allUsers = getDocs(collection(db, "Users"));
@@ -84,8 +78,9 @@ export default {
     allUsers.then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         let docData = doc.data();
-        if (docData.Email == this.user.email) {
+        if (docData.Email == this.email) {
           this.name = docData.FullName;
+          this.updatePhoto();
         }
       });
     });
@@ -94,8 +89,9 @@ export default {
 </script>
 
 <style scoped>
-#profilepic {
+.profilepic {
   height: 120px;
+  width: 120px;
   border-radius: 100%;
 }
 </style>
