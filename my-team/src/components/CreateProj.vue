@@ -175,7 +175,8 @@ export default {
                     StartDate: new Date().toLocaleDateString(),
                     Members: projmembers,
                     Tasks: new Array(),
-                    CompletionStatus: "In Progress"
+                    CompletionStatus: "In Progress",
+                    CompletionDate: ""
                     });
                 console.log(docRef.id)
                 var projid = docRef.id
