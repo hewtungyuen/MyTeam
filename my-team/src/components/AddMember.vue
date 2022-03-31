@@ -139,6 +139,8 @@ export default {
                     })
       }
       alert("Members added successfully!")
+      this.showModal = false
+      this.$emit("addedMem")
 
     }
     }

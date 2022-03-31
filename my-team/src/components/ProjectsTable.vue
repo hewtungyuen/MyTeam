@@ -45,6 +45,7 @@ const columns = [
 export default defineComponent({
   props:{
     tasksToDisplay:Object,
+    empty:Boolean,
   },
   setup () {
     const tableRef = ref(null)
