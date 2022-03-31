@@ -30,13 +30,17 @@ export default {
     };
   },
 
+
   methods: {
+
+    //obtain file data
     handleUpload(event) {
       this.file = event.target.files[0];
       console.log(this.file);
       this.uploadToStorage();
     },
 
+    //upload to storage
     uploadToStorage() {
       const storage = getStorage();
       const storageRef = ref(storage, "users/" + this.name + "/profile.jpg");
@@ -46,6 +50,7 @@ export default {
       });
     },
 
+    //update the profile picture
     updatePhoto() {
       const storage = getStorage();
       getDownloadURL(ref(storage, "users/" + this.name + "/profile.jpg")).then(
@@ -58,6 +63,7 @@ export default {
   },
 
   mounted() {
+    //get the name and the photo when mounted
     console.log("hi");
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
@@ -93,5 +99,7 @@ export default {
   height: 120px;
   width: 120px;
   border-radius: 100%;
+  object-fit: cover;
+  
 }
 </style>
