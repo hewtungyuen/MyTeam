@@ -1,5 +1,6 @@
 <template>
 <div v-if = "leader">
+  </div>
   <n-button id="modalBut" @click="show()">
     + Task
   </n-button>
@@ -28,14 +29,14 @@
         </n-dropdown>
         <p>{{this.incharge}}</p>
         <label>Deadline:</label>
-        <n-date-picker v-model:value="ddl" type="date" clearable /><br>
+        <n-date-picker v-model:formatted-value="ddl" value-format="yyyy-MM-dd"
+    type="date" clearable /><br>
         <label>Expected Hours: </label>
         <n-input-number v-model:value="hours" clearable />
     </form>
     <n-button strong secondary round type = "success" id = "addTaskBut" @click = "addTask()"> Add &raquo; </n-button>
     </n-card>
   </n-modal>
-</div>
 </template>
 
 <script>
@@ -60,7 +61,7 @@ export default defineComponent({
             description:"",
             incharge:"",
             ddl: null,
-            hours:"",
+            hours:0,
             projid: this.$route.params.id,
             membersInProject:new Array()
         }
@@ -99,7 +100,7 @@ export default defineComponent({
       this.description = ""
       this.incharge = ""
       this.ddl= null
-      this.hours=""
+      this.hours=0
       this.showModal = true
     },
     handleSelect(key){
@@ -111,7 +112,7 @@ export default defineComponent({
       var desc = this.description;
       var incharge = this.incharge;
       var ddl = this.ddl;
-      var hours = this.hours;
+      var hours = parseInt(this.hours);
       if (name == "" || incharge == "" || ddl == null || hours == ""){
         alert("Please input all fields!")
       } else{
@@ -127,7 +128,7 @@ export default defineComponent({
             InCharge: incharge,
             DeadLine: ddl,
             ExpectedHours: hours,
-            ProgressStatus:"0",
+            ProgressStatus:0,
             CompletionStatus: "In Progress"
           })
           console.log(docRef)
