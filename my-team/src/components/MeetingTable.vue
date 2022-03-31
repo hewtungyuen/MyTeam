@@ -20,10 +20,10 @@
 import { h, defineComponent, ref } from "vue";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from "../firebase.js";
+import { NButton } from "naive-ui";
 import { getFirestore } from "firebase/firestore";
-import { collection, getDocs} from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 const db = getFirestore(firebaseApp);
-
 
 export default defineComponent({
   data() {
@@ -31,7 +31,7 @@ export default defineComponent({
       user: false,
       componentKey: 0,
       column: [],
-      data: []
+      data: [],
     };
   },
   mounted() {
@@ -42,23 +42,36 @@ export default defineComponent({
       }
     });
 
-    var taskDetails = getDocs(collection(db, "Meetings"));
+    var meetingDetails = getDocs(collection(db, "Meetings"));
     this.$store.commit("refreshData");
 
     // Update all the meetings into the store
-    taskDetails.then((QuerySnapshot) => {
+    meetingDetails.then((QuerySnapshot) => {
       const z = [];
       QuerySnapshot.forEach((doc) => {
         let yy = doc.data();
-        
-          z.push(yy);
-          this.$store.commit("updateData", z);
-          this.data = this.$store.state.data;
-          console.log(yy);
+
+        // Creating a new list of names with commas
+        var newMemberNames = [];
+        for (var t = 0; t < yy.Members.length; t++) {
+          if (t == yy.Members.length - 1) {
+            newMemberNames.push(yy.Members[t]);
+          } else {
+            var n = yy.Members[t] + ", ";
+            newMemberNames.push(n);
+          }
+        }
+        // Changing the Members to the new member names with commas
+        yy.Members = newMemberNames;
+        console.log(yy);
+
+        // Showcase the data that is going into the column
+        // console.log(yy);
+        z.push(yy);
+        this.$store.commit("updateData", z);
+        this.data = this.$store.state.data;
       });
     });
-
-   
 
     const createColumns = () => {
       return [
@@ -70,9 +83,7 @@ export default defineComponent({
         },
         {
           title: "In Charge",
-          key: "Leader",
-          defaultSortOrder: "ascend",
-          sorter: "default",
+          key: "LeaderName",
         },
         {
           title: "DateTime",
@@ -89,16 +100,51 @@ export default defineComponent({
         {
           title: "Status",
           key: "Status",
-          render () {
+          defaultSortOrder: "ascend",
+          sorter: "default",
+        },
+        {
+          title: "Action",
+          key: "Complete",
+          render(row) {
             return h(
-              { default: () => 'Update Progress (10%)'}
-            )
-          }
+              NButton,
+              {
+                size: "small",
+                onClick: () => {
+                  meetingDetails.then((QuerySnapshot) => {
+                    QuerySnapshot.forEach((docs) => {
+                      let yy = docs.data();
+
+                      if (row.Name == yy.Name) {
+                        let boo = confirm(
+                          "Confirm on deleting " + row.Name + " ?"
+                        );
+                        if (boo == true) {
+                          updateDoc(doc(db, "Meetings", docs.id), {
+                            Status: "Cancelled",
+                          }).then ((user) => {
+                            console.log(user);
+                            location.reload();
+                          });
+                        }
+                      }
+                    });
+                  });
+                },
+              },
+              { default: () => "Cancel Meeting" }
+            );
+          },
         },
       ];
     };
     this.column = createColumns();
-    
+  },
+  methods: {
+    typeOf(obj) {
+      return {}.toString.call(obj).split(" ")[1].slice(0, -1).toLowerCase();
+    },
   },
   setup() {
     const tableRef = ref(null);

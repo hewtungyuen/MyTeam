@@ -32,12 +32,13 @@
         <label>Date and Time:</label>
         <n-input
           type="datetime-local"
-          v-model:value="datetime"
+          v-model:value="timestamp"
           size="large"
           placeholder=""
           required=""
           clearable
         />
+        <div id="errordate"></div>
         <br /><br />
         <label class="label" for="add">Add New Members: </label>
         <div class="dropdown">
@@ -94,10 +95,13 @@ export default defineComponent({
   data() {
     return {
       user: false,
+      state: false,
       name: "",
       details: "",
-      datetime: "",
+      timestamp: null,
+      adjustedTimestamp: null,
       memberInMeeting: new Array(),
+      memberInMeetingNames: new Array(),
       membersInProject: ["No Member in this project"],
       projId: this.$route.params.id,
     };
@@ -108,10 +112,30 @@ export default defineComponent({
       showModal: ref(false),
     };
   },
+
   watch: {
     showModal: function (newVal) {
       if (newVal == false) {
         this.resetData();
+      }
+    },
+    timestamp: function (x) {
+      if (x) {
+        let dateSelected = new Date(x);
+        // If selecting date before today, alert them
+        if (dateSelected.getTime() < new Date().getTime()) {
+          document.getElementById("errordate").innerHTML =
+            "The date selected has passed. Please change the date";
+        } else {
+          document.getElementById("errordate").innerHTML = "";
+        }
+        // console.log(new Date(x).getTime() > new Date().getTime());
+        var ts = x.split("T");
+        var date = ts[0];
+        var time = ts[1];
+        console.log(date + ", " + time + "H");
+        // console.log(dateSelected);
+        this.adjustedTimestamp = date + ", " + time + "H";
       }
     },
   },
@@ -145,11 +169,14 @@ export default defineComponent({
     resetData() {
       this.name = "";
       this.details = "";
-      this.datetime = "";
+      this.timestamp = null;
+      this.adjustedTimestamp = null;
       this.memberInMeeting = new Array();
+      this.memberInMeetingNames = new Array();
     },
 
     show() {
+      // this.resetData();
       this.showModal = true;
       this.addMember(this.user.email);
       // document.getElementById("addMemberForm").reset();
@@ -217,35 +244,51 @@ export default defineComponent({
     async createMeeting() {
       var meetingName = this.name;
       var meetingDetails = this.details;
-      var meetingMembers = this.memberInMeeting;
       var leader = String(this.user.email);
-      var datetime = this.datetime;
+      var adjustedTimestamp = this.adjustedTimestamp;
+
       alert("Create Meeting: " + meetingName);
+
+      // Get the list of full name from user's emails
+      for (var j = 0; j < this.memberInMeeting.length; j++) {
+        let data1 = await getDoc(doc(db, "Users", this.memberInMeeting[j]));
+        this.memberInMeetingNames.push(data1.data().FullName);
+        // Saving leaderName into a variable
+        if (this.memberInMeeting[j] == leader) {
+          var leadername = data1.data().FullName;
+        }
+      }
+
       try {
         const docRef = await addDoc(collection(db, "Meetings"), {
           Name: meetingName,
           Details: meetingDetails,
           Leader: leader,
+          LeaderName: leadername,
           StartDate: new Date().toLocaleDateString(),
-          Members: meetingMembers,
-          DateTime: datetime,
-          CompletionStatus: "In Progress",
+          MembersEmail: this.memberInMeeting,
+          Members: this.memberInMeetingNames,
+          DateTime: adjustedTimestamp,
           ProjectID: this.projId,
+          Status: "Upcoming",
         });
+
         var meetingid = docRef.id;
         console.log("Meeting successfully created: " + docRef.id);
+
         // Add this meeting into each member's ongoing Meetings
-        for (let i = 0; i < meetingMembers.length; i++) {
+        for (let i = 0; i < this.memberInMeeting.length; i++) {
           if (i == 0) {
             console.log("Members ongoing meetings updated");
           }
-          await updateDoc(doc(db, "Users", meetingMembers[i]), {
+          await updateDoc(doc(db, "Users", this.memberInMeeting[i]), {
             OngoingMeetings: arrayUnion(meetingid),
           });
         }
         // Reset the data to preset
         this.resetData();
 
+        this.$emit("addedMeeting");
       } catch (error) {
         console.error("Error adding document:", error);
       }
@@ -314,6 +357,11 @@ export default defineComponent({
 
 #add {
   width: 350px;
+}
+
+#errordate {
+  font-size: 12px;
+  color: red;
 }
 
 #heading {
