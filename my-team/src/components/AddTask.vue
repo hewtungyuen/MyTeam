@@ -139,6 +139,7 @@ export default defineComponent({
               });
           alert("Task added successfully!")
           this.showModal = false
+          this.$emit("addedTask")
 
         }catch(error){
                 console.error("Error adding document:", error);

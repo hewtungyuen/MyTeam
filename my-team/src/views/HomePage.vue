@@ -29,25 +29,24 @@
                 <h2>You have no projects at the moment.</h2>
             </div>
             <n-collapse v-else-if='this.projectNames.length === 1'>
+
                 <n-collapse-item :title = "projectNames[0]">
                     <ProjectsTable :tasksToDisplay = "this.myCurrentTasks[0]" />
                     <template #header-extra>
-                        <button @click = 'goToProjectsPage(this.projectIds[0])'>Go to project</button>
+                        <button @click = 'goToProjectsPage(this.projectIdsWithoutCompleted[0])'>Go to project</button>
                     </template>
-                </n-collapse-item>
-                <n-divider />
-            </n-collapse>
-            <n-collapse v-else v-for = 'index in this.projectNames.length' :key = 'index'>
-                <!-- {{index}} -->
-                <n-collapse-item :title = "projectNames[index-1]">
-                    <ProjectsTable :tasksToDisplay = "this.myCurrentTasks[index-1]" />
-                    <template #header-extra>
-                <!-- {{this.projectIds[index-1]}} -->
+                </n-collapse-item><n-divider />
 
-                        <button @click = 'goToProjectsPage(this.projectIds[index-1])'>Go to project</button>
+            </n-collapse>
+
+            <n-collapse v-else v-for = 'index in this.projectNames.length' :key = 'index'>
+                <n-collapse-item :title = "projectNames[index-1]">
+                    <ProjectsTable :tasksToDisplay = "this.myCurrentTasks[index-1]" :empty = "this.myCurrentTasks.length == 0"/>
+                    <template #header-extra>
+                        <button @click = 'goToProjectsPage(this.projectIdsWithoutCompleted[index-1])'>Go to project</button>
                     </template>
-                </n-collapse-item>
-                <n-divider />
+                </n-collapse-item><n-divider />
+
             </n-collapse>
             
         </div>
@@ -155,15 +154,17 @@ export default {
                     }
                 }
             })
+
             this.projectIds = myProjects
 
-            this.projectIds.forEach((projId) => {
+            this.projectIds.forEach((projId) => {    
                 
                 allProjects.then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         if (doc.id == projId) {
                             var projData = doc.data()
                             if (projData.CompletionStatus == 'In Progress') {
+                                this.projectIdsWithoutCompleted.push(doc.id)
                                 this.projectNames.push(projData.Name)
                                 this.projectDeadlines.push(projData.StartDate)
 
@@ -198,6 +199,7 @@ export default {
 
                 })
             })
+
         })
 
     },
@@ -206,6 +208,7 @@ export default {
             name: '',
             user: false,
             projectIds: [],
+            projectIdsWithoutCompleted:[],
             projectNames: [],
             projectDeadlines: [],
             myCurrentTasks: [], // 2d array, separated by project 
