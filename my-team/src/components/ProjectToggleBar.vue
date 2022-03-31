@@ -7,7 +7,7 @@
       <CompletedTable/>
     </n-tab-pane>
     <n-tab-pane name="Meetings" tab="Meetings">
-      <!-- <Table/> -->
+      <MeetingTable/>
     </n-tab-pane>
   </n-tabs>
 </template>
@@ -15,7 +15,7 @@
 <script>
 import InProgressTable from '@/components/InProgressTable.vue';
 import CompletedTable from '@/components/CompletedTable.vue';
-// import Table from '@/components/Table.vue';
+import MeetingTable from '@/components/MeetingTable.vue';
 
 export default {
   name: 'ProjectToggleBar',
@@ -23,7 +23,7 @@ export default {
   components: { 
     InProgressTable,
     CompletedTable,
-    // Table
+    MeetingTable,
   }
 }
 </script>
