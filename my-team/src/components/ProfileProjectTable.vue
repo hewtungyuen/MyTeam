@@ -1,6 +1,5 @@
 <template>
-{{this.projects}}
-  <n-space vertical :size="12">
+  <n-space vertical :size="12" :key="componentKey">
     <br>
     <n-space>
       <n-button @click="filterInProgress">In Progress</n-button> 
@@ -16,7 +15,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { ref } from 'vue'
 import { collection, getDocs, getFirestore} from 'firebase/firestore'
 import firebaseApp from '../firebase.js'
 import { getAuth, onAuthStateChanged } from "firebase/auth"
@@ -43,6 +42,7 @@ const columns = [
     key: 'completionStatus',
     defaultSortOrder: 'ascend',
     sorter: 'default',
+    defaultFilterOptionValues: ['Completed', 'In Progress'],
     filterOptions: [
       {
         label: 'Completed',
@@ -54,7 +54,7 @@ const columns = [
       }
     ],
     filter (value, row) {
-      return ~row.status.indexOf(value)
+      return ~row.completionStatus.indexOf(value)
     }
   },
 
@@ -87,12 +87,15 @@ const columns = [
 //   },
 // ]
 
-export default defineComponent({
+export default {
 
   data() {
-      this.projects = [];
-      this.user = false;
-      this.name = ''
+      return {
+        projects: [],
+        user: false,
+        name: ''
+      }
+
   },
 
   setup () {
@@ -104,12 +107,12 @@ export default defineComponent({
       columns,
       filterInProgress () {
         tableRef.value.filter({
-          status: 'In Progress'
+          completionStatus: 'In Progress'
         })
       },
       filterCompleted () {
         tableRef.value.filter({
-          status: 'Completed'
+          completionStatus: 'Completed'
         })
       },
       clearFilters () {
@@ -131,11 +134,12 @@ export default defineComponent({
         var allTasks = getDocs(collection(db,'Tasks'))
 
         allUsers.then((querySnapshot) => {
-            var myProjects = []
+
             
             querySnapshot.forEach((doc) => {
                 var docData = doc.data()
                 if (docData.Email == this.user.email) {
+                    var myProjects = []
                     this.name = docData.FullName
                     if (docData.Projects) {
                         myProjects = myProjects.concat(docData.Projects)
@@ -144,9 +148,10 @@ export default defineComponent({
                     if (docData.LeadingProjects) {
                         myProjects = myProjects.concat(docData.LeadingProjects)
                     }
+                    this.projectIds = myProjects
                 }
             })
-            this.projectIds = myProjects
+            
 
             this.projectIds.forEach((projId) => {
                 
@@ -174,22 +179,27 @@ export default defineComponent({
                                     }
                                 })
                                 project.hoursCompleted = hoursCompleted
+                                this.projects.push(project)
+                                
 
                                 
 
                             })
-                            this.projects.push(project)
+                            
                         }
                         
                     })
                     
                 })
+                
             })
-        })
-        console.log(this.projects)
+        });
+        
+        
+        console.log(this.test)
   }
 
-})
+}
 </script>
 
 <style scoped>
