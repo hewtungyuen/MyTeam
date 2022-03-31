@@ -149,6 +149,10 @@ export default {
                       if (row.TaskName == yy.TaskName) {
                         updateDoc(doc(db, "Tasks", docs.id), {
                           ProgressStatus : 100,
+                        }).then ((user) => {
+                          console.log(user);
+                          location.reload();
+                          // this.$router.push('/ProjectPage/' + yy.projectID);
                         });
                       }
 
