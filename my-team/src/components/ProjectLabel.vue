@@ -1,5 +1,6 @@
 <template>
   <h1>{{ title }}</h1>
+  <CompleteProj/>
   <n-card :bordered="false">
     Team Leader: {{ teamleader }}
     <br />
@@ -16,10 +17,14 @@ import firebaseApp from "../firebase.js";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs } from "firebase/firestore";
+import CompleteProj from "@/components/CompleteProj"
 
 const db = getFirestore(firebaseApp);
 
 export default {
+  components:{
+    CompleteProj
+  },
   data() {
     return {
       user: false,

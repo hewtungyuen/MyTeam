@@ -1,5 +1,6 @@
 <template>
-  <n-button id="modalBut" @click="show()" v-if = "leader">
+<div v-if = "leader">
+  <n-button id="modalBut" @click="show()">
     + Task
   </n-button>
   <n-modal v-model:show="showModal">
@@ -11,13 +12,21 @@
       role="dialog"
       aria-modal="true"
     >
-    <form id = "addTaskForm">
+    <form>
         <label>Task Name:</label><br>
         <n-input type = "text" v-model:value = "name" size = "large" clearable/><br><br>
         <label>Task Description:</label><br>
         <n-input round type = "textarea" v-model:value = "description" size = "large" rows = "4" clearable /> <br><br>
-        <label>In Charge:</label><br>
-        <n-input type="text" placeholder="Enter Email" size = "large" v-model:value = "incharge"/><br><br>
+        <label>In Charge:</label>
+        <n-dropdown
+        trigger="click"
+        :options="membersInProject"
+        :show-arrow="true"
+        @select="handleSelect"
+        >
+        <n-button>Add Person-In-Charge</n-button>
+        </n-dropdown>
+        <p>{{this.incharge}}</p>
         <label>Deadline:</label>
         <n-date-picker v-model:value="ddl" type="date" clearable /><br>
         <label>Expected Hours: </label>
@@ -26,6 +35,7 @@
     <n-button strong secondary round type = "success" id = "addTaskBut" @click = "addTask()"> Add &raquo; </n-button>
     </n-card>
   </n-modal>
+</div>
 </template>
 
 <script>
@@ -39,19 +49,20 @@ const db = getFirestore(firebaseApp);
 export default defineComponent({
   setup() {
     return {
-      showModal: ref(false)
+      showModal: ref(false),
+      leader: ref(false)
     };
   },
   data(){
         return {
             user:false,
-            leader:false,
             name:"",
             description:"",
             incharge:"",
             ddl: null,
             hours:"",
-            projid: this.$store.state.projectID
+            projid: this.$store.state.projectID,
+            membersInProject:new Array()
         }
   },
   mounted(){
@@ -59,21 +70,41 @@ export default defineComponent({
         onAuthStateChanged(auth, (user) => {
             if(user) {
                 this.user = user;
+                this.membersInProject.push({label:this.user.email, key:this.user.email})
                 console.log(this.user.email)
                 console.log(this.projid)
-                this.leader = checkleader(this.user.email, this.projid)
+                checkleader(this.user.email, this.projid).then((x)=>{this.leader = x})
             }
         })
         async function checkleader(user, projid) {
-        let z = await getDoc(doc(db, "Users", user));
-        let leadingproj = z.data().LeadingProjects
-        return leadingproj.includes(projid)
+        let z = await getDoc(doc(db, "Projects", projid));
+        let leaderemail = String(z.data().Leader)
+        console.log("leader of this proj" + leaderemail)
+        return (leaderemail == user)
     }
+    // Get all the project members and put into membersInProject
+    const docRef = doc(db, "Projects", this.projid);
+    const docSnap = getDoc(docRef);
+    docSnap.then((item) => {
+      // console.log(item.data().Members);
+      var n = item.data().Members;
+      for (var i = 0; i < item.data().Members.length; i++) {
+        this.membersInProject.push({label:n[i], key: n[i]})
+      }
+    })
     },
     methods: {
     show() {
-        this.showModal = true
-        document.getElementById("addTaskForm").reset();
+      this.name = ""
+      this.description = ""
+      this.incharge = ""
+      this.ddl= null
+      this.hours=""
+      this.showModal = true
+    },
+    handleSelect(key){
+      this.incharge = key
+      console.log("poc is"+ this.incharge)
     },
     async addTask(){
       var name = this.name;
@@ -105,7 +136,6 @@ export default defineComponent({
           await updateDoc(projRef, {
               Tasks: arrayUnion(taskid)
               });
-          document.getElementById("addTaskForm").reset();
           alert("Task added successfully!")
           this.showModal = false
 
