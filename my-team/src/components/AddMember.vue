@@ -1,5 +1,6 @@
 <template>
 <div v-if = "leader">
+  </div>
   <n-button id="modalBut" @click="show()">
     + Member
   </n-button>
@@ -39,16 +40,17 @@
           <label>Team Members: </label> <br />
           <div id="members"></div>
         </form>
+        <n-button strong secondary round type = "success" id = "addMemBut" @click = "confirmAdd()"> Add &raquo; </n-button>
     </n-card>
   </n-modal>
-</div>
+
 </template>
 
 <script>
 import firebaseApp from '../firebase.js';
 import {getAuth, onAuthStateChanged} from "firebase/auth";
 import {getFirestore} from "firebase/firestore";
-import {doc, getDoc} from "firebase/firestore";
+import {doc, getDoc,updateDoc,arrayUnion} from "firebase/firestore";
 const db = getFirestore(firebaseApp);
 export default {
   data(){
@@ -125,7 +127,22 @@ export default {
             alert("User does not exist!")
         }
         },
+    async confirmAdd(){
+      var projmembers = this.memberTotal;
+      const projRef = doc(db, "Projects", this.projid)
+          await updateDoc(projRef, {
+              Members: arrayUnion(...projmembers)
+              });
+      for (const mem of projmembers) {
+        await updateDoc(doc(db,"Users", mem), {
+                        Projects: arrayUnion(this.projid)
+                    })
+      }
+      alert("Members added successfully!")
+      this.showModal = false
+      this.$emit("addedMem")
 
+    }
     }
   }
 </script>

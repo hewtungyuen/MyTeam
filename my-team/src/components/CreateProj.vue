@@ -127,6 +127,10 @@ export default {
             if(this.user.email == yy.Email){
                 alert("You cannot add yourself!")
             }else{
+              if(this.memberTotal.includes(yy.Email)) {
+                alert("You have already added this member!")
+                return
+              }
             this.memberTotal.push(String(yy.Email))
             console.log(this.memberTotal.length)
             var bu = document.createElement("button")
@@ -171,7 +175,8 @@ export default {
                     StartDate: new Date().toLocaleDateString(),
                     Members: projmembers,
                     Tasks: new Array(),
-                    CompletionStatus: "In Progress"
+                    CompletionStatus: "In Progress",
+                    CompletionDate: ""
                     });
                 console.log(docRef.id)
                 var projid = docRef.id
