@@ -1,6 +1,8 @@
 <template>
 <div>
     <Sidebar/>
+    <ProfilePicture/>
+    <ProgressCircle/>
 
     {{this.allProjects}}
 </div>
@@ -9,6 +11,8 @@
 <script>
 
 import Sidebar from '@/components/sidebar/Sidebar'
+import ProfilePicture from '@/components/ProfilePicture.vue'
+import  ProgressCircle from '@/components/ProgressCircle.vue'
 import { sidebarWidth } from '@/components/sidebar/state'
 // import { getAuth, onAuthStateChanged } from "firebase/auth"
 import firebaseApp from '../firebase.js'
@@ -18,6 +22,9 @@ var db = getFirestore(firebaseApp)
 export default {
     components:{
         Sidebar,
+        ProfilePicture,
+        ProgressCircle
+
     },
     mounted() {
         var allProjects = getDocs(collection(db, 'Projects'))
