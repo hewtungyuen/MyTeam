@@ -31,7 +31,15 @@
             <n-collapse v-else-if='this.projectNames.length === 1'>
 
                 <n-collapse-item :title = "projectNames[0]">
+
+                    <div v-if = 'this.myCurrentTasks[index-1].length == 0'>
+                        <i>You have no pending tasks at the moment. </i>
+                    </div>
+
+                    <div v-else>
                     <ProjectsTable :tasksToDisplay = "this.myCurrentTasks[0]" />
+                    </div>
+
                     <template #header-extra>
                         <button @click = 'goToProjectsPage(this.projectIdsWithoutCompleted[0])'>Go to project</button>
                     </template>
@@ -41,7 +49,15 @@
 
             <n-collapse v-else v-for = 'index in this.projectNames.length' :key = 'index'>
                 <n-collapse-item :title = "projectNames[index-1]">
-                    <ProjectsTable :tasksToDisplay = "this.myCurrentTasks[index-1]" :empty = "this.myCurrentTasks.length == 0"/>
+                    
+                    <div v-if = 'this.myCurrentTasks[index-1].length == 0'>
+                        <i>You have no pending tasks at the moment. </i>
+
+                    </div>
+
+                    <div v-else>
+                        <ProjectsTable :tasksToDisplay = "this.myCurrentTasks[index-1]" :empty = "this.myCurrentTasks.length == 0"/>
+                    </div>
                     <template #header-extra>
                         <button @click = 'goToProjectsPage(this.projectIdsWithoutCompleted[index-1])'>Go to project</button>
                     </template>
@@ -59,20 +75,20 @@
         <div >
             <div>
                 
-                <h2 class = 'container' >Deadlines</h2>
+                <h2 class = 'container' >My tasks</h2>
                 <n-layout class = 'meetingsAndDeadlines' >
-                        <n-layout-sider :native-scrollbar="true" bordered v-for = 'subTask in allMyTasks' :key = 'subTask.ProjectID'> 
-                            <DeadlinesAndMeetings :title = "subTask.TaskName" :date = "subTask.DeadLine" type = "Deadline" :projectId = "subTask.ProjectID"/>
-                        </n-layout-sider>
+                    <div v-if = 'allMyTasks.length == 0'> <i>You have no upcoming tasks.</i></div>
+                    <n-layout-sider :native-scrollbar="true" v-else bordered v-for = 'subTask in allMyTasks' :key = 'subTask.ProjectID'> 
+                        <DeadlinesAndMeetings :title = "subTask.TaskName" :date = "subTask.DeadLine" type = "Deadline" :projectId = "subTask.ProjectID"/>
+                    </n-layout-sider>
                 </n-layout>
             </div>
             <br>
             <div>
-
-                <h2 class = 'container'>Meetings</h2>   
+                <h2 class = 'container'>Upcoming meetings</h2>   
                 <n-layout class = 'meetingsAndDeadlines' id = 'deadlines'>
-
-                    <n-layout-sider :native-scrollbar="false" bordered v-for = 'meeting in allMyMeetingDetails' :key = 'meeting.title'>
+                    <div v-if = 'allMyMeetingDetails.length == 0'> <i>You have no upcoming meetings.</i></div>
+                    <n-layout-sider :native-scrollbar="false" bordered v-else v-for = 'meeting in allMyMeetingDetails' :key = 'meeting.title'>
                         <DeadlinesAndMeetings :title = "meeting.Name" :date = "new Date(meeting.DateTime)" type = "Meeting" :projectId = 'meeting.ProjectID' />
                     </n-layout-sider>
 
