@@ -1,5 +1,6 @@
 <template>
 <div v-if = "leader">
+  </div>
   <n-button id="modalBut" @click="show()">
     + Task
   </n-button>
@@ -35,7 +36,6 @@
     <n-button strong secondary round type = "success" id = "addTaskBut" @click = "addTask()"> Add &raquo; </n-button>
     </n-card>
   </n-modal>
-</div>
 </template>
 
 <script>
