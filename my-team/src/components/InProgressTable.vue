@@ -2,15 +2,16 @@
   <n-space vertical :size="12">
     <n-space>
       <n-button @click="sortName">Sort By Name (Ascend)</n-button>
-      <n-button @click="filterAddress">Filter Address (London)</n-button>
+      <n-button @click="filterAddress">Filter by name</n-button>
       <n-button @click="clearFilters">Clear Filters</n-button>
       <n-button @click="clearSorter">Clear Sorter</n-button>
     </n-space>
     <n-data-table
       ref="table"
-      :columns="this.$store.state.column"
+      :columns="this.column"
       :data="this.$store.state.data"
       :pagination="pagination"
+      :key="componentKey"
     />
   </n-space>
 
@@ -42,12 +43,19 @@ const db = getFirestore(firebaseApp);
 
 
 
+
 export default defineComponent({
   data() {
     return {
       user: false,
-      output: [],
+      componentKey: 0,
+      column: []
     };
+  },
+  methods: {
+    forceRerender() {
+      this.componentKey += 1;
+    }
   },
   mounted() {
     const auth = getAuth();
@@ -60,9 +68,15 @@ export default defineComponent({
     var taskDetails = getDocs(collection(db, "Tasks"));
     this.$store.commit("refreshData");
 
-
     const createColumns = () => {
       return [
+        {
+          type: 'expand',
+          expandable: (row) => row.TaskName,
+          renderExpand: (row) => {
+            return row.Description
+          }
+        },
         {
           title: "Task Name",
           key: "TaskName",
@@ -100,42 +114,45 @@ export default defineComponent({
         },
         {
           title: "Task Details",
-          key: "TaskDetails"
-          // render () {
-          //   return h(
-          //     NButton,
-          //     {
-          //       size: 'small',
-          //       onClick: () => show(),
-          //     },
-          //     { default: () => 'Task Details' }
-          //   )
-          // }
+          key: "TaskDetails",
         },
         {
           title: "Update Status",
           key: "UpdateStatus",
           render (row) {
-            var status = parseInt(row.ProgressStatus);
             return h(
               NButton,
               {
                 size: 'small',
                 onClick: () => {
+                  console.log("Entered update")
+                  let status = parseInt(row.ProgressStatus);
                   if (status < 100) {
-                    status += 10;
+                    status += 10; 
                   }
 
                   taskDetails.then((QuerySnapshot) => {
                     QuerySnapshot.forEach((docs) => {
                       let yy = docs.data();
+
                       if (row.TaskName == yy.TaskName) {
                         updateDoc(doc(db, "Tasks", docs.id), {
                           ProgressStatus : status,
+                        }).then ((user) => {
+                          console.log(user);
+                          location.reload();
+                          // this.$router.push('/ProjectPage/' + yy.projectID);
                         });
+                      }
+                      
+                      if (row.TaskName == yy.TaskName && status >= 100) {
+                        updateDoc(doc(db, "Tasks", docs.id), {
+                          CompletionStatus : "Completed"
+                        })
                       }
                     })
                   })
+
                 }
               },
               { default: () => 'Update Progress (10%)'}
@@ -145,21 +162,40 @@ export default defineComponent({
         {
           title: "Complete",
           key: "Complete",
-          // render () {
-          //   return h(
-          //     NButton,
-          //     {
-          //       size: 'small',
-          //       onClick: () => updateProgress(),
-          //     },
-          //     { default: () => 'Complete Task' }
-          //   )
-          // }
+          render (row) {
+            return h(
+              NButton,
+              {
+                size: 'small',
+                onClick: () => {
+                  taskDetails.then((QuerySnapshot) => {
+                    QuerySnapshot.forEach((docs) => {
+                      let yy = docs.data();
+
+                      if (row.TaskName == yy.TaskName) {
+                        updateDoc(doc(db, "Tasks", docs.id), {
+                          ProgressStatus : 100,
+                        });
+                      }
+
+                      if (row.TaskName == yy.TaskName) {
+                        updateDoc(doc(db, "Tasks", docs.id), {
+                          CompletionStatus : "Completed"
+                        })
+                      }
+                    })
+                  })
+                }
+              },
+              { default: () => 'Complete Task' }
+            )
+          }
         },
       ];
     };
 
-    this.$store.commit("updateColumn", createColumns());
+    //this.$store.commit("updateColumn", createColumns());
+    this.column = createColumns();
 
 
     taskDetails.then((QuerySnapshot) => {
@@ -201,86 +237,4 @@ export default defineComponent({
     };
   },
 });
-
-// const createColumns = () => {
-//   return [
-//     {
-//       title: "Task Name",
-//       key: "TaskName",
-//       defaultSortOrder: "ascend",
-//       sorter: "default",
-//     },
-//     {
-//       title: "In Charge",
-//       key: "InCharge",
-//       defaultSortOrder: "ascend",
-//       sorter: "default",
-//     },
-//     {
-//       title: "Expected Hours",
-//       key: "ExpectedHours",
-//       defaultSortOrder: "ascend",
-//       sorter: "default",
-//     },
-//     {
-//       title: "Deadline",
-//       key: "DeadLine",
-//       defaultSortOrder: "ascend",
-//       sorter: "default",
-//     },
-//     {
-//       title: "Progress Status",
-//       key: "ProgressStatus",
-//       render(row) {
-//         const status = row.ProgressStatus;
-//         return h(NProgress, {
-//           type: "line",
-//           percentage: status,
-//         });
-//       },
-//     },
-//     {
-//       title: "Task Details",
-//       key: "TaskDetails",
-//       // render () {
-//       //   return h(
-//       //     NButton,
-//       //     {
-//       //       size: 'small',
-//       //       onClick: () => show(),
-//       //     },
-//       //     { default: () => 'More Details' }
-//       //   )
-//       // }
-//     },
-//     {
-//       title: "Update Status",
-//       key: "UpdateStatus",
-//       // render () {
-//       //   return h(
-//       //     NButton,
-//       //     {
-//       //       size: 'small',
-//       //       onClick: () => updateProgress(),
-//       //     },
-//       //     { default: () => 'Update Progress (10%)' }
-//       //   )
-//       // }
-//     },
-//     {
-//       title: "Complete",
-//       key: "Complete",
-//       // render () {
-//       //   return h(
-//       //     NButton,
-//       //     {
-//       //       size: 'small',
-//       //       onClick: () => updateProgress(),
-//       //     },
-//       //     { default: () => 'Complete Task' }
-//       //   )
-//       // }
-//     },
-//   ];
-// };
 </script>

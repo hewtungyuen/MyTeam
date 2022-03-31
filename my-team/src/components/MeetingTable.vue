@@ -2,51 +2,36 @@
   <n-space vertical :size="12">
     <n-space>
       <n-button @click="sortName">Sort By Name (Ascend)</n-button>
-      <n-button @click="filterAddress">Filter Address</n-button>
+      <n-button @click="filterAddress">Filter by name</n-button>
       <n-button @click="clearFilters">Clear Filters</n-button>
       <n-button @click="clearSorter">Clear Sorter</n-button>
     </n-space>
     <n-data-table
       ref="table"
-      :columns="this.$store.state.column"
-      :data="this.$store.state.data"
+      :columns="this.column"
+      :data="this.data"
       :pagination="pagination"
+      :key="componentKey"
     />
   </n-space>
-
-  <n-button @click="showModal = true"> Start Me up </n-button>
-  <n-modal v-model:show="showModal">
-    <n-card
-      style="width: 600px"
-      title="Modal"
-      :bordered="false"
-      size="huge"
-      role="dialog"
-      aria-modal="true"
-    >
-      <template #header-extra> Oops! </template>
-      Content
-      <template #footer> Footer </template>
-    </n-card>
-  </n-modal>
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { h, defineComponent, ref } from "vue";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from "../firebase.js";
 import { getFirestore } from "firebase/firestore";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs} from "firebase/firestore";
 const db = getFirestore(firebaseApp);
-
-
 
 
 export default defineComponent({
   data() {
     return {
       user: false,
-      output: []
+      componentKey: 0,
+      column: [],
+      data: []
     };
   },
   mounted() {
@@ -57,59 +42,63 @@ export default defineComponent({
       }
     });
 
-    var taskDetails = getDocs(collection(db, "Tasks"));
+    var taskDetails = getDocs(collection(db, "Meetings"));
     this.$store.commit("refreshData");
+
+    // Update all the meetings into the store
+    taskDetails.then((QuerySnapshot) => {
+      const z = [];
+      QuerySnapshot.forEach((doc) => {
+        let yy = doc.data();
+        
+          z.push(yy);
+          this.$store.commit("updateData", z);
+          this.data = this.$store.state.data;
+          console.log(yy);
+      });
+    });
+
+   
 
     const createColumns = () => {
       return [
         {
-          title: "Task Name",
-          key: "TaskName",
+          title: "Meeting Name",
+          key: "Name",
           defaultSortOrder: "ascend",
           sorter: "default",
         },
         {
           title: "In Charge",
-          key: "InCharge",
+          key: "Leader",
           defaultSortOrder: "ascend",
           sorter: "default",
         },
         {
-          title: "Expected Hours",
-          key: "ExpectedHours",
+          title: "DateTime",
+          key: "DateTime",
           defaultSortOrder: "ascend",
           sorter: "default",
         },
         {
-          title: "Deadline",
-          key: "DeadLine",
+          title: "Members Involved",
+          key: "Members",
           defaultSortOrder: "ascend",
           sorter: "default",
         },
         {
-          title: "Task Details",
-          key: "TaskDetails",
+          title: "Status",
+          key: "Status",
+          render () {
+            return h(
+              { default: () => 'Update Progress (10%)'}
+            )
+          }
         },
       ];
     };
-
-    this.$store.commit("updateColumn", createColumns());
-
-
-    taskDetails.then((QuerySnapshot) => {
-      const z = [];
-      QuerySnapshot.forEach((doc) => {
-        let yy = doc.data();
-        if (
-          yy.ProjectID == this.$route.params.id &&
-          yy.CompletionStatus == "Completed"
-        ) {
-          z.push(yy);
-          this.$store.commit("updateData", z);
-          console.log(this.$store.state.data);
-        }
-      });
-    });
+    this.column = createColumns();
+    
   },
   setup() {
     const tableRef = ref(null);
