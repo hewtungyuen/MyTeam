@@ -3,7 +3,7 @@
   <AddMember  @addedMem="change"/>
   <ProjectLabel :key="refreshComp"/>
   <AddTask @addedTask = "change2"/>
-  <AddAMeeting />
+  <AddAMeeting @addedMeeting = "change2"/>
   <ProjectToggleBar :key = "refresh2"/>
 </template>
 

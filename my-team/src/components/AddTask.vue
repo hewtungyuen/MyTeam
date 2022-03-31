@@ -105,7 +105,7 @@ export default defineComponent({
     },
     handleSelect(key){
       this.incharge = key
-      console.log("poc is"+ this.incharge)
+      console.log("poc is "+ this.incharge)
     },
     async addTask(){
       var name = this.name;
@@ -118,8 +118,8 @@ export default defineComponent({
       } else{
       let z = await getDoc(doc(db, "Users", incharge));
       if (z.exists()) {
-        var yy = z.data()
-        console.log(yy)
+        // var yy = z.data()
+        // console.log(z.id)
         try{
           const docRef = await addDoc(collection(db, "Tasks"), {
             ProjectID: this.projid,
@@ -129,7 +129,8 @@ export default defineComponent({
             DeadLine: ddl,
             ExpectedHours: hours,
             ProgressStatus:0,
-            CompletionStatus: "In Progress"
+            CompletionStatus: "In Progress",
+            key: name + z.id,
           })
           console.log(docRef)
           var taskid = docRef.id
