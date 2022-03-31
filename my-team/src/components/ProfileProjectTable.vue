@@ -1,4 +1,5 @@
 <template>
+{{this.projects}}
   <n-space vertical :size="12">
     <br>
     <n-space>
@@ -9,32 +10,37 @@
     <n-data-table
       ref="table"
       :columns="columns"
-      :data="data"
+      :data="this.projects"
     />
   </n-space>
 </template>
 
 <script>
 import { defineComponent, ref } from 'vue'
+import { collection, getDocs, getFirestore} from 'firebase/firestore'
+import firebaseApp from '../firebase.js'
+import { getAuth, onAuthStateChanged } from "firebase/auth"
+var db = getFirestore(firebaseApp)
+
 const columns = [
 
   {
     title: 'Project',
-    key: 'project',
+    key: 'name',
     defaultSortOrder: 'false',
     sorter: 'default',
   },
 
   {
     title: 'Hours Completed',
-    key: 'hours',
+    key: 'hoursCompleted',
     defaultSortOrder: 'false',
     sorter: 'default'
   },
 
     {
     title: 'Status',
-    key: 'status',
+    key: 'completionStatus',
     defaultSortOrder: 'ascend',
     sorter: 'default',
     filterOptions: [
@@ -54,41 +60,47 @@ const columns = [
 
   {
     title: 'Completion Date',
-    key: 'completeDate',
+    key: 'completionDate',
     defaultSortOrder: 'ascend',
     sorter: 'default'
   },
 
 ]
 
-const data = [
-  {
-    project: 'Project 1',
-    hours: "30",
-    status: "Completed",
-    completeDate: new Date('2022','2','20').toDateString()
-  },
-  {
-    project: 'Project 2',
-    hours: "50",
-    status: "Completed",
-    completeDate: new Date('2022','2','22').toDateString()
-  },
-  {
-    project: 'Project 3',
-    hours: "45",
-    status: "In Progress",
-  },
-]
+// const data = [
+//   {
+//     project: 'Project 1',
+//     hours: "30",
+//     status: "Completed",
+//     completeDate: new Date('2022','2','20').toDateString()
+//   },
+//   {
+//     project: 'Project 2',
+//     hours: "50",
+//     status: "Completed",
+//     completeDate: new Date('2022','2','22').toDateString()
+//   },
+//   {
+//     project: 'Project 3',
+//     hours: "45",
+//     status: "In Progress",
+//   },
+// ]
 
 export default defineComponent({
+
+  data() {
+      this.projects = [];
+      this.user = false;
+      this.name = ''
+  },
+
   setup () {
     const tableRef = ref(null)
 
     return {
     
       table: tableRef,
-      data,
       columns,
       filterInProgress () {
         tableRef.value.filter({
@@ -104,7 +116,79 @@ export default defineComponent({
         tableRef.value.filter(null)
       },
     }
+  },
+
+  mounted() {
+      const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.user = user;
+            }
+        })
+
+        var allUsers = getDocs(collection(db, 'Users'))
+        var allProjects = getDocs(collection(db,'Projects'))
+        var allTasks = getDocs(collection(db,'Tasks'))
+
+        allUsers.then((querySnapshot) => {
+            var myProjects = []
+            
+            querySnapshot.forEach((doc) => {
+                var docData = doc.data()
+                if (docData.Email == this.user.email) {
+                    this.name = docData.FullName
+                    if (docData.Projects) {
+                        myProjects = myProjects.concat(docData.Projects)
+                    }
+
+                    if (docData.LeadingProjects) {
+                        myProjects = myProjects.concat(docData.LeadingProjects)
+                    }
+                }
+            })
+            this.projectIds = myProjects
+
+            this.projectIds.forEach((projId) => {
+                
+                allProjects.then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        if (doc.id == projId) {
+                            var project = {}
+                            var projData = doc.data()
+                            project.name = projData.Name
+                            project.completionStatus = projData.CompletionStatus
+                            if (projData.CompletionStatus == 'Completed') {
+                                project.completionDate = projData.CompletionDate
+                            }
+                            var projectTasks = projData.Tasks
+        
+
+                            allTasks.then((querySnapshot) => {
+                                var hoursCompleted = 0 
+                                querySnapshot.forEach((doc) => {
+                                    var taskData = doc.data()
+                                    if (taskData.InCharge == this.user.email 
+                                    && projectTasks.includes(doc.id)
+                                    && taskData.CompletionStatus == 'Completed') {
+                                        hoursCompleted += taskData.ExpectedHours
+                                    }
+                                })
+                                project.hoursCompleted = hoursCompleted
+
+                                
+
+                            })
+                            this.projects.push(project)
+                        }
+                        
+                    })
+                    
+                })
+            })
+        })
+        console.log(this.projects)
   }
+
 })
 </script>
 
