@@ -1,21 +1,18 @@
 <template>
+<div>
+
   <n-space>
-    <n-progress type="circle" :percentage=75>
-        <span style="text-align: center"></span>
+    <n-progress type="circle" :percentage= completed*100/total status="success">
+        <span style="text-align: center" > Completed: {{completed}} hours</span>
     </n-progress>
-    <n-progress type="circle" status="info" :percentage="percentage" />
-    <n-progress type="circle" status="success" :percentage="percentage" />
-    <n-progress type="circle" status="warning" :percentage="percentage" />
-    <n-progress type="circle" status="error" :percentage="percentage" />
+    <n-progress type="circle" :percentage= inProgress*100/total status="warning">
+        <span style="text-align: center" > In progress: {{inProgress}} hours</span>
+    </n-progress>
+    <n-progress type="circle" :percentage= overdue*100/total status="error">
+        <span style="text-align: center" > Overdue: {{overdue}} hours</span>
+    </n-progress>
   </n-space>
-  <n-space>
-    <n-button @click="minus">
-      Minus 10%
-    </n-button>
-    <n-button @click="add">
-      Add 10%
-    </n-button>
-  </n-space>
+</div>
 </template>
 
 <script>
@@ -44,6 +41,16 @@ export default defineComponent({
       add,
       minus
     };
+  },
+  data() {
+    return{
+      total:this.completed+this.inProgress+this.overdue,
+    }
+  },
+  props:{
+    completed:String,
+    inProgress:Date,
+    overdue:String,
   }
 });
 </script>

@@ -1,17 +1,20 @@
 <template>
 <div>
     <Sidebar/>
-    <ProfilePicture/>
-    <ProgressCircle/>
-
     {{this.allProjects}}
+    <div v-for = 'project in Object.keys(this.allProjects)' :key = 'project'>
+        <ProfilePictureWithoutButton/>
+        <ProgressCircle :completed = this.allProjects[project].completed :inProgress = this.allProjects[project].inProgress :overdue = this.allProjects[project].overdue />
+        <br>
+    </div>
+
 </div>
 </template>
 
 <script>
 
 import Sidebar from '@/components/sidebar/Sidebar'
-import ProfilePicture from '@/components/ProfilePicture.vue'
+import ProfilePictureWithoutButton from '@/components/ProfilePictureWithoutButton.vue'
 import  ProgressCircle from '@/components/ProgressCircle.vue'
 import { sidebarWidth } from '@/components/sidebar/state'
 // import { getAuth, onAuthStateChanged } from "firebase/auth"
@@ -22,7 +25,7 @@ var db = getFirestore(firebaseApp)
 export default {
     components:{
         Sidebar,
-        ProfilePicture,
+        ProfilePictureWithoutButton,
         ProgressCircle
 
     },
