@@ -51,7 +51,9 @@ export default defineComponent({
       QuerySnapshot.forEach((doc) => {
         let yy = doc.data();
 
-        // Creating a new list of names with commas
+
+
+        /////// Creating a new list of names with commas //////
         var newMemberNames = [];
         for (var t = 0; t < yy.Members.length; t++) {
           if (t == yy.Members.length - 1) {
@@ -65,8 +67,7 @@ export default defineComponent({
         yy.Members = newMemberNames;
         console.log(yy);
 
-        // Showcase the data that is going into the column
-        // console.log(yy);
+        // Storing the data into the store
         z.push(yy);
         this.$store.commit("updateData", z);
         this.data = this.$store.state.data;
