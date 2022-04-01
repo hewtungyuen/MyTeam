@@ -242,58 +242,67 @@ export default defineComponent({
 
     // Create a meeting and push to database
     async createMeeting() {
-      var meetingName = this.name;
-      var meetingDetails = this.details;
-      var leader = String(this.user.email);
-      var adjustedTimestamp = this.adjustedTimestamp;
+      if (
+        this.name == "" ||
+        this.details == "" ||
+        this.adjustedTimestamp == null
+      ) {
+        alert(
+          "You have an empty field. Please fill it up before creating the meeting."
+        );
+      } else {
+        var meetingName = this.name;
+        var meetingDetails = this.details;
+        var leader = String(this.user.email);
+        var adjustedTimestamp = this.adjustedTimestamp;
 
-      alert("Create Meeting: " + meetingName);
+        alert("You have created a Meeting: " + meetingName);
 
-      // Get the list of full name from user's emails
-      for (var j = 0; j < this.memberInMeeting.length; j++) {
-        let data1 = await getDoc(doc(db, "Users", this.memberInMeeting[j]));
-        this.memberInMeetingNames.push(data1.data().FullName);
-        // Saving leaderName into a variable
-        if (this.memberInMeeting[j] == leader) {
-          var leadername = data1.data().FullName;
-        }
-      }
-
-      try {
-        const docRef = await addDoc(collection(db, "Meetings"), {
-          Name: meetingName,
-          Details: meetingDetails,
-          Leader: leader,
-          LeaderName: leadername,
-          StartDate: new Date().toLocaleDateString(),
-          MembersEmail: this.memberInMeeting,
-          Members: this.memberInMeetingNames,
-          DateTime: adjustedTimestamp,
-          ProjectID: this.projId,
-          Status: "Upcoming",
-        });
-
-        var meetingid = docRef.id;
-        console.log("Meeting successfully created: " + docRef.id);
-
-        // Add this meeting into each member's ongoing Meetings
-        for (let i = 0; i < this.memberInMeeting.length; i++) {
-          if (i == 0) {
-            console.log("Members ongoing meetings updated");
+        // Get the list of full name from user's emails
+        for (var j = 0; j < this.memberInMeeting.length; j++) {
+          let data1 = await getDoc(doc(db, "Users", this.memberInMeeting[j]));
+          this.memberInMeetingNames.push(data1.data().FullName);
+          // Saving leaderName into a variable
+          if (this.memberInMeeting[j] == leader) {
+            var leadername = data1.data().FullName;
           }
-          await updateDoc(doc(db, "Users", this.memberInMeeting[i]), {
-            OngoingMeetings: arrayUnion(meetingid),
-          });
         }
-        // Reset the data to preset
-        this.resetData();
 
-        this.$emit("addedMeeting");
-      } catch (error) {
-        console.error("Error adding document:", error);
+        try {
+          const docRef = await addDoc(collection(db, "Meetings"), {
+            Name: meetingName,
+            Details: meetingDetails,
+            Leader: leader,
+            LeaderName: leadername,
+            StartDate: new Date().toLocaleDateString(),
+            MembersEmail: this.memberInMeeting,
+            Members: this.memberInMeetingNames,
+            DateTime: adjustedTimestamp,
+            ProjectID: this.projId,
+            Status: "Upcoming",
+          });
+
+          var meetingid = docRef.id;
+          console.log("Meeting successfully created: " + docRef.id);
+
+          // Add this meeting into each member's ongoing Meetings
+          for (let i = 0; i < this.memberInMeeting.length; i++) {
+            if (i == 0) {
+              console.log("Members ongoing meetings updated");
+            }
+            await updateDoc(doc(db, "Users", this.memberInMeeting[i]), {
+              OngoingMeetings: arrayUnion(meetingid),
+            });
+          }
+          // Reset the data to preset
+          this.resetData();
+
+          this.$emit("addedMeeting");
+        } catch (error) {
+          console.error("Error adding document:", error);
+        }
+        this.unshow();
       }
-
-      this.unshow();
     },
   },
 });
