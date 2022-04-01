@@ -105,7 +105,7 @@ export default defineComponent({
         },
         {
           title: "Action",
-          key: "Complete",
+          key: "Status",
           render(row) {
             return h(
               NButton,
@@ -116,9 +116,9 @@ export default defineComponent({
                     QuerySnapshot.forEach((docs) => {
                       let yy = docs.data();
 
-                      if (row.Name == yy.Name) {
+                      if (row.Name == yy.Name && yy.Status != "Cancelled") {
                         let boo = confirm(
-                          "Confirm on deleting " + row.Name + " ?"
+                          "Confirm on cancelling " + row.Name + " ?"
                         );
                         if (boo == true) {
                           updateDoc(doc(db, "Meetings", docs.id), {
@@ -128,6 +128,8 @@ export default defineComponent({
                             location.reload();
                           });
                         }
+                      } else if (row.Name == yy.Name) {
+                        alert("The meeting has already been cancelled.")
                       }
                     });
                   });
