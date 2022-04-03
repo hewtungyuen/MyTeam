@@ -51,25 +51,26 @@ export default defineComponent({
       QuerySnapshot.forEach((doc) => {
         let yy = doc.data();
 
-        // Creating a new list of names with commas
-        var newMemberNames = [];
-        for (var t = 0; t < yy.Members.length; t++) {
-          if (t == yy.Members.length - 1) {
-            newMemberNames.push(yy.Members[t]);
-          } else {
-            var n = yy.Members[t] + ", ";
-            newMemberNames.push(n);
+        if (yy.ProjectID == this.$route.params.id) {
+          /////// Creating a new list of names with commas //////
+          var newMemberNames = [];
+          for (var t = 0; t < yy.Members.length; t++) {
+            if (t == yy.Members.length - 1) {
+              newMemberNames.push(yy.Members[t]);
+            } else {
+              var n = yy.Members[t] + ", ";
+              newMemberNames.push(n);
+            }
           }
-        }
-        // Changing the Members to the new member names with commas
-        yy.Members = newMemberNames;
-        console.log(yy);
+          // Changing the Members to the new member names with commas
+          yy.Members = newMemberNames;
+          console.log(yy);
 
-        // Showcase the data that is going into the column
-        // console.log(yy);
-        z.push(yy);
-        this.$store.commit("updateData", z);
-        this.data = this.$store.state.data;
+          // Storing the data into the store
+          z.push(yy);
+          this.$store.commit("updateData", z);
+          this.data = this.$store.state.data;
+        }
       });
     });
 
@@ -123,13 +124,13 @@ export default defineComponent({
                         if (boo == true) {
                           updateDoc(doc(db, "Meetings", docs.id), {
                             Status: "Cancelled",
-                          }).then ((user) => {
+                          }).then((user) => {
                             console.log(user);
                             location.reload();
                           });
                         }
                       } else if (row.Name == yy.Name) {
-                        alert("The meeting has already been cancelled.")
+                        alert("The meeting has already been cancelled.");
                       }
                     });
                   });
