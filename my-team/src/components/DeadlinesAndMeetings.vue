@@ -6,6 +6,8 @@
     Project: {{this.name}}
     <br>
     Deadline: {{date.toDateString()}} 
+    <br>
+    Progress Status: {{progressStatus}}%
   </n-card>
 
   <n-card embedded v-if = "type == 'Meeting' && !this.isOverDue()">
@@ -14,7 +16,7 @@
     <br>
     Date: {{date.toDateString()}}
     <br>
-    Time: {{date.toTimeString().slice(0,8)}}
+    Time: {{date.toTimeString().slice(0,5)}}
   </n-card>
   
 </div>
@@ -67,6 +69,7 @@ export default {
         date:Date,
         type:String,
         projectId:String,
+        progressStatus:String
     }
 }
 
