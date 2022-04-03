@@ -79,7 +79,7 @@
                 <n-layout class = 'meetingsAndDeadlines' >
                     <div v-if = 'allMyTasks.length == 0'> <i>You have no upcoming tasks.</i></div>
                     <n-layout-sider :native-scrollbar="true" v-else bordered v-for = 'subTask in allMyTasks' :key = 'subTask.ProjectID'> 
-                        <DeadlinesAndMeetings :title = "subTask.TaskName" :date = "subTask.DeadLine" type = "Deadline" :projectId = "subTask.ProjectID"/>
+                        <DeadlinesAndMeetings :title = "subTask.TaskName" :date = "subTask.DeadLine" type = "Deadline" :projectId = "subTask.ProjectID" :progressStatus = "subTask.ProgressStatus"/>
                     </n-layout-sider>
                 </n-layout>
             </div>
@@ -108,7 +108,9 @@ import Sidebar from '@/components/sidebar/Sidebar'
 import { sidebarWidth } from '@/components/sidebar/state'
 import { getAuth, onAuthStateChanged } from "firebase/auth"
 import firebaseApp from '../firebase.js'
+// import { collection, getDocs, getFirestore} from 'firebase/firestore'
 import { collection, getDocs, getFirestore, updateDoc, doc} from 'firebase/firestore'
+
 var db = getFirestore(firebaseApp)
 
 export default {
@@ -152,13 +154,39 @@ export default {
                                     querySnapshot.forEach((d) => {
 
                                         if (d.id == ProjectID && d.data().CompletionStatus == 'In Progress') {
-                                            let year = meetingData.DateTime.slice(0,4)
-                                            let month = meetingData.DateTime.slice(5,7)
-                                            let day = meetingData.DateTime.slice(8,10)
-                                            let hour = meetingData.DateTime.slice(12,14)
-                                            let minute = meetingData.DateTime.slice(15,17)
+                                            console.log(meetingData.DateTime)
 
-                                            let DateTime = new Date(year, month - 1, day, hour, minute)
+                                            let day = meetingData.DateTime.slice(0,3)
+                                            let month = meetingData.DateTime.slice(4,7)
+                                            let date = meetingData.DateTime.slice(8,10)
+                                            let year = meetingData.DateTime.slice(11,15)
+                                            let hour = meetingData.DateTime.slice(17,19)
+                                            let minute = meetingData.DateTime.slice(20,22)
+
+                                            console.log(day)
+                                            console.log(month)
+                                            console.log(date)
+                                            console.log(year)
+                                            console.log(hour)
+                                            console.log(minute)
+
+                                            const months = {
+                                            Jan: '01',
+                                            Feb: '02',
+                                            Mar: '03',
+                                            Apr: '04',
+                                            May: '05',
+                                            Jun: '06',
+                                            Jul: '07',
+                                            Aug: '08',
+                                            Sep: '09',
+                                            Oct: '10',
+                                            Nov: '11',
+                                            Dec: '12',
+                                            }
+
+                                            let DateTime = new Date(year, months[month] - 1, date, hour, minute)
+                                            console.log(DateTime)
                                             
                                             if (DateTime >= new Date() && meetingData.Status != 'Cancelled') {
                                                 let Name = meetingData.Name
