@@ -1,9 +1,12 @@
 <template>
 <div>
     <Sidebar/>
-    {{this.allProjects}}
-    <div v-for = 'project in Object.keys(this.allProjects)' :key = 'project'>
-        <ProfilePictureWithoutButton/>
+    <h2> Statistics for {{this.projectName}} </h2>
+
+    <div v-if = '!this.allProjects'> No tasks have been assigned</div>
+    <div v-else v-for = 'project in Object.keys(this.allProjects)' :key = 'project'>
+        
+        <ProfilePictureWithoutButton :userEmail = 'project'/>
         <ProgressCircle :completed = this.allProjects[project].completed :inProgress = this.allProjects[project].inProgress :overdue = this.allProjects[project].overdue />
         <br>
     </div>
@@ -30,6 +33,7 @@ export default {
 
     },
     mounted() {
+        console.log(this.$route.params.id)
         var allProjects = getDocs(collection(db, 'Projects'))
         var allTasks = getDocs(collection(db, 'Tasks'))
 
@@ -37,10 +41,10 @@ export default {
 
             var projectTasks = []
             querySnapshot.forEach((doc) => {
-                if (doc.id == 'zomniddiNMkCiSv2y095') { // change this 
-                    console.log(doc.id) 
+                if (doc.id == this.$route.params.id) { 
                     var docData = doc.data()
                     var tasks = docData.Tasks
+                    this.projectName = docData.Name
 
                     tasks.forEach((task) => {
                         projectTasks.push(task)
@@ -58,6 +62,7 @@ export default {
                             var InCharge = docData.InCharge
                             var ExpectedHours = docData.ExpectedHours
                             var CompletionStatus = docData.CompletionStatus
+
                             var currentTaskStatus = ''
 
                             if (CompletionStatus == 'Completed') {
@@ -101,7 +106,8 @@ export default {
     },
     data() {
         return{
-            allProjects:false
+            allProjects:false,
+            projectName:'',
         }
     },
     setup() {

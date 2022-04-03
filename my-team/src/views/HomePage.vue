@@ -108,7 +108,7 @@ import Sidebar from '@/components/sidebar/Sidebar'
 import { sidebarWidth } from '@/components/sidebar/state'
 import { getAuth, onAuthStateChanged } from "firebase/auth"
 import firebaseApp from '../firebase.js'
-import { collection, getDocs, getFirestore} from 'firebase/firestore'
+import { collection, getDocs, getFirestore, updateDoc, doc} from 'firebase/firestore'
 var db = getFirestore(firebaseApp)
 
 export default {
@@ -129,8 +129,8 @@ export default {
         allUsers.then((querySnapshot) => {
             var myProjects = []
             
-            querySnapshot.forEach((doc) => {
-                var docData = doc.data()
+            querySnapshot.forEach((d) => {
+                var docData = d.data()
                 if (docData.Email == this.user.email) {
                     this.name = docData.FullName
                     if (docData.Projects) {
@@ -142,24 +142,34 @@ export default {
                     }
 
                     if (docData.OngoingMeetings){
-                        this.allMyMeetings = docData.OngoingMeetings
 
                         allMeetings.then((querySnapshot) => {
-                            querySnapshot.forEach((doc) => {
-                                var taskData = doc.data()
-                                var ProjectID = taskData.ProjectID
+                            querySnapshot.forEach((meetingDoc) => {
+                                var meetingData = meetingDoc.data()
+                                var ProjectID = meetingData.ProjectID
 
                                 allProjects.then((querySnapshot) => {
-                                    querySnapshot.forEach((doc) => {
-                                        
-                                        if (doc.id == ProjectID && doc.data().CompletionStatus == 'In Progress') {
-                                            let DateTime = new Date(taskData.DateTime)
-                                            let Name = taskData.Name
-                                            let obj = {DateTime: DateTime, ProjectID: ProjectID, Name: Name}
-                                            this.allMyMeetingDetails.push(obj)
-                                        }
+                                    querySnapshot.forEach((d) => {
+
+                                        if (d.id == ProjectID && d.data().CompletionStatus == 'In Progress') {
+                                            let year = meetingData.DateTime.slice(0,4)
+                                            let month = meetingData.DateTime.slice(5,7)
+                                            let day = meetingData.DateTime.slice(8,10)
+                                            let hour = meetingData.DateTime.slice(12,14)
+                                            let minute = meetingData.DateTime.slice(15,17)
+
+                                            let DateTime = new Date(year, month - 1, day, hour, minute)
+                                            
+                                            if (DateTime >= new Date() && meetingData.Status != 'Cancelled') {
+                                                let Name = meetingData.Name
+                                                let obj = {DateTime: DateTime, ProjectID: ProjectID, Name: Name}
+                                                this.allMyMeetingDetails.push(obj)
+                                            } else if (DateTime <= new Date && meetingData.Status == 'Upcoming'){
+                                                updateDoc(doc(db,'Meetings', meetingDoc.id), {Status:'Completed'})
+                                            }
+                                        } 
                                     })
-                                this.allMyMeetingDetails.sort((a,b) => (a.DateTime > b.DateTime) ? 1 : ((b.DateTime > a.DateTime) ? -1 : 0))
+                                    this.allMyMeetingDetails.sort((a,b) => (a.DateTime > b.DateTime) ? 1 : ((b.DateTime > a.DateTime) ? -1 : 0))
 
                                 })
 

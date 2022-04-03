@@ -8,6 +8,7 @@ import ForgetPassPage from "@/components/ForgetPassPage.vue"
 import ProfilePage from "@/views/ProfilePage.vue"
 import AddAMeeting from "@/components/AddAMeeting.vue"
 import MembersStatistics from "@/views/MembersStatistics.vue"
+import ColleaguesPage from '@/views/ColleaguesPage.vue'
 
 const routes = [
     {
@@ -56,9 +57,15 @@ const routes = [
     },
     
     {
-        path: '/MembersStatistics/',
+        path: '/MemberStatistics/:id',
         name: 'MembersStatistics',
         component: MembersStatistics
+    },
+
+    {
+        path: '/ColleaguesPage',
+        name: 'ColleaguesPage',
+        component: ColleaguesPage
     }
 ]
 
