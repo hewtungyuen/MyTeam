@@ -1,6 +1,7 @@
 <template>
   <Sidebar/>
   <AddMember  @addedMem="change"/>
+  <button @click="goToMemberStatistics()">member statistic</button>
   <ProjectLabel :key="refreshComp"/>
   <AddTask @addedTask = "change2"/>
   <AddAMeeting @addedMeeting = "change2"/>
@@ -45,6 +46,10 @@ export default {
     },
     change2(){
       this.refresh2 += 1
+    },
+    goToMemberStatistics(){
+      var projectId = this.$route.params.id
+      this.$router.push('/MemberStatistics/' + projectId)
     }
   }
 }
