@@ -63,7 +63,6 @@ export default {
 
   mounted() {
     //get the name and the photo when mounted
-    console.log("hi");
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -83,13 +82,17 @@ export default {
     allUsers.then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         let docData = doc.data();
-        if (docData.Email == this.email) {
+        console.log(this.userEmail)
+        if (docData.Email == this.userEmail) {
           this.name = docData.FullName;
           this.updatePhoto();
         }
       });
     });
   },
+  props:{
+    userEmail:String,
+  }
 };
 </script>
 
