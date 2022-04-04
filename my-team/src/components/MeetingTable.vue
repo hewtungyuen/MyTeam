@@ -7,6 +7,7 @@
       :pagination="pagination"
       :key="componentKey"
       :row-class-name="rowClassName"
+      @update:sorter="handleSorterChange"
     />
   </n-space>
 </template>
@@ -15,7 +16,7 @@
 import { h, defineComponent, ref } from "vue";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from "../firebase.js";
-import { NButton, NText } from "naive-ui";
+import { NButton } from "naive-ui";
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 const db = getFirestore(firebaseApp);
@@ -45,13 +46,11 @@ export default defineComponent({
       const z = [];
       QuerySnapshot.forEach((doc) => {
         let yy = doc.data();
-        
 
         if (
           yy.ProjectID == this.$route.params.id &&
           yy.MembersEmail.includes(this.user.email)
         ) {
-
           // Putting a key with the meeting id
           yy.key = doc.id;
 
@@ -80,23 +79,11 @@ export default defineComponent({
     const createColumns = () => {
       return [
         {
-          type: 'expand',
+          type: "expand",
           key: "key",
           expandable: (rowData) => rowData.key,
           renderExpand: (rowData) => {
             return "Details: " + rowData.Details;
-          } 
-        },
-        {
-          title: "S/N",
-          key: "index",
-          render(row,index) {
-            return h(
-              NText,
-              {
-              },
-              { default: () => index + 1 }
-            );
           },
         },
         {
@@ -108,6 +95,7 @@ export default defineComponent({
         {
           title: "In Charge",
           key: "LeaderName",
+          // sorter: "default",
         },
         {
           title: "Date, Time",
@@ -127,10 +115,13 @@ export default defineComponent({
           className: "Status",
           defaultSortOrder: "ascend",
           sorter: "default",
+          
+          
         },
         {
           title: "Action",
           key: "action",
+          // sorter: "default",
           render(row) {
             return h(
               NButton,
@@ -196,10 +187,9 @@ export default defineComponent({
       },
       rowClassName(row) {
         if (row.Status == "Cancelled") {
-          console.log("Cancelled");
           return "Cancelled";
-        } else if (row.Status == "Upcoming") {
-          return "Upcoming";
+        } else if (row.Status == "Completed") {
+          return "Completed";
         }
       },
     };
@@ -209,10 +199,10 @@ export default defineComponent({
 
 <style scoped>
 :deep(.Cancelled td) {
-  color: rgba(246, 12, 12, 0.991);
+  color: grey;
 }
 
-:deep(.Upcoming td) {
+:deep(.Completed td) {
   color: rgba(73, 202, 13, 0.991);
 }
 </style>
