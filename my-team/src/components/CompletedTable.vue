@@ -1,11 +1,5 @@
 <template>
   <n-space vertical :size="12">
-    <n-space>
-      <n-button @click="sortName">Sort By Name (Ascend)</n-button>
-      <n-button @click="filterAddress">Filter Address</n-button>
-      <n-button @click="clearFilters">Clear Filters</n-button>
-      <n-button @click="clearSorter">Clear Sorter</n-button>
-    </n-space>
     <n-data-table
       ref="table"
       :columns="this.$store.state.column"
@@ -105,20 +99,6 @@ export default defineComponent({
       showModal: ref(false),
       table: tableRef,
       pagination: { pageSize: 5 },
-      filterAddress() {
-        tableRef.value.filter({
-          incharge: ["Yi Chen"],
-        });
-      },
-      sortName() {
-        tableRef.value.sort("name", "ascend");
-      },
-      clearFilters() {
-        tableRef.value.filter(null);
-      },
-      clearSorter() {
-        tableRef.value.sort(null);
-      },
     };
   },
 });

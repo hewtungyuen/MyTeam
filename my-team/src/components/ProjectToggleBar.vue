@@ -22,7 +22,7 @@ export default {
   components: { 
     InProgressTable,
     CompletedTable,
-    MeetingTable,
+    MeetingTable
   }
 }
 </script>

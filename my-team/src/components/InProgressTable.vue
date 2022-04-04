@@ -1,11 +1,5 @@
 <template>
   <n-space vertical :size="12">
-    <n-space>
-      <n-button @click="sortName">Sort By Name (Ascend)</n-button>
-      <n-button @click="filterAddress">Filter by name</n-button>
-      <n-button @click="clearFilters">Clear Filters</n-button>
-      <n-button @click="clearSorter">Clear Sorter</n-button>
-    </n-space>
     <n-data-table
       ref="table"
       :columns="this.column"
@@ -23,7 +17,6 @@ import firebaseApp from "../firebase.js";
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, updateDoc, doc} from "firebase/firestore";
 const db = getFirestore(firebaseApp);
-
 
 
 
@@ -46,7 +39,7 @@ export default {
     var taskDetails = getDocs(collection(db, "Tasks"));
     this.$store.commit("refreshData");
 
-    const createColumns = () => {
+    const createColumns = (user) => {
       return [
         {
           type: 'expand',
@@ -100,36 +93,42 @@ export default {
               {
                 size: 'small',
                 onClick: () => {
-                  console.log("Entered update")
                   let status = parseInt(row.ProgressStatus);
                   if (status < 100) {
-                    status += 10; 
+                    status += 25; 
                   }
-
                   taskDetails.then((QuerySnapshot) => {
                     QuerySnapshot.forEach((docs) => {
                       let yy = docs.data();
-
-                      if (row.TaskName == yy.TaskName) {
-                        updateDoc(doc(db, "Tasks", docs.id), {
-                          ProgressStatus : status,
-                        }).then ((user) => {
-                          console.log(user);
-                          location.reload();
-                          // this.$router.push('/ProjectPage/' + yy.projectID);
-                        });
-                      }
                       
-                      if (row.TaskName == yy.TaskName && status >= 100) {
-                        updateDoc(doc(db, "Tasks", docs.id), {
-                          CompletionStatus : "Completed"
-                        })
+
+                      if (row.TaskName == yy.TaskName && row.InCharge == yy.InCharge) {
+                        console.log(user);
+                        let boo = confirm(
+                          "Confirm on updating " + row.TaskName + " ?"
+                        );
+
+                        if (boo == true) {
+                          if (status >= 100) {
+                            updateDoc(doc(db, "Tasks", docs.id), {
+                              CompletionStatus : "Completed"
+                            })
+                          }
+
+                          updateDoc(doc(db, "Tasks", docs.id), {
+                            ProgressStatus : status,
+                          }).then ((user) => {
+                            console.log(user);
+                            location.reload();
+                            //this.$router.push('/ProjectPage/' + yy.projectID);
+                          });
+                        }
                       }
                     })
                   })
                 }
               },
-              { default: () => 'Update Progress (10%)'}
+              { default: () => 'Update Progress (25%)'}
             )
           }
         },
@@ -147,19 +146,19 @@ export default {
                       let yy = docs.data();
 
                       if (row.TaskName == yy.TaskName) {
-                        updateDoc(doc(db, "Tasks", docs.id), {
-                          ProgressStatus : 100,
-                        }).then ((user) => {
-                          console.log(user);
-                          location.reload();
-                          // this.$router.push('/ProjectPage/' + yy.projectID);
-                        });
-                      }
-
-                      if (row.TaskName == yy.TaskName) {
-                        updateDoc(doc(db, "Tasks", docs.id), {
-                          CompletionStatus : "Completed"
-                        })
+                        let boo = confirm(
+                          "Confirm on completing " + row.TaskName + " ?"
+                        );
+                        if (boo == true) {
+                          updateDoc(doc(db, "Tasks", docs.id), {
+                            ProgressStatus : 100,
+                            CompletionStatus : "Completed"
+                          }).then ((user) => {
+                            console.log(user);
+                            location.reload();
+                            // this.$router.push('/ProjectPage/' + yy.projectID);
+                          });
+                        }
                       }
                     })
                   })
@@ -173,7 +172,7 @@ export default {
     };
 
     //this.$store.commit("updateColumn", createColumns());
-    this.column = createColumns(this.forceRerender);
+    this.column = createColumns(this.user);
 
 
     taskDetails.then((QuerySnapshot) => {
@@ -198,21 +197,7 @@ export default {
     return {
       table: tableRef,
       value: val,
-      pagination: { pageSize: 5 },
-      filterAddress() {
-        tableRef.value.filter({
-          incharge: ["Yi Chen"],
-        });
-      },
-      sortName() {
-        tableRef.value.sort("name", "ascend");
-      },
-      clearFilters() {
-        tableRef.value.filter(null);
-      },
-      clearSorter() {
-        tableRef.value.sort(null);
-      }
+      pagination: { pageSize: 5 }
     };
   },
 };
