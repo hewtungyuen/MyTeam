@@ -1,26 +1,28 @@
 <template>
+<div class="wrapper">
+<h2>My Projects</h2>
   <n-space vertical :size="12" :key="componentKey">
-    <br>
     <n-space>
-      <n-button @click="filterInProgress">In Progress</n-button> 
-      <n-button @click="filterCompleted">Completed</n-button> 
-      <n-button @click="clearFilters">Clear Filters</n-button>
+      <n-button @click="filterInProgress" color="#38a169" round>In Progress</n-button> 
+      <n-button @click="filterCompleted" color="#38a169" round>Completed</n-button> 
+      <n-button @click="clearFilters" color="#CF5B42" round>Clear Filters</n-button>
     </n-space>
     <n-data-table
       ref="table"
       :columns="columns"
       :data="this.projects"
-      :max-height="500"
+      :max-height="300"
       virtual-scroll
     />
   </n-space>
+</div>
 </template>
 
 <script>
-import { ref, h } from 'vue'
+import { ref } from 'vue'
 import { collection, getDocs, getFirestore} from 'firebase/firestore'
 import firebaseApp from '../firebase.js'
-import { NText } from "naive-ui";
+// import { NText } from "naive-ui";
 import { getAuth, onAuthStateChanged } from "firebase/auth"
 var db = getFirestore(firebaseApp)
 
@@ -65,14 +67,14 @@ const columns = [
     key: 'completionDate',
     defaultSortOrder: 'ascend',
     sorter: 'default',
-    render() {
-            return h(
-              NText,
-              {
-              },
-              { default: () => "-" }
-            );
-          },
+    // render() {
+    //         return h(
+    //           NText,
+    //           {
+    //           },
+    //           { default: () => "-" }
+    //         );
+    //       },
   },
 
 ]
@@ -213,4 +215,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>

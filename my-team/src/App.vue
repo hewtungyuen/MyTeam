@@ -5,14 +5,16 @@
 </template>
 
 <script>
+import 'vfonts/FiraSans.css'
 export default {
     name: 'App',
 }
 </script>
 
 <style>
+
 :root {
-    margin-left: 60px
+    padding-left: 50px;
 }
 
 </style>

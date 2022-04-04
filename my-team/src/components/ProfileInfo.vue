@@ -1,17 +1,17 @@
 <template>
   <n-space vertical>
-    <n-table striped>
+    <n-table striped class="table" size="large">
       <tbody>
         <tr>
-          <td>Email</td>
+          <td class="header">Email</td>
           <td>{{email}}</td>
         </tr>          
         <tr>
-          <td>Phone</td>
-          <td>{{phone}}</td>
+          <td class="header">Phone</td>
+          <td >{{phone}}</td>
         </tr>
         <tr>
-          <td>Position</td>
+          <td class="header">Position</td>
           <td>{{position}}</td>
         </tr>
       </tbody>
@@ -64,3 +64,12 @@ export default {
 }
 
 </script>
+
+<style scoped>
+.header {
+    font-weight: bold ;
+};
+tbody {
+    padding: 100px
+}
+</style>
