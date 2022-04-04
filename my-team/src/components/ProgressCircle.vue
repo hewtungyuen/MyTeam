@@ -12,6 +12,7 @@
         <span style="text-align: center" > Overdue: {{overdue}} hours</span>
     </n-progress>
   </n-space>
+  Total hours of work: {{this.total}} hours
 </div>
 </template>
 
@@ -48,9 +49,9 @@ export default defineComponent({
     }
   },
   props:{
-    completed:String,
-    inProgress:Date,
-    overdue:String,
+    completed:Number,
+    inProgress:Number,
+    overdue:Number,
   }
 });
 </script>
