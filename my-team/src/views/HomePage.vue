@@ -1,49 +1,30 @@
 <template>
   <div id="body">
-    <Sidebar />
-    <HomeChart 
-    :projectNames="this.projectNames"
-    :key = "this.projectNames[0]"
-    :allMyTasks2="this.allMyTasks2"
-    />
-    <!-- {{projectNames}} -->
-    {{allMyTasks2}}
-    <n-button
-              strong
-              secondary
-              round
-              @click="updateChart(projectNames)"
-            >
-              Update Chart
-            </n-button>
-    <h1 id="welcome">Welcome, {{ name }}</h1>
-    <n-grid :cols="2">
-      <!-- 1st column -->
+    <Sidebar/>
 
-      <n-gi id="projects">
-        <!-- Title and button  -->
-        <n-grid :cols="2" id="titleAndButton">
-          <n-gi>
-            <h2 id="myTasksTitle">My Projects</h2>
-          </n-gi>
-          <n-gi>
-            <n-button
-              id="addProjectButton"
-              strong
-              secondary
-              round
-              @click="addNewProject()"
-            >
-              Create a new project +
-            </n-button>
-          </n-gi>
-        </n-grid>
-        <!-- end  -->
-
-        <br />
-        <!-- {{this.projectIds}} -->
-        <div>
-          <n-divider />
+    <Header :title = 'title'/>
+    <h2 id="welcome">Welcome, {{ name }}</h2>
+    
+    <!-- grid 1 -->
+    <div class="grid1">
+      <div>
+        <div class="grid2">
+          <h2 class="projectsHeading" id="myTasksTitle">My Projects</h2>
+          <n-button
+            id="addProjectButton"
+            class="projectsHeading"
+            strong
+            secondary
+            round
+            @click="addNewProject()"
+            style="margin-top: 15px"
+          >
+            Create a new project +
+          </n-button>
+        </div>
+        <br>
+        <div class="projects">
+          <n-divider style="width: 103%" />
           <div v-if="this.projectNames.length === 0">
             <h2>You have no projects at the moment.</h2>
           </div>
@@ -95,68 +76,74 @@
             ><n-divider />
           </n-collapse>
         </div>
-        
-      </n-gi>
-      
+      </div>
 
-      <!-- 2nd column -->
-      <n-gi>
-        <div>
-          <div>
-            <h2 class="container">My tasks</h2>
-            <n-layout class="meetingsAndDeadlines">
-              <div v-if="allMyTasks.length == 0">
-                <i>You have no upcoming tasks.</i>
-              </div>
-              <n-layout-sider
-                :native-scrollbar="true"
-                v-else
-                bordered
-                v-for="subTask in allMyTasks"
-                :key="subTask.ProjectID"
-              >
-                <DeadlinesAndMeetings
-                  :title="subTask.TaskName"
-                  :date="subTask.DeadLine"
-                  type="Deadline"
-                  :projectId="subTask.ProjectID"
-                  :progressStatus="subTask.ProgressStatus"
-                />
-              </n-layout-sider>
-            </n-layout>
+      <n-card class="container">
+        <h2>My tasks</h2>
+        <n-layout class="meetingsAndDeadlines">
+          <div v-if="allMyTasks.length == 0">
+            <i v-if="allMyTasks.length == 0">You have no upcoming tasks.</i>
           </div>
-          <br />
-          <div>
-            <h2 class="container">Upcoming meetings</h2>
-            <n-layout class="meetingsAndDeadlines" id="deadlines">
-              <div v-if="allMyMeetingDetails.length == 0">
-                <i>You have no upcoming meetings.</i>
-              </div>
-              <n-layout-sider
-                :native-scrollbar="false"
-                bordered
-                v-else
-                v-for="meeting in allMyMeetingDetails"
-                :key="meeting.title"
-              >
-                <DeadlinesAndMeetings
-                  :title="meeting.Name"
-                  :date="new Date(meeting.DateTime)"
-                  type="Meeting"
-                  :projectId="meeting.ProjectID"
-                />
-              </n-layout-sider>
-            </n-layout>
+          <n-layout-sider
+            :native-scrollbar="true"
+            v-else
+            bordered
+            v-for="subTask in allMyTasks"
+            :key="subTask.ProjectID"
+          >
+            <DeadlinesAndMeetings
+              :title="subTask.TaskName"
+              :date="subTask.DeadLine"
+              type="Deadline"
+              :projectId="subTask.ProjectID"
+              :progressStatus="subTask.ProgressStatus"
+            />
+          </n-layout-sider>
+        </n-layout>
+      </n-card>
+
+      <n-card class="container">
+        <h2>Upcoming meetings</h2>
+        <n-layout class="meetingsAndDeadlines" id="deadlines">
+          <div v-if="allMyMeetingDetails.length == 0">
+            <i>You have no upcoming meetings.</i>
           </div>
-        </div>
-      </n-gi>
-    </n-grid>
+          <n-layout-sider
+            :native-scrollbar="false"
+            bordered
+            v-else
+            v-for="meeting in allMyMeetingDetails"
+            :key="meeting.title"
+          >
+            <DeadlinesAndMeetings
+              :title="meeting.Name"
+              :date="new Date(meeting.DateTime)"
+              type="Meeting"
+              :projectId="meeting.ProjectID"
+            />
+          </n-layout-sider>
+        </n-layout>
+      </n-card>
+    </div>
+    <!-- grid 1 -->
+
+    <br />
+
+    <!-- grid 2 -->
+
+    <HomeChart
+      :projectNames="this.projectNames"
+      :key="this.projectNames[0]"
+      :allMyTasks2="this.allMyTasks2"
+      style = 'padding-left:15px'
+    />
   </div>
 </template>
 
 <script>
 import DeadlinesAndMeetings from "@/components/DeadlinesAndMeetings.vue";
 import ProjectsTable from "@/components/ProjectsTable.vue";
+import Header from "@/components/Header.vue"
 import HomeChart from "@/components/HomeChart.vue";
 import Sidebar from "@/components/sidebar/Sidebar";
 import { sidebarWidth } from "@/components/sidebar/state";
@@ -175,7 +162,7 @@ import {
 var db = getFirestore(firebaseApp);
 
 export default {
-    mounted() {
+  mounted() {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -301,16 +288,16 @@ export default {
                 this.projectIdsWithoutCompleted.push(doc.id);
                 this.projectNames.push(projData.Name);
                 var overviewTask = {
-                    "Name": projData.Name,
-                    "In Progress": 0,
-                    "Completed" : 0,
-                    "Overdue": 0,
+                  Name: projData.Name,
+                  "In Progress": 0,
+                  Completed: 0,
+                  Overdue: 0,
                 };
                 this.allMyTasks2.push(overviewTask);
                 this.projectDeadlines.push(projData.StartDate);
 
                 var intermediate = new Array();
-            
+
                 projData.Tasks.forEach((taskId) => {
                   allTasks.then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
@@ -360,6 +347,7 @@ export default {
   },
   data() {
     return {
+      title:'Home Page',
       name: "",
       user: false,
       projectIds: [],
@@ -379,6 +367,7 @@ export default {
     ProjectsTable,
     Sidebar,
     HomeChart,
+    Header
   },
   methods: {
     typeOf(obj) {
@@ -418,15 +407,9 @@ export default {
 
 <style scoped>
 #body {
-  /* background-image: url(../assets/loginbackgroundimg2.jpg); */
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: 100% 100%;
-  /* background-color:grey; */
-  /* color: grey; */
-  /* color: red; */
+  max-width: 95%;
 }
-.n-layout {
+/* .n-layout {
   height: 400px;
   width: 300px;
 }
@@ -438,19 +421,36 @@ export default {
 .meetingsAndDeadlines {
   left: 35%;
   position: relative;
-}
+} */
 
-#addProjectButton {
+/* #addProjectButton {
   top: 30px;
   float: right;
 }
+
+
+
+/* .container {
+  left: 35%;
+  position: relative;
+} */
 
 #welcome {
   margin-left: 30px;
 }
 
-.container {
-  left: 35%;
-  position: relative;
+.grid1 {
+  display: grid;
+  grid-template-columns: 50% 25% 25%;
+  padding: 30px;
+  column-gap: 40px;
+  padding-top: 0px;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  padding-right: 30px;
+  column-gap: 50px;
 }
 </style>

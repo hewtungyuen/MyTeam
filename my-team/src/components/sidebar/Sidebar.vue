@@ -55,7 +55,7 @@ export default {
 
     display: flex;
     flex-direction: column;
-    box-shadow: 1px 1px 15px #0A311C;
+    /* box-shadow: 1px 1px 15px #0A311C; */
 
 
 }
