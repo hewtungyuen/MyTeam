@@ -117,6 +117,7 @@ export default {
 
                       if (row.TaskName == yy.TaskName && row.InCharge == yy.InCharge) {
                         console.log(user);
+                        console.log("here");
                         let boo = confirm(
                           "Confirm on updating " + row.TaskName + " ?"
                         );
@@ -132,7 +133,7 @@ export default {
                             ProgressStatus : status,
                           }).then ((user) => {
                             console.log(user);
-                            location.reload();
+                            // location.reload();
                             //this.$router.push('/ProjectPage/' + yy.projectID);
                           });
                         }

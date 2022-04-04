@@ -5,29 +5,46 @@
       height="430"
       :options="chartOptions"
       :series="series"
-      v-if="this.projectNames != null"
     ></apexchart>
   </div>
 </template>
 
 <script>
+
 const delay = ms => new Promise(res => setTimeout(res, ms));
 const yourFunction = async () => {
   await delay(5000);
   console.log("Waited 5s");
+  this.$emit("updataData")
+
+//   this.forceRerender();
 //   location.reload()
 
 };
 export default {
     mounted() {
         console.log(this.projectNames);
+        console.log(this.allTasks);
         yourFunction();
     },
     props:{
-        projectNames:Array,  
+        projectNames:Array,
+        allMyTask2: Object,  
+    },
+    methods: {
+      forceRerender() {
+        // Remove my-component from the DOM
+        this.renderComponent = false;
+
+        this.$nextTick(() => {
+          // Add the component back in
+          this.renderComponent = true;
+        });
+      }
     },
   data() {
     return {
+        renderComponent: true,
       series: [
         {
           data: [44, 55, 41, 64, 22, 43, 21],

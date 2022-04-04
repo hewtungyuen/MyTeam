@@ -3,8 +3,11 @@
     <Sidebar />
     <HomeChart 
     :projectNames="this.projectNames"
+    :key = "this.projectNames[0]"
+    :allMyTasks2="this.allMyTasks2"
     />
-    {{projectNames}}
+    <!-- {{projectNames}} -->
+    {{allMyTasks2}}
     <n-button
               strong
               secondary
@@ -297,9 +300,17 @@ export default {
               if (projData.CompletionStatus == "In Progress") {
                 this.projectIdsWithoutCompleted.push(doc.id);
                 this.projectNames.push(projData.Name);
+                var overviewTask = {
+                    "Name": projData.Name,
+                    "In Progress": 0,
+                    "Completed" : 0,
+                    "Overdue": 0,
+                };
+                this.allMyTasks2.push(overviewTask);
                 this.projectDeadlines.push(projData.StartDate);
 
                 var intermediate = new Array();
+            
                 projData.Tasks.forEach((taskId) => {
                   allTasks.then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
@@ -359,6 +370,7 @@ export default {
       allMyTasks: [], // 1d array
       allMyMeetingDetails: [], // objects of meeting details
       allMyMeetings: [], // ids
+      allMyTasks2: [],
     };
   },
   name: "HomePage",
@@ -369,23 +381,6 @@ export default {
     HomeChart,
   },
   methods: {
-      updateChart(projectNames) {
-          console.log("Update");
-          console.log(projectNames)
-          console.log(JSON.parse(JSON.stringify((this.projectNames))));
-          const newData = this.series[0].data.map(() => {
-            return Math.floor(Math.random() * (90 - 60 + 1)) + 60;
-            });
-
-      this.series = [
-        {
-          data: newData,
-        },
-      ];
-        this.chartOptions.xaxis = {
-            overwriteCategories: [2013, 1402, 2060, 1054, 2300, 5406, 2507],
-        }
-      },
     typeOf(obj) {
       return {}.toString.call(obj).split(" ")[1].slice(0, -1).toLowerCase();
     },
@@ -427,6 +422,8 @@ export default {
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: 100% 100%;
+  /* background-color:grey; */
+  /* color: grey; */
   /* color: red; */
 }
 .n-layout {
