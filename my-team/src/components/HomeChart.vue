@@ -47,10 +47,10 @@ export default {
         renderComponent: true,
       series: [
         {
-          data: [44, 55, 41, 64, 22, 43, 21],
+          data: [44, 55, 41, 64, 22, 43],
         },
         {
-          data: [53, 32, 33, 52, 13, 44, 32],
+          data: [53, 32, 33, 52, 13, 44],
         },
       ],
       chartOptions: {
@@ -94,4 +94,7 @@ export default {
 </script>
 
 <style>
+#chart{
+  max-width: 95%;
+}
 </style>
