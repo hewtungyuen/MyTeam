@@ -113,20 +113,6 @@ export default defineComponent({
       showModal: ref(false),
       table: tableRef,
       pagination: { pageSize: 5 },
-      filterAddress() {
-        tableRef.value.filter({
-          incharge: ["Yi Chen"],
-        });
-      },
-      sortName() {
-        tableRef.value.sort("name", "ascend");
-      },
-      clearFilters() {
-        tableRef.value.filter(null);
-      },
-      clearSorter() {
-        tableRef.value.sort(null);
-      },
     };
   },
 });
