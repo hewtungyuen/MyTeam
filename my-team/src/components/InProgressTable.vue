@@ -25,6 +25,7 @@ export default {
   data() {
     return {
       user: false,
+      email: "",
       column: [],
       data: []
     };
@@ -34,13 +35,14 @@ export default {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.user = user;
+        this.email = user.email;
       }
     });
 
     var taskDetails = getDocs(collection(db, "Tasks"));
     this.$store.commit("refreshData");
 
-    const createColumns = (user) => {
+    const createColumns = () => {
       return [
         {
           type: 'expand',
@@ -114,9 +116,7 @@ export default {
                     QuerySnapshot.forEach((docs) => {
                       let yy = docs.data();
                       
-
                       if (row.TaskName == yy.TaskName && row.InCharge == yy.InCharge) {
-                        console.log(user);
                         let boo = confirm(
                           "Confirm on updating " + row.TaskName + " ?"
                         );
@@ -184,8 +184,9 @@ export default {
       ];
     };
 
+
     //this.$store.commit("updateColumn", createColumns());
-    this.column = createColumns(this.user);
+    this.column = createColumns();
 
 
     taskDetails.then((QuerySnapshot) => {
