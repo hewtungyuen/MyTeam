@@ -11,6 +11,7 @@
       accept="image/"
     />
     <n-button @click="$refs.fileInput.click()">Update Photo</n-button>
+    <n-button @click="deleteFile()">Delete Photo</n-button>
   </div>
 </template>
 
@@ -18,7 +19,7 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from "../firebase.js";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject  } from "firebase/storage";
 var db = getFirestore(firebaseApp);
 export default {
   data() {
@@ -60,6 +61,23 @@ export default {
         }
       );
     },
+
+    deleteFile() {
+        const storage = getStorage();
+
+        // Create a reference to the file to delete
+        const desertRef = ref(storage, "users/" + this.name + "/profile.jpg");
+
+        // Delete the file
+        deleteObject(desertRef).then(() => {
+            this.url = ""
+        // File deleted successfully
+        }).catch((error) => {
+            console.log(error)
+        // Uh-oh, an error occurred!
+        });
+    }
+
   },
 
   mounted() {
