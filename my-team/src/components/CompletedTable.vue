@@ -11,10 +11,9 @@
 </template>
 
 <script>
-import { h, defineComponent, ref } from "vue";
+import { defineComponent, ref } from "vue";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from "../firebase.js";
-import { NText } from "naive-ui";
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs } from "firebase/firestore";
 const db = getFirestore(firebaseApp);
@@ -48,18 +47,6 @@ export default defineComponent({
           renderExpand: (row) => {
             return row.Description
           }
-        },
-        {
-          title: "S/N",
-          key: "index",
-          render(row,index) {
-            return h(
-              NText,
-              {
-              },
-              { default: () => index + 1 }
-            );
-          },
         },
         {
           title: "Task Name",
