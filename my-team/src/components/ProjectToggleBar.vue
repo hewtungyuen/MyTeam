@@ -3,7 +3,7 @@
     <n-tab-pane name="inprogress" tab="In Progress">
       <InProgressTable />
     </n-tab-pane>
-    <n-tab-pane name="completed" tab="Completed">
+    <n-tab-pane id="completed" name="completed" tab="Completed">
       <CompletedTable/>
     </n-tab-pane>
     <n-tab-pane name="Meetings" tab="Meetings">
@@ -22,7 +22,16 @@ export default {
   components: { 
     InProgressTable,
     CompletedTable,
-    MeetingTable,
+    MeetingTable
   }
 }
 </script>
+
+<style scoped>
+
+.custom-tabs .n-tab-pane .completed {
+  background-color: red ;
+  color: red;
+}
+
+</style>
