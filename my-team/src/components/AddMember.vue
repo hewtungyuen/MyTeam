@@ -56,7 +56,7 @@ export default {
   data(){
         return {
             user:false,
-            projid: this.$store.state.projectID,
+            projid: this.$route.params.id,
             member:"",
             showModal:false,
             leader:false,
