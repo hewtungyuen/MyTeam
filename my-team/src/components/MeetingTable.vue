@@ -45,11 +45,15 @@ export default defineComponent({
       const z = [];
       QuerySnapshot.forEach((doc) => {
         let yy = doc.data();
+        
 
         if (
           yy.ProjectID == this.$route.params.id &&
           yy.MembersEmail.includes(this.user.email)
         ) {
+
+          // Putting a key with the meeting id
+          yy.key = doc.id;
 
           /////// Creating a new list of names with commas //////
           var newMemberNames = [];
@@ -75,6 +79,14 @@ export default defineComponent({
 
     const createColumns = () => {
       return [
+        {
+          type: 'expand',
+          key: "key",
+          expandable: (rowData) => rowData.key,
+          renderExpand: (rowData) => {
+            return "Details: " + rowData.Details;
+          } 
+        },
         {
           title: "S/N",
           key: "index",
