@@ -12,7 +12,7 @@
 
 <script>
 import { h, ref } from "vue";
-import { NButton, NProgress, NText } from "naive-ui";
+import { NButton, NProgress } from "naive-ui";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from "../firebase.js";
 import { getFirestore } from "firebase/firestore";
@@ -25,6 +25,7 @@ export default {
   data() {
     return {
       user: false,
+      email: "",
       column: [],
       data: []
     };
@@ -34,13 +35,16 @@ export default {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.user = user;
+        this.email = user.email;
+        this.column = createColumns(user.email);
       }
     });
+
 
     var taskDetails = getDocs(collection(db, "Tasks"));
     this.$store.commit("refreshData");
 
-    const createColumns = (user) => {
+    const createColumns = (email) => {
       return [
         {
           type: 'expand',
@@ -49,18 +53,6 @@ export default {
           renderExpand: (rowData) => {
             return rowData.Description
           } 
-        },
-        {
-          title: "S/N",
-          key: "index",
-          render(row,index) {
-            return h(
-              NText,
-              {
-              },
-              { default: () => index + 1 }
-            );
-          },
         },
         {
           title: "Task Name",
@@ -101,6 +93,7 @@ export default {
           title: "Update Status",
           key: "UpdateStatus",
           render (row) {
+            if (row.InCharge == email) {
             return h(
               NButton,
               {
@@ -114,9 +107,8 @@ export default {
                     QuerySnapshot.forEach((docs) => {
                       let yy = docs.data();
                       
-
                       if (row.TaskName == yy.TaskName && row.InCharge == yy.InCharge) {
-                        console.log(user);
+                        console.log("yoyo " + email);
                         let boo = confirm(
                           "Confirm on updating " + row.TaskName + " ?"
                         );
@@ -133,6 +125,7 @@ export default {
                           }).then ((user) => {
                             console.log(user);
                             location.reload();
+                            //this.$forceUpdate();
                             //this.$router.push('/ProjectPage/' + yy.projectID);
                           });
                         }
@@ -144,11 +137,13 @@ export default {
               { default: () => 'Update Progress (25%)'}
             )
           }
+          }
         },
         {
           title: "Complete",
           key: "Complete",
           render (row) {
+            if (row.InCharge == email) {
             return h(
               NButton,
               {
@@ -180,12 +175,13 @@ export default {
               { default: () => 'Complete Task' }
             )
           }
+          }
         },
       ];
     };
 
+
     //this.$store.commit("updateColumn", createColumns());
-    this.column = createColumns(this.user);
 
 
     taskDetails.then((QuerySnapshot) => {
@@ -210,8 +206,20 @@ export default {
     return {
       table: tableRef,
       value: val,
-      pagination: { pageSize: 5 }
+      pagination: { pageSize: 5 },
+      rowClassName(row) {
+        if (new Date(row.DeadLine) < new Date()) {
+          return 'overdue'
+        }
+        return ''
+      },
     };
   },
 };
 </script>
+
+<style scoped>
+  :deep(.overdue td) {
+    color: red;
+  }
+</style>

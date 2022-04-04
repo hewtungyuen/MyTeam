@@ -39,5 +39,4 @@ app.use(store)
 app.use(router)
 app.use(VueApexCharts);
 
-
 app.mount('#app')
