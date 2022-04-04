@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router/index.js'
 import naive from 'naive-ui'
 import { createStore } from 'vuex'
+import VueApexCharts from "vue3-apexcharts";
 
 import '@fortawesome/fontawesome-free/js/all'
 
@@ -36,6 +37,6 @@ const app = createApp(App)
 app.use(naive)
 app.use(store)
 app.use(router)
-
+app.use(VueApexCharts);
 
 app.mount('#app')
