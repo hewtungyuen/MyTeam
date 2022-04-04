@@ -127,6 +127,7 @@ export default defineComponent({
 
     async clearSearch() {
       let rowkey = 0
+      this.content = []
       let collect = await getDocs(collection(db,"Users"))
       collect.forEach((doc) => {
           let yy = doc.data()

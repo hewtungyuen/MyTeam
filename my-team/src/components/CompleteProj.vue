@@ -16,7 +16,7 @@ export default {
     data(){
         return{
         user:false,
-        projid: this.$store.state.projectID,
+        projid: this.$route.params.id,
         leader:false,
     }},
     mounted(){
