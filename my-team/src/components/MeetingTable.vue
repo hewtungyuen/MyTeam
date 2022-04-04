@@ -1,17 +1,12 @@
 <template>
   <n-space vertical :size="12">
-    <n-space>
-      <n-button @click="sortName">Sort By Name (Ascend)</n-button>
-      <n-button @click="filterAddress">Filter by name</n-button>
-      <n-button @click="clearFilters">Clear Filters</n-button>
-      <n-button @click="clearSorter">Clear Sorter</n-button>
-    </n-space>
     <n-data-table
       ref="table"
       :columns="this.column"
       :data="this.data"
       :pagination="pagination"
       :key="componentKey"
+      :row-class-name="rowClassName"
     />
   </n-space>
 </template>
@@ -20,7 +15,7 @@
 import { h, defineComponent, ref } from "vue";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from "../firebase.js";
-import { NButton } from "naive-ui";
+import { NButton, NText } from "naive-ui";
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 const db = getFirestore(firebaseApp);
@@ -51,30 +46,47 @@ export default defineComponent({
       QuerySnapshot.forEach((doc) => {
         let yy = doc.data();
 
-        // Creating a new list of names with commas
-        var newMemberNames = [];
-        for (var t = 0; t < yy.Members.length; t++) {
-          if (t == yy.Members.length - 1) {
-            newMemberNames.push(yy.Members[t]);
-          } else {
-            var n = yy.Members[t] + ", ";
-            newMemberNames.push(n);
-          }
-        }
-        // Changing the Members to the new member names with commas
-        yy.Members = newMemberNames;
-        console.log(yy);
+        if (
+          yy.ProjectID == this.$route.params.id &&
+          yy.MembersEmail.includes(this.user.email)
+        ) {
 
-        // Showcase the data that is going into the column
-        // console.log(yy);
-        z.push(yy);
-        this.$store.commit("updateData", z);
-        this.data = this.$store.state.data;
+          /////// Creating a new list of names with commas //////
+          var newMemberNames = [];
+          for (var t = 0; t < yy.Members.length; t++) {
+            if (t == yy.Members.length - 1) {
+              newMemberNames.push(yy.Members[t]);
+            } else {
+              var n = yy.Members[t] + ", ";
+              newMemberNames.push(n);
+            }
+          }
+          // Changing the Members to the new member names with commas
+          yy.Members = newMemberNames;
+          // console.log(yy);
+
+          // Storing the data into the store
+          z.push(yy);
+          this.$store.commit("updateData", z);
+          this.data = this.$store.state.data;
+        }
       });
     });
 
     const createColumns = () => {
       return [
+        {
+          title: "S/N",
+          key: "index",
+          render(row,index) {
+            return h(
+              NText,
+              {
+              },
+              { default: () => index + 1 }
+            );
+          },
+        },
         {
           title: "Meeting Name",
           key: "Name",
@@ -86,7 +98,7 @@ export default defineComponent({
           key: "LeaderName",
         },
         {
-          title: "DateTime",
+          title: "Date, Time",
           key: "DateTime",
           defaultSortOrder: "ascend",
           sorter: "default",
@@ -100,12 +112,13 @@ export default defineComponent({
         {
           title: "Status",
           key: "Status",
+          className: "Status",
           defaultSortOrder: "ascend",
           sorter: "default",
         },
         {
           title: "Action",
-          key: "Status",
+          key: "action",
           render(row) {
             return h(
               NButton,
@@ -118,18 +131,18 @@ export default defineComponent({
 
                       if (row.Name == yy.Name && yy.Status != "Cancelled") {
                         let boo = confirm(
-                          "Confirm on cancelling " + row.Name + " ?"
+                          "Confirm on cancelling " + row.Name + "?"
                         );
                         if (boo == true) {
                           updateDoc(doc(db, "Meetings", docs.id), {
                             Status: "Cancelled",
-                          }).then ((user) => {
+                          }).then((user) => {
                             console.log(user);
                             location.reload();
                           });
                         }
                       } else if (row.Name == yy.Name) {
-                        alert("The meeting has already been cancelled.")
+                        alert("The meeting has already been cancelled.");
                       }
                     });
                   });
@@ -169,7 +182,25 @@ export default defineComponent({
       clearSorter() {
         tableRef.value.sort(null);
       },
+      rowClassName(row) {
+        if (row.Status == "Cancelled") {
+          console.log("Cancelled");
+          return "Cancelled";
+        } else if (row.Status == "Upcoming") {
+          return "Upcoming";
+        }
+      },
     };
   },
 });
 </script>
+
+<style scoped>
+:deep(.Cancelled td) {
+  color: rgba(246, 12, 12, 0.991);
+}
+
+:deep(.Upcoming td) {
+  color: rgba(73, 202, 13, 0.991);
+}
+</style>

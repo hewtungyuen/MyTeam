@@ -10,14 +10,17 @@
       ref="table"
       :columns="columns"
       :data="this.projects"
+      :max-height="500"
+      virtual-scroll
     />
   </n-space>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, h } from 'vue'
 import { collection, getDocs, getFirestore} from 'firebase/firestore'
 import firebaseApp from '../firebase.js'
+import { NText } from "naive-ui";
 import { getAuth, onAuthStateChanged } from "firebase/auth"
 var db = getFirestore(firebaseApp)
 
@@ -26,14 +29,12 @@ const columns = [
   {
     title: 'Project',
     key: 'name',
-    defaultSortOrder: 'false',
     sorter: 'default',
   },
 
   {
     title: 'Hours Completed',
     key: 'hoursCompleted',
-    defaultSortOrder: 'false',
     sorter: 'default'
   },
 
@@ -41,6 +42,7 @@ const columns = [
     title: 'Status',
     key: 'completionStatus',
     defaultSortOrder: 'ascend',
+    // sortOrder: "descend",
     sorter: 'default',
     defaultFilterOptionValues: ['Completed', 'In Progress'],
     filterOptions: [
@@ -62,7 +64,15 @@ const columns = [
     title: 'Completion Date',
     key: 'completionDate',
     defaultSortOrder: 'ascend',
-    sorter: 'default'
+    sorter: 'default',
+    render() {
+            return h(
+              NText,
+              {
+              },
+              { default: () => "-" }
+            );
+          },
   },
 
 ]

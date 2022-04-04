@@ -131,11 +131,9 @@ export default defineComponent({
         }
         // console.log(new Date(x).getTime() > new Date().getTime());
         var ts = x.split("T");
-        var date = ts[0];
         var time = ts[1];
-        console.log(date + ", " + time + "H");
-        // console.log(dateSelected);
-        this.adjustedTimestamp = date + ", " + time + "H";
+        this.adjustedTimestamp = dateSelected.toDateString() + ", " + time + "H";
+        // console.log(this.adjustedTimestamp);
       }
     },
   },

@@ -5,13 +5,14 @@
       :columns="this.column"
       :data="this.data"
       :pagination="pagination"
+      :row-class-name="rowClassName"
     />
   </n-space>
 </template>
 
 <script>
 import { h, ref } from "vue";
-import { NButton, NProgress } from "naive-ui";
+import { NButton, NProgress, NText } from "naive-ui";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from "../firebase.js";
 import { getFirestore } from "firebase/firestore";
@@ -48,6 +49,18 @@ export default {
           renderExpand: (rowData) => {
             return rowData.Description
           } 
+        },
+        {
+          title: "S/N",
+          key: "index",
+          render(row,index) {
+            return h(
+              NText,
+              {
+              },
+              { default: () => index + 1 }
+            );
+          },
         },
         {
           title: "Task Name",
