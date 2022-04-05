@@ -1,7 +1,7 @@
 <template>
-  <h1>{{ title }}</h1>
-  <CompleteProj/>
+  <!-- <Header :title = "title"/>  -->
   <n-card :bordered="false">
+    <!-- <h1>{{ title }}</h1> -->
     Team Leader: {{ teamleader }}
     <br />
     Started on: {{ date }}
@@ -17,14 +17,15 @@ import firebaseApp from "../firebase.js";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs } from "firebase/firestore";
-import CompleteProj from "@/components/CompleteProj"
+// import Header from '@/components/Header.vue'
 
 const db = getFirestore(firebaseApp);
 
 export default {
-  components:{
-    CompleteProj
-  },
+  // components: {
+  //   Header,
+  // },
+  
   data() {
     return {
       user: false,
@@ -104,3 +105,6 @@ export default {
   },
 };
 </script>
+<style scoped>
+
+</style>

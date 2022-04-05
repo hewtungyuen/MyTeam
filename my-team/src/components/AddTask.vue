@@ -159,9 +159,9 @@ export default defineComponent({
   margin-top:10px;
   float:right;
 }
-#modalBut{
+/* #modalBut{
     position:absolute;
     top: 60px;
     right: 60px
-}
+} */
 </style>
