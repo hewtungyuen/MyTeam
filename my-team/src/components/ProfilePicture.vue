@@ -4,6 +4,7 @@
     <img class="profilepic" v-if="this.url != ''" :src="url" />
     <img class="profilepic" v-else src="../assets/defaultprofile.jpg" />
 </n-gi>
+    <n-gi>
     <input
       style="display: none"
       type="file"
@@ -11,10 +12,9 @@
       ref="fileInput"
       accept="image/"
     />
-    <n-gi>
     <h2 style="margin-bottom:0px ; margin-top:0px">{{ name }}</h2>
     <n-button @click="$refs.fileInput.click()" color="#38a169" class = "button" round>Update Photo</n-button><br>
-    <n-button @click="handleConfirm()" color="#CF5B42" class = "button" round style="padding-left: 21px; padding-right: 21px">Delete Photo</n-button>
+    <n-button @click="deleteFile()" color="#CF5B42" class = "button" round style="padding-left: 21px; padding-right: 21px">Delete Photo</n-button>
     </n-gi>
   </n-grid>
 </template>
@@ -24,7 +24,6 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from "../firebase.js";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject  } from "firebase/storage";
-import { useMessage, useDialog } from "naive-ui";
 var db = getFirestore(firebaseApp);
 export default {
   data() {
@@ -69,6 +68,8 @@ export default {
     },
 
     deleteFile() {
+        let boo = confirm("Are you sure?");
+        if (boo == true) {
         const storage = getStorage();
 
         // Create a reference to the file to delete
@@ -82,29 +83,9 @@ export default {
             console.log(error)
         // Uh-oh, an error occurred!
         });
+        }
     },
 
-    handleConfirm() {
-        const message = useMessage();
-        const dialog = useDialog();
-        return {
-        handleConfirm() {
-            dialog.warning({
-            title: "Confirm",
-            content: "Are you sure?",
-            positiveText: "Sure",
-            negativeText: "Not Sure",
-            onPositiveClick: () => {
-                this.deleteFile();
-            },
-            onNegativeClick: () => {
-                message.error("Not Sure");
-            }
-            });
-        },
-        }
-
-  },
   },
 
   mounted() {
