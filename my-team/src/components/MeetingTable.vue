@@ -114,9 +114,7 @@ export default defineComponent({
           key: "Status",
           className: "Status",
           defaultSortOrder: "ascend",
-          sorter: "default",
-          
-          
+          sorter: "default", 
         },
         {
           title: "Action",
