@@ -68,32 +68,38 @@ export default {
     
     const fetchData = async () => {
       let projectDetails = getDocs(collection(db, "Projects"));
-      //let userDetails = getDocs(collection(db, "Users"));
-      console.log(projectDetails);
+      let userDetails = getDocs(collection(db, "Users"));
+
       projectDetails.then((QuerySnapshot) => {
       QuerySnapshot.forEach((doc) => {
         if (doc.id == this.$route.params.id) {
           console.log("Found the project in database");
           let yy = doc.data();
-          //get name of each
-          // userDetails.then((getShot) => {
-          //   getShot.forEach((val) => {
-          //     let zz = val.data();
-          //     if (yy.leader == zz.Email) {
-          //       this.teamleader += zz.FullName;
-          //     }
-          //   })
-          // })
+          userDetails.then((GetSnapShot) => {
+            this.memberTotal += "(";
+            GetSnapShot.forEach((item) => {
+              let zz = item.data();
+              if (zz.Email == yy.Leader) {
+                this.teamleader = zz.FullName;
+              }
 
-          this.teamleader = "(" + yy.Leader + ")";
-          console.log(this.teamleader);
+              yy.Members.forEach((mem) => {
+                if (zz.Email == mem) {
+                  this.memberTotal += zz.FullName + ", ";
+                }
+              });
+            })
+            this.memberTotal += ")";
+          })
+
+          //this.teamleader = "(" + yy.Leader + ")";
           this.details = yy.Details;
           this.date = yy.StartDate;
           this.title = yy.Name;
 
-          yy.Members.forEach((mem) => {
-            this.memberTotal += "(" + mem + ") ";
-          });
+          // yy.Members.forEach((mem) => {
+          //   this.memberTotal += "(" + mem + ") ";
+          // });
         }
       });
     });
