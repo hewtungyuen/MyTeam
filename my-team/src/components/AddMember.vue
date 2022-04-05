@@ -153,9 +153,7 @@ export default {
   background-color: rgb(165, 233, 210);
 }
 #modalBut {
-  position: absolute;
-  top:60px;
-  right: 180px
+  width:135px;
 }
 #addBut {
   font-size: 120%;

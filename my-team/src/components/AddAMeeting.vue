@@ -307,11 +307,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#modalBut {
+/* #modalBut {
   position: absolute;
   top: 18%;
   right: 60px;
-}
+} */
 
 /* Style The Dropdown Button */
 .dropbtn {
