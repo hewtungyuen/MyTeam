@@ -1,25 +1,25 @@
-<template>
-<div>
+<template id='template'>
+    <div>
 
-  <n-card id = 'Deadline' embedded v-if = "type == 'Deadline'" v-bind:class="{overdue:isOverdue}">
-    <h3 @click = 'goToProjects()'>{{title}}</h3>
-    Project: {{this.name}}
-    <br>
-    Deadline: {{date.toDateString()}} 
-    <br>
-    Progress Status: {{progressStatus}}%
-  </n-card>
+    <n-card id = 'Deadline' size="small" embedded v-if = "type == 'Deadline'" v-bind:class="{overdue:isOverdue}">
+        <h3 @click = 'goToProjects()'>{{title}}</h3>
+        Project: {{this.name}}
+        <br>
+        Deadline: {{date.toDateString()}} 
+        <br>
+        Progress Status: {{progressStatus}}%
+    </n-card>
 
-  <n-card embedded v-if = "type == 'Meeting' && !this.isOverDue()">
-    <h3 @click = 'goToProjects()'>{{title}}</h3>
-    Project: {{this.name}}
-    <br>
-    Date: {{date.toDateString()}}
-    <br>
-    Time: {{date.toTimeString().slice(0,5)}}
-  </n-card>
-  
-</div>
+    <n-card embedded size="small" v-if = "type == 'Meeting' && !this.isOverDue()">
+        <h3 @click = 'goToProjects()'>{{title}}</h3>
+        Project: {{this.name}}
+        <br>
+        Date: {{date.toDateString()}}
+        <br>
+        Time: {{date.toTimeString().slice(0,5)}}
+    </n-card>
+    
+    </div>
 
 </template>
 
@@ -84,4 +84,9 @@ export default {
         color:blue;
         cursor: pointer;
     }
+
+    .n-card{
+        height: 80%;
+    }
+
 </style>

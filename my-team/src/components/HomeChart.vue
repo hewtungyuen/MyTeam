@@ -95,6 +95,6 @@ export default {
 
 <style>
 #chart{
-  max-width: 95%;
+  max-width: 100%;
 }
 </style>
