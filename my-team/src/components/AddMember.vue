@@ -23,7 +23,7 @@
             size="large"
             v-model:value="member"
             autosize
-            style="min-width: 80%"
+            style="min-width: 90%"
             clearable
           />
           <n-button
@@ -156,5 +156,15 @@ export default {
   position: absolute;
   top:60px;
   right: 180px
+}
+#addBut {
+  font-size: 120%;
+  margin-left: 5px;
+  position: relative;
+  top:8px
+}
+#addMemBut {
+  margin-top:20px;
+  float:right;
 }
 </style>

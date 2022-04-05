@@ -208,6 +208,7 @@ export default {
   margin-left: 15%;
   margin-right: 15%;
   margin-top: 3%;
+  background-color: white;
 }
 #createAdd {
   border: solid rgb(72, 134, 72) 1px;
