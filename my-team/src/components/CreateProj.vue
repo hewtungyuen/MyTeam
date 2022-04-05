@@ -11,8 +11,6 @@
       >
         &#8249; Home
       </n-button>
-
-      <h1 id="heading">Create a new project</h1>
     </div>
     <div id="createAdd">
       <div id="left">
@@ -48,7 +46,7 @@
             size="large"
             v-model:value="member"
             autosize
-            style="min-width: 80%"
+            style="min-width: 85%"
             clearable
           />
           <n-button
@@ -207,18 +205,15 @@ export default {
 
 <style scoped>
 #body {
-  margin-left: 20%;
-  margin-right: 20%;
-  margin-top: 2%;
-}
-#heading {
-  text-align: center;
-  font-size: 20px;
+  margin-left: 15%;
+  margin-right: 15%;
+  margin-top: 3%;
 }
 #createAdd {
   border: solid rgb(72, 134, 72) 1px;
+  border-radius: 15px;
   margin-top: 30px;
-  padding: 20px;
+  padding: 40px;
   padding-bottom: 40px;
 }
 #left {
@@ -241,8 +236,12 @@ export default {
 }
 #create {
   margin-top: 30px;
-  left: 30%;
+  left: 40%;
 }
-.memberBut {
+#addBut {
+  font-size: 170%;
+  margin-left: 5px;
+  position: relative;
+  top:5px
 }
 </style>

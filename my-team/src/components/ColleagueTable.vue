@@ -1,6 +1,5 @@
 <template>
 <div id = "body">
-  <h2 id = "heading"> Colleague Search Page </h2>
   <n-input
             type="text"
             round
@@ -8,7 +7,7 @@
             size="large"
             v-model:value="ColleagueName"
             autosize
-            style="min-width: 80%"
+            style="min-width: 92%"
             clearable
           />
   <n-button strong
@@ -48,13 +47,13 @@ const columns = [
   {
     title: 'Email',
     key: 'email',
-    defaultSortOrder: 'ascend',
+    
     sorter: 'default'
   },
   {
     title: 'Position',
     key: 'position',
-    defaultSortOrder: 'ascend',
+    
     sorter: 'default'
   },
   {
@@ -148,12 +147,8 @@ export default defineComponent({
 </script>
 <style scoped>
 #body{
-  margin:5%;
+  margin:7%;
   margin-top:3%
-}
-#heading {
-  position:relative;
-  left: 35%
 }
 #searchBut {
   margin: 10px;
