@@ -16,7 +16,7 @@ import { NButton, NProgress } from "naive-ui";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from "../firebase.js";
 import { getFirestore } from "firebase/firestore";
-import { collection, getDocs, updateDoc, doc} from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc, deleteDoc, arrayRemove} from "firebase/firestore";
 const db = getFirestore(firebaseApp);
 
 
@@ -36,7 +36,7 @@ export default {
       if (user) {
         this.user = user;
         this.email = user.email;
-        this.column = createColumns(user.email);
+        this.column = createColumns(user.email, this.$route.params.id);
       }
     });
 
@@ -44,7 +44,7 @@ export default {
     var taskDetails = getDocs(collection(db, "Tasks"));
     this.$store.commit("refreshData");
 
-    const createColumns = (email) => {
+    const createColumns = (email, projID) => {
       return [
         {
           type: 'expand',
@@ -177,6 +177,46 @@ export default {
           }
           }
         },
+        {
+          title: "DeleteTask",
+          key: "DeleteTask",
+          render(row) {
+            if (row.InCharge == email) {
+              return h(
+                NButton, 
+                {
+                  size: 'small',
+                  onClick: () => {
+                    taskDetails.then((QuerySnapshot) => {
+                      QuerySnapshot.forEach((docs) => {
+                        let yy = docs.data();
+
+                        if (row.TaskName == yy.TaskName) {
+                          let boo = confirm(
+                            "Confirm on deleting " + row.TaskName + " ?"
+                          );
+                          if (boo == true) {
+                            updateDoc(doc(db, "Projects", projID), {
+                              Tasks : arrayRemove(docs.id)
+                            })
+
+                            deleteDoc(doc(db, "Tasks", docs.id)
+                            ).then ((user) => {
+                              console.log(user);
+                              location.reload();
+                              // this.$router.push('/ProjectPage/' + yy.projectID);
+                            });
+                          }
+                        }
+                      })
+                    })
+                  }
+                },
+                { default: () => 'Delete Task' }
+              );
+            }
+          },
+        },
       ];
     };
 
@@ -212,7 +252,7 @@ export default {
           return 'overdue'
         }
         return ''
-      },
+      }
     };
   },
 };

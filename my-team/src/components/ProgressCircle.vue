@@ -12,7 +12,7 @@
         <span style="text-align: center" > Overdue: {{overdue}} hours</span>
     </n-progress>
   </n-space>
-  Total hours of work: {{this.total}} hours
+  Total hours of work assigned: {{this.total}} hours
 </div>
 </template>
 
