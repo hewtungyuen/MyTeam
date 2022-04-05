@@ -1,16 +1,28 @@
-<template>
+<template >
 <div>
+    <Header :title="title" />
+<div class='template'>
     <Sidebar/>
-    <h2> Statistics for {{this.projectName}} </h2>
 
-    <div v-if = '!this.allProjects'> No tasks have been assigned</div>
-    <div v-else v-for = 'project in Object.keys(this.allProjects)' :key = 'project'>
-        
-        <ProfilePictureWithoutButton :userEmail = 'project'/>
-        <ProgressCircle :completed = this.allProjects[project].completed :inProgress = this.allProjects[project].inProgress :overdue = this.allProjects[project].overdue />
-        <br>
+    <h2> Statistics for: {{this.projectName}} </h2>
+
+    <div v-if = '!this.allProjects'> No tasks have been assigned to any members yet.</div>
+    <div v-else class='grid'>
+        <div v-for = 'project in Object.keys(this.allProjects)' :key = 'project' style='display: flex; align-items: center; justify-content: center;  max-width:90%;'>
+            
+            <!-- <n-card embedded> -->
+            <n-card embedded style='display: flex; align-items: center; justify-content: center; '>
+                <div style='text-align: center'>
+                <ProfilePictureWithoutButton :userEmail = 'project' style='text-align: center'/>
+                <ProgressCircle :completed = this.allProjects[project].completed :inProgress = this.allProjects[project].inProgress :overdue = this.allProjects[project].overdue />
+                </div>
+                <!-- </n-card> -->
+            </n-card>
+        </div>
     </div>
 
+
+</div>
 </div>
 </template>
 
@@ -19,6 +31,8 @@
 import Sidebar from '@/components/sidebar/Sidebar'
 import ProfilePictureWithoutButton from '@/components/ProfilePictureWithoutButton.vue'
 import  ProgressCircle from '@/components/ProgressCircle.vue'
+import  Header from '@/components/Header.vue'
+
 import { sidebarWidth } from '@/components/sidebar/state'
 // import { getAuth, onAuthStateChanged } from "firebase/auth"
 import firebaseApp from '../firebase.js'
@@ -29,8 +43,8 @@ export default {
     components:{
         Sidebar,
         ProfilePictureWithoutButton,
-        ProgressCircle
-
+        ProgressCircle,
+        Header
     },
     mounted() {
         console.log(this.$route.params.id)
@@ -108,6 +122,7 @@ export default {
         return{
             allProjects:false,
             projectName:'',
+            title:'Member Statistics Page'
         }
     },
     setup() {
@@ -118,4 +133,14 @@ export default {
 
 <style>
 
+.template{
+    padding-left:30px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  row-gap:50px
+
+}
 </style>
