@@ -1,135 +1,146 @@
 <template>
-  <div id="body">
-    <Sidebar />
-
+  <div>
     <Header :title="title" />
-    <h2 id="welcome">Welcome, {{ name }}</h2>
 
-    <!-- grid 1 -->
-    <div class="grid1">
-      <div class='projectsTableAndButton' >
-        <div class="grid2">
-          <h2 class="projectsHeading" id="myTasksTitle">My Projects</h2>
-          <n-button
-            id="addProjectButton"
-            class="projectsHeading"
-            strong
-            secondary
-            round
-            @click="addNewProject()"
-            style="margin-top: 15px; max-width:90%"
-          >
-            Create a new project +
-          </n-button>
-        </div>
-        <div class="projects" style='overflow:auto; padding:2%; max-height:88%'>
-          <n-divider />
-          <div v-if="this.projectNames.length === 0">
-            <h2>You have no projects at the moment.</h2>
-          </div>
-          <n-collapse v-else-if="this.projectNames.length === 1">
-            <n-collapse-item :title="projectNames[0]">
-              <div v-if="this.myCurrentTasks[index - 1].length == 0">
-                <i>You have no pending tasks at the moment. </i>
-              </div>
+    <div id="body">
+      <Sidebar />
 
-              <div v-else>
-                <ProjectsTable :tasksToDisplay="this.myCurrentTasks[0]" />
-              </div>
+      <h2 id="welcome">Welcome, {{ name }}</h2>
 
-              <template #header-extra>
-                <button
-                  @click="goToProjectsPage(this.projectIdsWithoutCompleted[0])"
-                >
-                  Go to project
-                </button>
-              </template> </n-collapse-item
-            ><n-divider />
-          </n-collapse>
-
-          <n-collapse
-            v-else
-            v-for="index in this.projectNames.length"
-            :key="index"
-          >
-            <n-collapse-item :title="projectNames[index - 1]">
-              <div v-if="this.myCurrentTasks[index - 1].length == 0">
-                <i>You have no pending tasks at the moment. </i>
-              </div>
-
-              <div v-else>
-                <ProjectsTable
-                  :tasksToDisplay="this.myCurrentTasks[index - 1]"
-                  :empty="this.myCurrentTasks.length == 0"
-                />
-              </div>
-              <template #header-extra>
-                <n-button
-                  @click="
-                    goToProjectsPage(this.projectIdsWithoutCompleted[index - 1])
-                  "
-                >
-                  Go to project
-                </n-button>
-              </template> </n-collapse-item>
-            <n-divider />
-          </n-collapse>
-        </div>
-      </div>
-
-      <div class="tasks">
-        <h2>My tasks</h2>
-        <div class="meetingsAndDeadlines">
-          <div v-if="allMyTasks.length == 0">
-            <i v-if="allMyTasks.length == 0">You have no upcoming tasks.</i>
-          </div>
-          <div v-else v-for="subTask in allMyTasks" :key="subTask.ProjectID">
-            <DeadlinesAndMeetings
-              :title="subTask.TaskName"
-              :date="subTask.DeadLine"
-              type="Deadline"
-              :projectId="subTask.ProjectID"
-              :progressStatus="subTask.ProgressStatus"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div class="meetings">
-        <h2>Upcoming meetings</h2>
-        <div class="meetingsAndDeadlines" id="deadlines">
-          <div v-if="allMyMeetingDetails.length == 0">
-            <i>You have no upcoming meetings.</i>
+      <!-- grid 1 -->
+      <div class="grid1">
+        <div class="projectsTableAndButton">
+          <div class="grid2">
+            <h2 class="projectsHeading" id="myTasksTitle">My Projects</h2>
+            <n-button
+              id="addProjectButton"
+              class="projectsHeading"
+              strong
+              secondary
+              round
+              @click="addNewProject()"
+              style="margin-top: 15px; max-width: 90%"
+            >
+              Create a new project +
+            </n-button>
           </div>
           <div
-            :native-scrollbar="false"
-            bordered
-            v-else
-            v-for="meeting in allMyMeetingDetails"
-            :key="meeting.title"
+            class="projects"
+            style="overflow: auto; padding: 2%; max-height: 88%"
           >
-            <DeadlinesAndMeetings
-              :title="meeting.Name"
-              :date="new Date(meeting.DateTime)"
-              type="Meeting"
-              :projectId="meeting.ProjectID"
-            />
+            <n-divider />
+            <div v-if="this.projectNames.length === 0">
+              <h2>You have no projects at the moment.</h2>
+            </div>
+            <n-collapse v-else-if="this.projectNames.length === 1">
+              <n-collapse-item :title="projectNames[0]">
+                <div v-if="this.myCurrentTasks[index - 1].length == 0">
+                  <i>You have no pending tasks at the moment. </i>
+                </div>
+
+                <div v-else>
+                  <ProjectsTable :tasksToDisplay="this.myCurrentTasks[0]" />
+                </div>
+
+                <template #header-extra>
+                  <button
+                    @click="
+                      goToProjectsPage(this.projectIdsWithoutCompleted[0])
+                    "
+                  >
+                    Go to project
+                  </button>
+                </template> </n-collapse-item
+              ><n-divider />
+            </n-collapse>
+
+            <n-collapse
+              v-else
+              v-for="index in this.projectNames.length"
+              :key="index"
+            >
+              <n-collapse-item :title="projectNames[index - 1]">
+                <div v-if="this.myCurrentTasks[index - 1].length == 0">
+                  <i>You have no pending tasks at the moment. </i>
+                </div>
+
+                <div v-else>
+                  <ProjectsTable
+                    :tasksToDisplay="this.myCurrentTasks[index - 1]"
+                    :empty="this.myCurrentTasks.length == 0"
+                  />
+                </div>
+                <template #header-extra>
+                  <n-button
+                    @click="
+                      goToProjectsPage(
+                        this.projectIdsWithoutCompleted[index - 1]
+                      )
+                    "
+                  >
+                    Go to project
+                  </n-button>
+                </template>
+              </n-collapse-item>
+              <n-divider />
+            </n-collapse>
+          </div>
+        </div>
+
+        <div class="tasks">
+          <h2>My tasks</h2>
+          <div class="meetingsAndDeadlines">
+            <div v-if="allMyTasks.length == 0">
+              <i v-if="allMyTasks.length == 0">You have no upcoming tasks.</i>
+            </div>
+            <div v-else v-for="subTask in allMyTasks" :key="subTask.ProjectID">
+              <DeadlinesAndMeetings
+                :title="subTask.TaskName"
+                :date="subTask.DeadLine"
+                type="Deadline"
+                :projectId="subTask.ProjectID"
+                :progressStatus="subTask.ProgressStatus"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="meetings">
+          <h2>Upcoming meetings</h2>
+          <div class="meetingsAndDeadlines" id="deadlines">
+            <div v-if="allMyMeetingDetails.length == 0">
+              <i>You have no upcoming meetings.</i>
+            </div>
+            <div
+              :native-scrollbar="false"
+              bordered
+              v-else
+              v-for="meeting in allMyMeetingDetails"
+              :key="meeting.title"
+            >
+              <DeadlinesAndMeetings
+                :title="meeting.Name"
+                :date="new Date(meeting.DateTime)"
+                type="Meeting"
+                :projectId="meeting.ProjectID"
+              />
+            </div>
           </div>
         </div>
       </div>
+      <!-- grid 1 -->
+
+      <br />
+
+      <!-- grid 2 -->
+
+      <HomeChart
+        :projectNames="this.projectNames"
+        :key="this.projectNames[0]"
+        :allMyTasks2="this.allMyTasks2"
+        style="padding-left: 15px"
+      />
     </div>
-    <!-- grid 1 -->
-
-    <br />
-
-    <!-- grid 2 -->
-
-    <HomeChart
-      :projectNames="this.projectNames"
-      :key="this.projectNames[0]"
-      :allMyTasks2="this.allMyTasks2"
-      style="padding-left: 15px"
-    />
   </div>
 </template>
 
@@ -403,7 +414,8 @@ export default {
   max-width: 95%;
 }
 
-.meetings, .tasks{
+.meetings,
+.tasks {
   padding-left: 10%;
   padding-right: 10%;
   padding-bottom: 10%;
@@ -422,12 +434,11 @@ export default {
   padding: 30px;
   column-gap: 40px;
   padding-top: 0px;
-  max-height: 500px;
+  max-height: 500px;  /* this one affects the homechaart */
 }
 
-.projectsTableAndButton{
+.projectsTableAndButton {
   max-height: 69%;
-
 }
 .grid2 {
   display: grid;
