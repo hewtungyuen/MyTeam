@@ -1,13 +1,13 @@
 <template>
   <div id="body">
-    <Sidebar/>
+    <Sidebar />
 
-    <Header :title = 'title'/>
+    <Header :title="title" />
     <h2 id="welcome">Welcome, {{ name }}</h2>
-    
+
     <!-- grid 1 -->
     <div class="grid1">
-      <div>
+      <div class='projectsTableAndButton' >
         <div class="grid2">
           <h2 class="projectsHeading" id="myTasksTitle">My Projects</h2>
           <n-button
@@ -17,14 +17,13 @@
             secondary
             round
             @click="addNewProject()"
-            style="margin-top: 15px"
+            style="margin-top: 15px; max-width:90%"
           >
             Create a new project +
           </n-button>
         </div>
-        <br>
-        <div class="projects">
-          <n-divider style="width: 103%" />
+        <div class="projects" style='overflow:auto; padding:2%; max-height:88%'>
+          <n-divider />
           <div v-if="this.projectNames.length === 0">
             <h2>You have no projects at the moment.</h2>
           </div>
@@ -65,32 +64,26 @@
                 />
               </div>
               <template #header-extra>
-                <button
+                <n-button
                   @click="
                     goToProjectsPage(this.projectIdsWithoutCompleted[index - 1])
                   "
                 >
                   Go to project
-                </button>
-              </template> </n-collapse-item
-            ><n-divider />
+                </n-button>
+              </template> </n-collapse-item>
+            <n-divider />
           </n-collapse>
         </div>
       </div>
 
-      <n-card class="container">
+      <div class="tasks">
         <h2>My tasks</h2>
-        <n-layout class="meetingsAndDeadlines">
+        <div class="meetingsAndDeadlines">
           <div v-if="allMyTasks.length == 0">
             <i v-if="allMyTasks.length == 0">You have no upcoming tasks.</i>
           </div>
-          <n-layout-sider
-            :native-scrollbar="true"
-            v-else
-            bordered
-            v-for="subTask in allMyTasks"
-            :key="subTask.ProjectID"
-          >
+          <div v-else v-for="subTask in allMyTasks" :key="subTask.ProjectID">
             <DeadlinesAndMeetings
               :title="subTask.TaskName"
               :date="subTask.DeadLine"
@@ -98,17 +91,17 @@
               :projectId="subTask.ProjectID"
               :progressStatus="subTask.ProgressStatus"
             />
-          </n-layout-sider>
-        </n-layout>
-      </n-card>
+          </div>
+        </div>
+      </div>
 
-      <n-card class="container">
+      <div class="meetings">
         <h2>Upcoming meetings</h2>
-        <n-layout class="meetingsAndDeadlines" id="deadlines">
+        <div class="meetingsAndDeadlines" id="deadlines">
           <div v-if="allMyMeetingDetails.length == 0">
             <i>You have no upcoming meetings.</i>
           </div>
-          <n-layout-sider
+          <div
             :native-scrollbar="false"
             bordered
             v-else
@@ -121,9 +114,9 @@
               type="Meeting"
               :projectId="meeting.ProjectID"
             />
-          </n-layout-sider>
-        </n-layout>
-      </n-card>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- grid 1 -->
 
@@ -135,7 +128,7 @@
       :projectNames="this.projectNames"
       :key="this.projectNames[0]"
       :allMyTasks2="this.allMyTasks2"
-      style = 'padding-left:15px'
+      style="padding-left: 15px"
     />
   </div>
 </template>
@@ -143,7 +136,7 @@
 <script>
 import DeadlinesAndMeetings from "@/components/DeadlinesAndMeetings.vue";
 import ProjectsTable from "@/components/ProjectsTable.vue";
-import Header from "@/components/Header.vue"
+import Header from "@/components/Header.vue";
 import HomeChart from "@/components/HomeChart.vue";
 import Sidebar from "@/components/sidebar/Sidebar";
 import { sidebarWidth } from "@/components/sidebar/state";
@@ -347,7 +340,7 @@ export default {
   },
   data() {
     return {
-      title:'Home Page',
+      title: "Home Page",
       name: "",
       user: false,
       projectIds: [],
@@ -367,7 +360,7 @@ export default {
     ProjectsTable,
     Sidebar,
     HomeChart,
-    Header
+    Header,
   },
   methods: {
     typeOf(obj) {
@@ -409,31 +402,15 @@ export default {
 #body {
   max-width: 95%;
 }
-/* .n-layout {
-  height: 400px;
-  width: 300px;
+
+.meetings, .tasks{
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-bottom: 10%;
+  background-color: rgb(196, 240, 221);
+  max-height: 69%;
+  overflow: auto;
 }
-
-#projects {
-  margin-left: 30px;
-}
-
-.meetingsAndDeadlines {
-  left: 35%;
-  position: relative;
-} */
-
-/* #addProjectButton {
-  top: 30px;
-  float: right;
-}
-
-
-
-/* .container {
-  left: 35%;
-  position: relative;
-} */
 
 #welcome {
   margin-left: 30px;
@@ -445,8 +422,13 @@ export default {
   padding: 30px;
   column-gap: 40px;
   padding-top: 0px;
+  max-height: 500px;
 }
 
+.projectsTableAndButton{
+  max-height: 69%;
+
+}
 .grid2 {
   display: grid;
   grid-template-columns: 50% 50%;
