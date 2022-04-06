@@ -74,4 +74,11 @@ const router = createRouter({
  routes
 })
 
+router.beforeEach((from) => {
+    if (from.name == 'LoginPage') {
+        let boo = confirm("are you sure you want to log out?")
+        return boo
+    }
+  })
+
 export default router

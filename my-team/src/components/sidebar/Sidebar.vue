@@ -13,7 +13,7 @@
           <i class = "fas fa-angle-double-left" />
       </span>
 
-      <SidebarLink id = "logout" to = "/" icon = "fa-solid fa-arrow-right-from-bracket" >Logout</SidebarLink>
+      <SidebarLink id = "logout" to = "/" icon = "fa-solid fa-arrow-right-from-bracket">Logout</SidebarLink>
   </div>
 </template>
 
@@ -25,7 +25,7 @@ export default {
     components: {SidebarLink},
     setup() {
         return { collapsed, toggleSidebar, sidebarWidth}
-    }
+    },
 }
 </script>
 
