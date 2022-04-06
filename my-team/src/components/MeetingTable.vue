@@ -131,6 +131,7 @@ export default defineComponent({
                 // color: "rgb(183, 20, 20)",
                 color: "red",
                 size: "small",
+                type: "error",
                 onClick: () => {
                   meetingDetails.then((QuerySnapshot) => {
                     QuerySnapshot.forEach((docs) => {
