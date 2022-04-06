@@ -1,6 +1,4 @@
 <template>
-<div v-if = "leader">
-  </div>
   <n-button id="modalBut" @click="show()">
     + Task
   </n-button>
@@ -30,7 +28,7 @@
         <p>{{this.incharge}}</p>
         <label>Deadline:</label>
         <n-date-picker v-model:formatted-value="ddl" value-format="yyyy-MM-dd"
-    type="date" clearable /><br>
+    type="date" clearable :is-date-disabled="DateDisabled" /><br>
         <label>Expected Hours: </label>
         <n-input-number v-model:value="hours" clearable />
     </form>
@@ -51,7 +49,6 @@ export default defineComponent({
   setup() {
     return {
       showModal: ref(false),
-      leader: ref(false)
     };
   },
   data(){
@@ -74,15 +71,8 @@ export default defineComponent({
                 this.membersInProject.push({label:this.user.email, key:this.user.email})
                 console.log(this.user.email)
                 console.log(this.projid)
-                checkleader(this.user.email, this.projid).then((x)=>{this.leader = x})
             }
         })
-        async function checkleader(user, projid) {
-        let z = await getDoc(doc(db, "Projects", projid));
-        let leaderemail = String(z.data().Leader)
-        console.log("leader of this proj" + leaderemail)
-        return (leaderemail == user)
-    }
     // Get all the project members and put into membersInProject
     const docRef = doc(db, "Projects", this.projid);
     const docSnap = getDoc(docRef);
@@ -121,11 +111,13 @@ export default defineComponent({
         // var yy = z.data()
         // console.log(z.id)
         try{
+          let InChargeName = z.data().FullName
           const docRef = await addDoc(collection(db, "Tasks"), {
             ProjectID: this.projid,
             TaskName:name,
             Description: desc,
             InCharge: incharge,
+            InChargeName: InChargeName,
             DeadLine: ddl,
             ExpectedHours: hours,
             ProgressStatus:0,
@@ -149,6 +141,9 @@ export default defineComponent({
       alert("User does not exist!")
     }
       }
+  },
+  DateDisabled(ts) {
+    return ts < Date.now()
   }
   }
 });
