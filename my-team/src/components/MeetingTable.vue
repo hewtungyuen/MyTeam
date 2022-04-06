@@ -125,6 +125,7 @@ export default defineComponent({
               NButton,
               {
                 size: "small",
+                type: "error",
                 onClick: () => {
                   meetingDetails.then((QuerySnapshot) => {
                     QuerySnapshot.forEach((docs) => {
