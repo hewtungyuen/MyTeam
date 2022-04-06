@@ -49,6 +49,7 @@ export default defineComponent({
   methods: {
     async searchInCharge() {
       let name = this.searchEmail
+      this.searchEmail = ""
       this.data = []
       let collect = await getDocs(collection(db, "Tasks"))
 
@@ -56,7 +57,7 @@ export default defineComponent({
         let yy = doc.data()
         if (yy.ProjectID == this.$route.params.id &&
           yy.CompletionStatus == "Completed") {
-          let check = yy.InCharge.toLowerCase().includes(name.toLowerCase())
+          let check = yy.InChargeName.toLowerCase().includes(name.toLowerCase())
           if (check) {
             this.data.push(yy)
           }
@@ -105,7 +106,7 @@ export default defineComponent({
         },
         {
           title: "In Charge",
-          key: "InCharge",
+          key: "InChargeName",
           defaultSortOrder: "ascend",
           sorter: "default",
         },
