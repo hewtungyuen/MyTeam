@@ -7,7 +7,7 @@
         <br>
         Deadline: {{date.toDateString()}} 
         <br>
-        Progress Status: {{progressStatus}}%
+        Progress Status: {{progressStatus}}
     </n-card>
 
     <n-card embedded size="small" v-if = "type == 'Meeting' && !this.isOverDue()">

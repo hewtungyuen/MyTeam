@@ -7,29 +7,32 @@
       :series="series"
     ></apexchart>
   </div>
+{{allMyTasks}}
+
 </template>
 
 <script>
 
-const delay = ms => new Promise(res => setTimeout(res, ms));
-const yourFunction = async () => {
-  await delay(5000);
-  console.log("Waited 5s");
-  this.$emit("updataData")
+// const delay = ms => new Promise(res => setTimeout(res, ms));
+// const yourFunction = async () => {
+//   await delay(5000);
+//   console.log("Waited 5s");
+//   this.$emit("updataData")
 
-//   this.forceRerender();
-//   location.reload()
+// //   this.forceRerender();
+// //   location.reload()
 
-};
+// };
 export default {
     mounted() {
-        console.log(this.projectNames);
-        console.log(this.allTasks);
-        yourFunction();
+
+        // yourFunction();
+        // this.getData()
+
     },
     props:{
         projectNames:Array,
-        allMyTask2: Object,  
+        allMyTasks: Object,  
     },
     methods: {
       forceRerender() {
@@ -40,17 +43,21 @@ export default {
           // Add the component back in
           this.renderComponent = true;
         });
-      }
+      },
+
     },
   data() {
     return {
         renderComponent: true,
       series: [
         {
-          data: [44, 55, 41, 64, 22, 43],
+          data: [44, 55, 41], // all in progress
         },
         {
-          data: [53, 32, 33, 52, 13, 44],
+          data: [53, 32, 33], // all completed
+        },
+        {
+          data: [53, 32, 33], // all overdue
         },
       ],
       chartOptions: {
@@ -84,7 +91,6 @@ export default {
           intersect: false,
         },
         xaxis: {
-            // type:"text",
           categories: this.projectNames,
         },
       },

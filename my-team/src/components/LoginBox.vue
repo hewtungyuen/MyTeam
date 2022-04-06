@@ -7,7 +7,7 @@
       
       <div id="logobox">
         <img alt="logo" src="@/assets/MYTeamLogo.png"/>
-        <h2>Welcome to MYTeam! <router-link to="/HomePage">Cheat Login!</router-link></h2>
+        <h2>Welcome to MYTeam!</h2>
         </div>
       <n-space vertical>
         <n-input round v-model:value="email" placeholder="Email" />
@@ -40,22 +40,13 @@
 
 <script>
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-// import {
-//   collection,
-//   getDocs,
-//   getFirestore,
-// } from "firebase/firestore";
-// import firebaseApp from "../firebase.js";
-
-
-// var db = getFirestore(firebaseApp);
 
 export default {
   name: "LoginBox",
   data() {
     return {
-      email: "marvin.leow999@gmail.com",
-      password: "123456",
+      email: "",
+      password: "",
     };
   },
   methods: {
@@ -66,31 +57,6 @@ export default {
       signInWithEmailAndPassword(auth, this.email, this.password)
         .then((user) => {
           console.log(user.user);
-          // var allUsers = getDocs(collection(db, "Users"));
-          // var allProjects = getDocs(collection(db, "Projects"));
-
-          // var projNames = [];
-          // var projIDs = [];
-          // allUsers.then((QuerySnapshot) => {
-          //   QuerySnapshot.forEach((d) => {
-          //     // console.log(d.data())
-          //     if (d.data().Email == user.user.email) {
-          //       // console.log(d.data().Projects);
-          //       projIDs = d.data().Projects;
-          //     }
-          //   })
-          // })
-
-          // allProjects.then((QuerySnapshot) => {
-          //   QuerySnapshot.forEach((d) => {
-          //     // console.log(d.data())
-          //     if (projIDs.includes(d.id)) {
-          //       projNames.push(d.data().Name)
-          //       // projIDs = d.data().Projects;
-          //     }
-          //   })
-          // })
-
           this.$router.push({name:"HomePage"})
         })
         .catch((error) => {
