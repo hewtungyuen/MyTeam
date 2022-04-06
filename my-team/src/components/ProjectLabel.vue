@@ -1,4 +1,5 @@
 <template>
+  <div id='body'>
   <!-- <Header :title = "title"/>  -->
   <n-card :bordered="false">
     <!-- <h1>{{ title }}</h1> -->
@@ -10,6 +11,7 @@
     <br />
     Details: {{ details }}
   </n-card>
+  </div>
 </template>
 
 <script>
@@ -115,5 +117,8 @@ export default {
 };
 </script>
 <style scoped>
-
+#body {
+  inline-size: 100%;
+  overflow-wrap: break-word;
+}
 </style>
