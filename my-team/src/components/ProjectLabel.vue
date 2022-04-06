@@ -89,6 +89,9 @@ export default {
                 }
               });
             })
+            // console.log(this.memberTotal);
+            this.memberTotal = this.memberTotal.slice(0,this.memberTotal.length-2);
+            // console.log(this.memberTotal);
             this.memberTotal += ")";
           })
 
