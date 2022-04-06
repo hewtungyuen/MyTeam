@@ -3,7 +3,7 @@
   <Header :title= "title"/>
 
   <div class="buttons">
-    <div class="grid-container">
+    <div class="grid-container" v-if="user.email == leader">
       <div class="grid-item"><AddMember  @addedMem="change"/></div>
       <div class="grid-item"><n-button @click="goToMemberStatistics()">Member Statistic</n-button></div>
       <div class="grid-item"><AddTask @addedTask = "change2"/></div>
@@ -60,8 +60,9 @@ export default {
     return{
       refreshComp:0,
       refresh2:0,
-      title: ""
-    
+      title: "",
+      user: "",
+      leader: "",
     }
   },
    methods:{
@@ -92,6 +93,7 @@ export default {
         if (doc.id == this.$route.params.id) {
           let yy = doc.data();
           this.title = yy.Name;
+          this.leader = yy.Leader;
         }
       });
     });
