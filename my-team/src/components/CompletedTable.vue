@@ -1,11 +1,28 @@
 <template>
+  <n-input
+            type="text"
+            round
+            placeholder="Enter In Charge name"
+            size="large"
+            v-model:value="searchEmail"
+            autosize
+            style="min-width: 80%"
+            clearable
+          />
+  <n-button strong
+            secondary
+            round
+            type="success" @click = "searchInCharge()" id = "searchBut"> Search </n-button>
+  <n-button strong
+            secondary
+            round
+            type="success" @click = "clearSearch()" id = "searchBut">Clear Search </n-button><br><br>
   <n-space vertical :size="12">
     <n-data-table
       ref="table"
       :columns="this.$store.state.column"
-      :data="this.$store.state.data"
+      :data="this.data"
       :pagination="pagination"
-      :row-class-name="rowClassName"
     />
   </n-space>
 </template>
@@ -25,8 +42,40 @@ export default defineComponent({
   data() {
     return {
       user: false,
-      output: []
+      data: [],
+      searchEmail: ""
     };
+  },
+  methods: {
+    async searchInCharge() {
+      let name = this.searchEmail
+      this.data = []
+      let collect = await getDocs(collection(db, "Tasks"))
+
+      collect.forEach((doc) => {
+        let yy = doc.data()
+        if (yy.ProjectID == this.$route.params.id &&
+          yy.CompletionStatus == "Completed") {
+          let check = yy.InCharge.toLowerCase().includes(name.toLowerCase())
+          if (check) {
+            this.data.push(yy)
+          }
+        }
+      })
+
+    },
+    async clearSearch() {
+      this.name = ""
+      this.data = []
+      let collect = await getDocs(collection(db, "Tasks"))
+
+      collect.forEach((doc) => {
+        let yy = doc.data()
+        if (yy.ProjectID == this.$route.params.id && yy.CompletionStatus == "Completed") {
+          this.data.push(yy)
+        }
+      })
+    }
   },
   mounted() {
     const auth = getAuth();
@@ -88,7 +137,7 @@ export default defineComponent({
         ) {
           z.push(yy);
           this.$store.commit("updateData", z);
-          console.log(this.$store.state.data);
+          this.data = this.$store.state.data;
         }
       });
     });
@@ -104,3 +153,11 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  #searchBut {
+    margin: 10px;
+    position: relative;
+    top: 8px
+  }
+</style>

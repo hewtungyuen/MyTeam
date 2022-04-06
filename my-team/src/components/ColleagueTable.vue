@@ -7,7 +7,7 @@
             size="large"
             v-model:value="ColleagueName"
             autosize
-            style="min-width: 92%"
+            style="min-width: 90%"
             clearable
           />
   <n-button strong

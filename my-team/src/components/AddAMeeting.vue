@@ -209,7 +209,7 @@ export default defineComponent({
           // Add a button in list
           var bu = document.createElement("button");
           bu.type = "button";
-          bu.className = "memberBut";
+          bu.style = "margin:10px; font-size:120%"
           bu.id = String(yy.Email);
           if (member === this.user.email) {
             bu.innerHTML = yy.FullName + " (Myself)";
@@ -394,9 +394,7 @@ export default defineComponent({
   height: 100%;
 }
 
-form {
-  font-size: 20px;
-}
+
 input,
 textarea {
   border: 1px solid black;
@@ -424,10 +422,6 @@ textarea {
   border: 1px solid black;
   height: 150px;
   width: 450px;
-}
-.memberBut {
-  margin: 10px;
-  font-size: 16px;
 }
 
 #addMeetingBut {

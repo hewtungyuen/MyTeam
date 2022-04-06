@@ -1,4 +1,22 @@
 <template>
+  <n-input
+            type="text"
+            round
+            placeholder="Enter In Charge name"
+            size="large"
+            v-model:value="searchEmail"
+            autosize
+            style="min-width: 80%"
+            clearable
+          />
+  <n-button strong
+            secondary
+            round
+            type="success" @click = "searchInCharge()" id = "searchBut"> Search </n-button>
+  <n-button strong
+            secondary
+            round
+            type="success" @click = "clearSearch()" id = "searchBut">Clear Search </n-button><br><br>
   <n-space vertical :size="12">
     <n-data-table
       ref="table"
@@ -27,8 +45,40 @@ export default {
       user: false,
       email: "",
       column: [],
-      data: []
+      data: [],
+      searchEmail: ""
     };
+  },
+  methods: {
+    async searchInCharge() {
+      let name = this.searchEmail
+      this.data = []
+      let collect = await getDocs(collection(db, "Tasks"))
+
+      collect.forEach((doc) => {
+        let yy = doc.data()
+        if (yy.ProjectID == this.$route.params.id &&
+          yy.CompletionStatus == "In Progress") {
+          let check = yy.InCharge.toLowerCase().includes(name.toLowerCase())
+          if (check) {
+            this.data.push(yy)
+          }
+        }
+      })
+
+    },
+    async clearSearch() {
+      this.name = ""
+      this.data = []
+      let collect = await getDocs(collection(db, "Tasks"))
+
+      collect.forEach((doc) => {
+        let yy = doc.data()
+        if (yy.ProjectID == this.$route.params.id && yy.CompletionStatus == "In Progress") {
+          this.data.push(yy)
+        }
+      })
+    }
   },
   mounted() {
     const auth = getAuth();
@@ -98,6 +148,7 @@ export default {
               NButton,
               {
                 size: 'small',
+                type: 'info',
                 onClick: () => {
                   let status = parseInt(row.ProgressStatus);
                   if (status < 100) {
@@ -134,13 +185,13 @@ export default {
                   })
                 }
               },
-              { default: () => 'Update Progress (25%)'}
+              { default: () => 'Update (25%)'}
             )
           }
           }
         },
         {
-          title: "Complete",
+          title: "Complete Task",
           key: "Complete",
           render (row) {
             if (row.InCharge == email) {
@@ -148,6 +199,7 @@ export default {
               NButton,
               {
                 size: 'small',
+                type: 'success',
                 onClick: () => {
                   taskDetails.then((QuerySnapshot) => {
                     QuerySnapshot.forEach((docs) => {
@@ -172,13 +224,13 @@ export default {
                   })
                 }
               },
-              { default: () => 'Complete Task' }
+              { default: () => 'Complete' }
             )
           }
           }
         },
         {
-          title: "DeleteTask",
+          title: "Delete Task",
           key: "DeleteTask",
           render(row) {
             if (row.InCharge == email) {
@@ -186,6 +238,7 @@ export default {
                 NButton, 
                 {
                   size: 'small',
+                  type:"error",
                   onClick: () => {
                     taskDetails.then((QuerySnapshot) => {
                       QuerySnapshot.forEach((docs) => {
@@ -212,7 +265,7 @@ export default {
                     })
                   }
                 },
-                { default: () => 'Delete Task' }
+                { default: () => 'Delete' }
               );
             }
           },
@@ -261,5 +314,11 @@ export default {
 <style scoped>
   :deep(.overdue td) {
     color: red;
+  }
+
+  #searchBut {
+    margin: 10px;
+    position: relative;
+    top: 8px
   }
 </style>

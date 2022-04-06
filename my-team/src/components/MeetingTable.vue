@@ -35,6 +35,8 @@ export default defineComponent({
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.user = user;
+        console.log(user);
+        this.column = createColumns(user.email);
       }
     });
 
@@ -76,7 +78,7 @@ export default defineComponent({
       });
     });
 
-    const createColumns = () => {
+    const createColumns = (email) => {
       return [
         {
           type: "expand",
@@ -108,6 +110,7 @@ export default defineComponent({
           key: "Members",
           defaultSortOrder: "ascend",
           sorter: "default",
+          width: "200px",
         },
         {
           title: "Status",
@@ -121,15 +124,17 @@ export default defineComponent({
           key: "action",
           // sorter: "default",
           render(row) {
+            if (row.Leader == email && row.Status == "Upcoming") {
             return h(
               NButton,
               {
+                // color: "rgb(183, 20, 20)",
+                color: "red",
                 size: "small",
                 onClick: () => {
                   meetingDetails.then((QuerySnapshot) => {
                     QuerySnapshot.forEach((docs) => {
                       let yy = docs.data();
-
                       if (row.Name == yy.Name && yy.Status != "Cancelled") {
                         let boo = confirm(
                           "Confirm on cancelling " + row.Name + "?"
@@ -145,17 +150,18 @@ export default defineComponent({
                       } else if (row.Name == yy.Name) {
                         alert("The meeting has already been cancelled.");
                       }
-                    });
-                  });
+                    })
+                  })
                 },
               },
               { default: () => "Cancel Meeting" }
             );
+            }
           },
         },
       ];
     };
-    this.column = createColumns();
+    
   },
   methods: {
     typeOf(obj) {
@@ -197,7 +203,7 @@ export default defineComponent({
 
 <style scoped>
 :deep(.Cancelled td) {
-  color: grey;
+  color: rgb(183, 20, 20);
 }
 
 :deep(.Completed td) {
