@@ -88,7 +88,7 @@
         </div>
 
         <div class="tasks">
-          <h2>My tasks</h2>
+          <h2>Upcoming Tasks</h2>
           <div class="meetingsAndDeadlines">
             <div v-if="allMyTasks.length == 0">
               <i v-if="allMyTasks.length == 0">You have no upcoming tasks.</i>
@@ -106,7 +106,7 @@
         </div>
 
         <div class="meetings">
-          <h2>Upcoming meetings</h2>
+          <h2>Upcoming Meetings</h2>
           <div class="meetingsAndDeadlines" id="deadlines">
             <div v-if="allMyMeetingDetails.length == 0">
               <i>You have no upcoming meetings.</i>
@@ -134,12 +134,12 @@
 
       <!-- grid 2 -->
 
-      <HomeChart
+      <!-- <HomeChart
         :projectNames="this.projectNames"
         :key="this.projectNames[0]"
-        :allMyTasks2="this.allMyTasks2"
+        :allMyTasks="this.allMyTasks"
         style="padding-left: 15px"
-      />
+      /> -->
     </div>
   </div>
 </template>
@@ -148,7 +148,7 @@
 import DeadlinesAndMeetings from "@/components/DeadlinesAndMeetings.vue";
 import ProjectsTable from "@/components/ProjectsTable.vue";
 import Header from "@/components/Header.vue";
-import HomeChart from "@/components/HomeChart.vue";
+// import HomeChart from "@/components/HomeChart.vue";
 import Sidebar from "@/components/sidebar/Sidebar";
 import { sidebarWidth } from "@/components/sidebar/state";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -178,6 +178,101 @@ export default {
     var allProjects = getDocs(collection(db, "Projects"));
     var allTasks = getDocs(collection(db, "Tasks"));
     var allMeetings = getDocs(collection(db, "Meetings"));
+
+    // var myProjects = []
+
+    // const func = async () => {
+    //   allUsers.then((querySnapshot) => {
+    //     var myProjects = [];
+    //     querySnapshot.forEach((d) => {
+    //       var docData = d.data();
+    //       if (d.data().Email == this.user.email) {
+    //         if (docData.Projects) {
+    //           myProjects.concat(docData.Projects);
+    //         }
+    //         if (docData.LeadingProjects) {
+    //           myProjects = myProjects.concat(docData.LeadingProjects);
+    //         }
+    //       }
+    //     });
+    //   })
+    // }
+
+
+    // allUsers.then((querySnapshot) => {
+    //   var myProjects = [];
+    //   querySnapshot.forEach((d) => {
+    //     var docData = d.data();
+    //     if (d.data().Email == this.user.email) {
+    //       if (docData.Projects) {
+    //         myProjects.concat(docData.Projects);
+    //       }
+    //       if (docData.LeadingProjects) {
+    //         myProjects = myProjects.concat(docData.LeadingProjects);
+    //       }
+    //     }
+    //   });
+    //   allProjects.then((querySnapshot) => {
+    //     var completedList = []
+    //     var ongoingList = []
+    //     var overdueList = []
+
+    //     myProjects.forEach((projId) => {
+    //       // allProjects.then((querySnapshot) => {
+    //       querySnapshot.forEach((d) => {
+    //         if (d.id == projId) {
+    //           var docData = d.data();
+
+    //           if (docData.CompletionStatus == "In Progress") {
+    //             // if project is still in progress
+
+    //             allTasks.then((querySnapshot) => {
+    //               var completed = 0;
+    //               var ongoing = 0;
+    //               var overdue = 0;
+    //               var count = 0;
+    //               docData.Tasks.forEach(() => {
+    //                 // for each taskId in the projects that i am in
+    //                 count += 1;
+    //                 querySnapshot.forEach((d) => {
+    //                   var docData = d.data();
+
+    //                   if (docData.InCharge == this.user.email) {
+    //                     // this is my task
+    //                     console.log(docData.CompletionStatus);
+    //                     if (docData.CompletionStatus == "Completed") {
+    //                       completed += docData.ExpectedHours;
+    //                     }
+
+    //                     if (docData.CompletionStatus == "In Progress") {
+    //                       console.log("here");
+    //                       if (new Date(docData.DeadLine) < new Date()) {
+    //                         overdue += docData.ExpectedHours;
+    //                       } else {
+    //                         ongoing +=
+    //                           docData.ExpectedHours -
+    //                           docData.ExpectedHours *
+    //                             (docData.ProgressStatus / 100);
+    //                       }
+    //                     }
+    //                   }
+    //                 });
+    //               });
+    //               completedList.push(completed / count);
+    //               ongoingList.push(ongoing / count);
+    //               overdueList.push(overdue / count);
+    //             });
+    //           }
+    //         }
+    //       });
+    //       // });
+    //     });
+
+    //     console.log(completedList)
+    //     console.log(ongoingList)
+    //     console.log(overdueList)
+    //   });
+    // });
 
     allUsers.then((querySnapshot) => {
       var myProjects = [];
@@ -291,13 +386,13 @@ export default {
               if (projData.CompletionStatus == "In Progress") {
                 this.projectIdsWithoutCompleted.push(doc.id);
                 this.projectNames.push(projData.Name);
-                var overviewTask = {
-                  Name: projData.Name,
-                  "In Progress": 0,
-                  Completed: 0,
-                  Overdue: 0,
-                };
-                this.allMyTasks2.push(overviewTask);
+                // var overviewTask = {
+                //   Name: projData.Name,
+                //   "In Progress": 0,
+                //   Completed: 0,
+                //   Overdue: 0,
+                // };
+                // this.allMyTasks2.push(overviewTask);
                 this.projectDeadlines.push(projData.StartDate);
 
                 var intermediate = new Array();
@@ -317,13 +412,16 @@ export default {
                             taskData.DeadLine
                           ).toDateString();
                           let ProjectID = taskData.ProjectID;
-                          let ProgressStatus = taskData.ProgressStatus;
+                          let ProgressStatus = taskData.ProgressStatus + '%';
+                          let ExpectedHours = taskData.ExpectedHours;
                           let obj = {
                             TaskName: TaskName,
                             DeadLine: DeadLine,
                             ProjectID: ProjectID,
                             ProgressStatus: ProgressStatus,
                             DeadLineString: DeadLineString,
+                            ExpectedHours: ExpectedHours,
+                            ProjectName: projData.Name,
                           };
 
                           intermediate.push(obj);
@@ -347,6 +445,12 @@ export default {
         });
       });
     });
+
+    // console.log('here')
+    // const target_copy = Object.assign([], this.projectNames);
+    // console.log(target_copy)
+    // console.log(this.projectNames)
+    // console.log(this.allMyTasks)
     // console.log(this.projectNames);
   },
   data() {
@@ -362,7 +466,7 @@ export default {
       allMyTasks: [], // 1d array
       allMyMeetingDetails: [], // objects of meeting details
       allMyMeetings: [], // ids
-      allMyTasks2: [],
+      // allMyTasks2: [],
     };
   },
   name: "HomePage",
@@ -370,7 +474,7 @@ export default {
     DeadlinesAndMeetings,
     ProjectsTable,
     Sidebar,
-    HomeChart,
+    // HomeChart,
     Header,
   },
   methods: {
@@ -434,7 +538,7 @@ export default {
   padding: 30px;
   column-gap: 40px;
   padding-top: 0px;
-  max-height: 500px;  /* this one affects the homechaart */
+  max-height: 500px; /* this one affects the homechaart */
 }
 
 .projectsTableAndButton {
