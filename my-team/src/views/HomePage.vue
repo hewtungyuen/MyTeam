@@ -198,7 +198,6 @@ export default {
     //   })
     // }
 
-
     // allUsers.then((querySnapshot) => {
     //   var myProjects = [];
     //   querySnapshot.forEach((d) => {
@@ -294,82 +293,170 @@ export default {
               querySnapshot.forEach((meetingDoc) => {
                 var meetingData = meetingDoc.data();
                 var ProjectID = meetingData.ProjectID;
+                var memberEmail = meetingData.MembersEmail;
 
-                allProjects.then((querySnapshot) => {
-                  querySnapshot.forEach((d) => {
-                    if (
-                      d.id == ProjectID &&
-                      d.data().CompletionStatus == "In Progress"
-                    ) {
-                      // console.log(meetingData.DateTime)
+                console.log(meetingDoc.id);
+                if (memberEmail.length != 0) {
+                  if (memberEmail.length == 1) {
+                    if (memberEmail[0] == this.user.email) {
+                      allProjects.then((querySnapshot) => {
+                        querySnapshot.forEach((d) => {
+                          if (
+                            d.id == ProjectID &&
+                            d.data().CompletionStatus == "In Progress"
+                          ) {
+                            // console.log(meetingData.DateTime)
 
-                      // let day = meetingData.DateTime.slice(0,3)
-                      let month = meetingData.DateTime.slice(4, 7);
-                      let date = meetingData.DateTime.slice(8, 10);
-                      let year = meetingData.DateTime.slice(11, 15);
-                      let hour = meetingData.DateTime.slice(17, 19);
-                      let minute = meetingData.DateTime.slice(20, 22);
+                            // let day = meetingData.DateTime.slice(0,3)
+                            let month = meetingData.DateTime.slice(4, 7);
+                            let date = meetingData.DateTime.slice(8, 10);
+                            let year = meetingData.DateTime.slice(11, 15);
+                            let hour = meetingData.DateTime.slice(17, 19);
+                            let minute = meetingData.DateTime.slice(20, 22);
 
-                      // console.log(day)
-                      // console.log(month)
-                      // console.log(date)
-                      // console.log(year)
-                      // console.log(hour)
-                      // console.log(minute)
+                            // console.log(day)
+                            // console.log(month)
+                            // console.log(date)
+                            // console.log(year)
+                            // console.log(hour)
+                            // console.log(minute)
 
-                      const months = {
-                        Jan: "01",
-                        Feb: "02",
-                        Mar: "03",
-                        Apr: "04",
-                        May: "05",
-                        Jun: "06",
-                        Jul: "07",
-                        Aug: "08",
-                        Sep: "09",
-                        Oct: "10",
-                        Nov: "11",
-                        Dec: "12",
-                      };
+                            const months = {
+                              Jan: "01",
+                              Feb: "02",
+                              Mar: "03",
+                              Apr: "04",
+                              May: "05",
+                              Jun: "06",
+                              Jul: "07",
+                              Aug: "08",
+                              Sep: "09",
+                              Oct: "10",
+                              Nov: "11",
+                              Dec: "12",
+                            };
 
-                      let DateTime = new Date(
-                        year,
-                        months[month] - 1,
-                        date,
-                        hour,
-                        minute
-                      );
-                      // console.log(DateTime)
+                            let DateTime = new Date(
+                              year,
+                              months[month] - 1,
+                              date,
+                              hour,
+                              minute
+                            );
+                            // console.log(DateTime)
 
-                      if (
-                        DateTime >= new Date() &&
-                        meetingData.Status != "Cancelled"
-                      ) {
-                        let Name = meetingData.Name;
-                        let obj = {
-                          DateTime: DateTime,
-                          ProjectID: ProjectID,
-                          Name: Name,
-                        };
-                        this.allMyMeetingDetails.push(obj);
-                      } else if (
-                        DateTime <= new Date() &&
-                        meetingData.Status == "Upcoming"
-                      ) {
-                        updateDoc(doc(db, "Meetings", meetingDoc.id), {
-                          Status: "Completed",
+                            if (
+                              DateTime >= new Date() &&
+                              meetingData.Status != "Cancelled"
+                            ) {
+                              let Name = meetingData.Name;
+                              let obj = {
+                                DateTime: DateTime,
+                                ProjectID: ProjectID,
+                                Name: Name,
+                              };
+                              this.allMyMeetingDetails.push(obj);
+                            } else if (
+                              DateTime <= new Date() &&
+                              meetingData.Status == "Upcoming"
+                            ) {
+                              updateDoc(doc(db, "Meetings", meetingDoc.id), {
+                                Status: "Completed",
+                              });
+                            }
+                          }
+                        });
+                        this.allMyMeetingDetails.sort((a, b) =>
+                          a.DateTime > b.DateTime
+                            ? 1
+                            : b.DateTime > a.DateTime
+                            ? -1
+                            : 0
+                        );
+                      });
+                    }
+                  } else {
+                    memberEmail.forEach((x) => {
+                      if (x == this.user.email) {
+                        allProjects.then((querySnapshot) => {
+                          querySnapshot.forEach((d) => {
+                            if (
+                              d.id == ProjectID &&
+                              d.data().CompletionStatus == "In Progress"
+                            ) {
+                              // console.log(meetingData.DateTime)
+
+                              // let day = meetingData.DateTime.slice(0,3)
+                              let month = meetingData.DateTime.slice(4, 7);
+                              let date = meetingData.DateTime.slice(8, 10);
+                              let year = meetingData.DateTime.slice(11, 15);
+                              let hour = meetingData.DateTime.slice(17, 19);
+                              let minute = meetingData.DateTime.slice(20, 22);
+
+                              // console.log(day)
+                              // console.log(month)
+                              // console.log(date)
+                              // console.log(year)
+                              // console.log(hour)
+                              // console.log(minute)
+
+                              const months = {
+                                Jan: "01",
+                                Feb: "02",
+                                Mar: "03",
+                                Apr: "04",
+                                May: "05",
+                                Jun: "06",
+                                Jul: "07",
+                                Aug: "08",
+                                Sep: "09",
+                                Oct: "10",
+                                Nov: "11",
+                                Dec: "12",
+                              };
+
+                              let DateTime = new Date(
+                                year,
+                                months[month] - 1,
+                                date,
+                                hour,
+                                minute
+                              );
+                              // console.log(DateTime)
+
+                              if (
+                                DateTime >= new Date() &&
+                                meetingData.Status != "Cancelled"
+                              ) {
+                                let Name = meetingData.Name;
+                                let obj = {
+                                  DateTime: DateTime,
+                                  ProjectID: ProjectID,
+                                  Name: Name,
+                                };
+                                this.allMyMeetingDetails.push(obj);
+                              } else if (
+                                DateTime <= new Date() &&
+                                meetingData.Status == "Upcoming"
+                              ) {
+                                updateDoc(doc(db, "Meetings", meetingDoc.id), {
+                                  Status: "Completed",
+                                });
+                              }
+                            }
+                          });
+                          this.allMyMeetingDetails.sort((a, b) =>
+                            a.DateTime > b.DateTime
+                              ? 1
+                              : b.DateTime > a.DateTime
+                              ? -1
+                              : 0
+                          );
                         });
                       }
-                    }
-                  });
-                  this.allMyMeetingDetails.sort((a, b) =>
-                    a.DateTime > b.DateTime
-                      ? 1
-                      : b.DateTime > a.DateTime
-                      ? -1
-                      : 0
-                  );
-                });
+                    });
+                  }
+                }
               });
             });
           }
@@ -412,7 +499,7 @@ export default {
                             taskData.DeadLine
                           ).toDateString();
                           let ProjectID = taskData.ProjectID;
-                          let ProgressStatus = taskData.ProgressStatus + '%';
+                          let ProgressStatus = taskData.ProgressStatus + "%";
                           let ExpectedHours = taskData.ExpectedHours;
                           let obj = {
                             TaskName: TaskName,
@@ -538,7 +625,7 @@ export default {
   padding: 30px;
   column-gap: 40px;
   padding-top: 0px;
-  height: 500px; 
+  height: 500px;
 }
 
 .projectsTableAndButton {
