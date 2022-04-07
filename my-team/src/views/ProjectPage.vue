@@ -6,8 +6,8 @@
     <div class="grid-container" v-if="user.email == leader">
       <div class="grid-item"><AddMember  @addedMem="change"/></div>
       <div class="grid-item"><n-button @click="goToMemberStatistics()">Member Statistic</n-button></div>
-      <div class="grid-item"><AddTask @addedTask = "change2"/></div>
-      <div class="grid-item"><AddAMeeting @addedMeeting = "change2"/></div>
+      <div class="grid-item"><AddTask @addedTask = "change2" :key="refreshComp"/></div>
+      <div class="grid-item"><AddAMeeting @addedMeeting = "change2" :key="refreshComp"/></div>
       </div>
     </div>
   
