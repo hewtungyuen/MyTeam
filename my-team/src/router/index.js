@@ -82,7 +82,7 @@ router.beforeEach((from, to) => {
     || to.name == "MembersStatistics"
     || to.name == "NewProjPage"
     || to.name == "ProjectPage" )) {
-        let boo = confirm("are you sure you want to log out?")
+        let boo = confirm("Are you sure you want to log out?")
         return boo
     }
   })

@@ -46,7 +46,7 @@
             size="large"
             v-model:value="member"
             autosize
-            style="min-width: 85%"
+            style="min-width: 83%"
             clearable
           />
           <n-button
