@@ -6,6 +6,9 @@
 
     <h2> Statistics for: {{this.projectName}} </h2>
 
+    <n-button @click = 'backToProjectPage()'> Back to Project Page</n-button>
+    <br><br>
+
     <div v-if = '!this.allProjects'> No tasks have been assigned to any members yet.</div>
     <div v-else class='grid'>
         <div v-for = 'project in Object.keys(this.allProjects)' :key = 'project' style='display: flex; align-items: center; justify-content: center;  max-width:90%;'>
@@ -128,6 +131,12 @@ export default {
     setup() {
         return {sidebarWidth}
     },
+    methods:{
+        backToProjectPage() {
+            var projectId = this.$route.params.id
+            this.$router.push("/ProjectPage/" + projectId);
+        },
+    }
 }
 </script>
 
