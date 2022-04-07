@@ -16,7 +16,7 @@
   <n-button strong
             secondary
             round
-            type="success" @click = "clearSearch()" id = "searchBut">Clear Search </n-button><br><br>
+            type="success" @click = "clearSearch()" id = "searchBut" color="#CF5B42">Clear Search </n-button><br><br>
   <n-space vertical :size="12">
     <n-data-table
       ref="table"
@@ -95,7 +95,7 @@ export default defineComponent({
           type: 'expand',
           expandable: (row) => row.TaskName,  
           renderExpand: (row) => {
-            return row.Description
+            return "Details: " + row.Description
           }
         },
         {
