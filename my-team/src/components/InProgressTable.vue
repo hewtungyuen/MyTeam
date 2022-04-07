@@ -6,7 +6,7 @@
             size="large"
             v-model:value="searchEmail"
             autosize
-            style="min-width: 80%"
+            style="min-width: 75%"
             clearable
           />
   <n-button strong
@@ -52,6 +52,7 @@ export default {
   methods: {
     async searchInCharge() {
       let name = this.searchEmail
+      this.searchEmail = ""
       this.data = []
       let collect = await getDocs(collection(db, "Tasks"))
 
@@ -59,7 +60,7 @@ export default {
         let yy = doc.data()
         if (yy.ProjectID == this.$route.params.id &&
           yy.CompletionStatus == "In Progress") {
-          let check = yy.InCharge.toLowerCase().includes(name.toLowerCase())
+          let check = yy.InChargeName.toLowerCase().includes(name.toLowerCase())
           if (check) {
             this.data.push(yy)
           }
@@ -109,10 +110,11 @@ export default {
           key: "TaskName",
           defaultSortOrder: "ascend",
           sorter: "default",
+          width: 230
         },
         {
           title: "In Charge",
-          key: "InCharge",
+          key: "InChargeName",
           defaultSortOrder: "ascend",
           sorter: "default",
         },

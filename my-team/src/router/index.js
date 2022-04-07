@@ -74,8 +74,14 @@ const router = createRouter({
  routes
 })
 
-router.beforeEach((from) => {
-    if (from.name == 'LoginPage') {
+router.beforeEach((from, to) => {
+    if (from.name == 'LoginPage' && 
+    (to.name == "HomePage"  
+    || to.name == "ColleaguesPage" 
+    || to.name == "ProfilePage"
+    || to.name == "MembersStatistics"
+    || to.name == "NewProjPage"
+    || to.name == "ProjectPage" )) {
         let boo = confirm("are you sure you want to log out?")
         return boo
     }
