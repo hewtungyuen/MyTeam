@@ -524,7 +524,7 @@ export default {
   padding-right: 10%;
   padding-bottom: 10%;
   background-color: rgb(196, 240, 221);
-  max-height: 69%;
+  height: 500px;
   overflow: auto;
 }
 
@@ -538,11 +538,11 @@ export default {
   padding: 30px;
   column-gap: 40px;
   padding-top: 0px;
-  max-height: 500px; /* this one affects the homechaart */
+  height: 500px; 
 }
 
 .projectsTableAndButton {
-  max-height: 69%;
+  height: 500px;
 }
 .grid2 {
   display: grid;
