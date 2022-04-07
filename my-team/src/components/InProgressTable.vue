@@ -6,7 +6,7 @@
             size="large"
             v-model:value="searchEmail"
             autosize
-            style="min-width: 80%"
+            style="min-width: 75%"
             clearable
           />
   <n-button strong
