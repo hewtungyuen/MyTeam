@@ -103,6 +103,7 @@ export default defineComponent({
           key: "TaskName",
           defaultSortOrder: "ascend",
           sorter: "default",
+          width: 250
         },
         {
           title: "In Charge",

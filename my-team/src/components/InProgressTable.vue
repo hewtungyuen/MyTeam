@@ -110,6 +110,7 @@ export default {
           key: "TaskName",
           defaultSortOrder: "ascend",
           sorter: "default",
+          width: 230
         },
         {
           title: "In Charge",
