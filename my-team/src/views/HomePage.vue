@@ -34,7 +34,7 @@
             </div>
             <n-collapse v-else-if="this.projectNames.length === 1">
               <n-collapse-item :title="projectNames[0]">
-                <div v-if="this.myCurrentTasks[index - 1].length == 0">
+                <div v-if="this.myCurrentTasks[0].length == 0">
                   <i>You have no pending tasks at the moment. </i>
                 </div>
 
