@@ -1,22 +1,34 @@
 <template>
   <n-input
-            type="text"
-            round
-            placeholder="Enter In Charge name"
-            size="large"
-            v-model:value="searchEmail"
-            autosize
-            style="min-width: 75%"
-            clearable
-          />
-  <n-button strong
-            secondary
-            round
-            type="success" @click = "searchInCharge()" id = "searchBut"> Search </n-button>
-  <n-button strong
-            secondary
-            round
-            type="success" @click = "clearSearch()" id = "searchBut" color="#CF5B42">Clear Search </n-button><br><br>
+    type="text"
+    round
+    placeholder="Enter In Charge name"
+    size="large"
+    v-model:value="searchEmail"
+    autosize
+    style="min-width: 75%"
+    clearable
+  />
+  <n-button
+    strong
+    secondary
+    round
+    type="success"
+    @click="searchInCharge()"
+    id="searchBut"
+  >
+    Search
+  </n-button>
+  <n-button
+    strong
+    secondary
+    round
+    type="success"
+    @click="clearSearch()"
+    id="searchBut"
+    color="#CF5B42"
+    >Clear Search </n-button
+  ><br /><br />
   <n-space vertical :size="12">
     <n-data-table
       ref="table"
@@ -35,48 +47,51 @@ import { getFirestore } from "firebase/firestore";
 import { collection, getDocs } from "firebase/firestore";
 const db = getFirestore(firebaseApp);
 
-
-
-
 export default defineComponent({
   data() {
     return {
       user: false,
       data: [],
-      searchEmail: ""
+      searchEmail: "",
     };
   },
   methods: {
     async searchInCharge() {
-      let name = this.searchEmail
-      this.searchEmail = ""
-      this.data = []
-      let collect = await getDocs(collection(db, "Tasks"))
+      let name = this.searchEmail;
+      this.searchEmail = "";
+      this.data = [];
+      let collect = await getDocs(collection(db, "Tasks"));
 
       collect.forEach((doc) => {
-        let yy = doc.data()
-        if (yy.ProjectID == this.$route.params.id &&
-          yy.CompletionStatus == "Completed") {
-          let check = yy.InChargeName.toLowerCase().includes(name.toLowerCase())
+        let yy = doc.data();
+        if (
+          yy.ProjectID == this.$route.params.id &&
+          yy.CompletionStatus == "Completed"
+        ) {
+          let check = yy.InChargeName.toLowerCase().includes(
+            name.toLowerCase()
+          );
           if (check) {
-            this.data.push(yy)
+            this.data.push(yy);
           }
         }
-      })
-
+      });
     },
     async clearSearch() {
-      this.name = ""
-      this.data = []
-      let collect = await getDocs(collection(db, "Tasks"))
+      this.name = "";
+      this.data = [];
+      let collect = await getDocs(collection(db, "Tasks"));
 
       collect.forEach((doc) => {
-        let yy = doc.data()
-        if (yy.ProjectID == this.$route.params.id && yy.CompletionStatus == "Completed") {
-          this.data.push(yy)
+        let yy = doc.data();
+        if (
+          yy.ProjectID == this.$route.params.id &&
+          yy.CompletionStatus == "Completed"
+        ) {
+          this.data.push(yy);
         }
-      })
-    }
+      });
+    },
   },
   mounted() {
     const auth = getAuth();
@@ -87,23 +102,23 @@ export default defineComponent({
     });
 
     var taskDetails = getDocs(collection(db, "Tasks"));
-    this.$store.commit("refreshData");    
-    
+    this.$store.commit("refreshData");
+
     const createColumns = () => {
       return [
         {
-          type: 'expand',
-          expandable: (row) => row.TaskName,  
+          type: "expand",
+          expandable: (row) => row.TaskName,
           renderExpand: (row) => {
-            return "Details: " + row.Description
-          }
+            return "Details: " + row.Description;
+          },
         },
         {
           title: "Task Name",
           key: "TaskName",
           defaultSortOrder: "ascend",
           sorter: "default",
-          width: 250
+          width: 250,
         },
         {
           title: "In Charge",
@@ -122,12 +137,11 @@ export default defineComponent({
           key: "DeadLine",
           defaultSortOrder: "ascend",
           sorter: "default",
-        }
+        },
       ];
     };
 
     this.$store.commit("updateColumn", createColumns());
-
 
     taskDetails.then((QuerySnapshot) => {
       const z = [];
@@ -157,9 +171,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  #searchBut {
-    margin: 10px;
-    position: relative;
-    top: 8px
-  }
+#searchBut {
+  margin: 10px;
+  position: relative;
+  top: 8px;
+}
 </style>

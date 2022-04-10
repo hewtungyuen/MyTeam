@@ -72,15 +72,17 @@ export default {
         sendPasswordResetEmail(auth, this.email)
           .then(() => {
             console.log(this.email + " reset email link sent");
-            alert("We have sent the link to your email address to reset your password! Do check your email!");
+            alert(
+              "We have sent the link to your email address to reset your password! Do check your email!"
+            );
             this.$router.push({ name: "LoginPage" });
           })
           .catch((error) => {
             document.getElementById("errormessage2").innerHTML = "";
             console.log(error.message);
-            document.getElementById("errormessage1").innerHTML = "The email address is not valid. Try Again.";
+            document.getElementById("errormessage1").innerHTML =
+              "The email address is not valid. Try Again.";
           });
-        
       }
     },
   },

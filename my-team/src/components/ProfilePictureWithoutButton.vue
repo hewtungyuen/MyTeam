@@ -29,9 +29,7 @@ export default {
     };
   },
 
-
   methods: {
-
     //obtain file data
     handleUpload(event) {
       this.file = event.target.files[0];
@@ -82,7 +80,7 @@ export default {
     allUsers.then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         let docData = doc.data();
-        console.log(this.userEmail)
+        console.log(this.userEmail);
         if (docData.Email == this.userEmail) {
           this.name = docData.FullName;
           this.updatePhoto();
@@ -90,9 +88,9 @@ export default {
       });
     });
   },
-  props:{
-    userEmail:String,
-  }
+  props: {
+    userEmail: String,
+  },
 };
 </script>
 
@@ -102,6 +100,5 @@ export default {
   width: 120px;
   border-radius: 100%;
   object-fit: cover;
-  
 }
 </style>

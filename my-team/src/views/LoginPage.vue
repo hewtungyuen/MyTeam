@@ -3,15 +3,13 @@
 </template>
 
 <script>
-import LoginBox from "../components/LoginBox.vue"
+import LoginBox from "../components/LoginBox.vue";
 export default {
-    name:"LoginPage",
-    components: {
-      LoginBox
-    }
-}
+  name: "LoginPage",
+  components: {
+    LoginBox,
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

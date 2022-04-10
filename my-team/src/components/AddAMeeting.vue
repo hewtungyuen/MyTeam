@@ -1,78 +1,80 @@
 <template>
-  <n-button id="modalBut" @click="show()"> + Meeting </n-button>
-  <n-modal v-model:show="showModal">
-    <n-card
-      style="width: 600px"
-      title="Add A New Meeting"
-      :bordered="false"
-      size="huge"
-      role="dialog"
-      aria-modal="true"
-    >
-      <form id="addMemberForm">
-        <label>Meeting Title:</label><br />
-        <n-input
-          type="text"
-          v-model:value="name"
-          size="large"
-          required=""
-          clearable
-        /><br /><br />
-        <label>Meeting Description:</label><br />
-        <n-input
-          round
-          type="textarea"
-          v-model:value="details"
-          size="large"
-          rows="4"
-          required=""
-          clearable
-        />
-        <br /><br />
-        <label>Date and Time:</label>
-        <n-input
-          type="datetime-local"
-          v-model:value="timestamp"
-          size="large"
-          placeholder=""
-          required=""
-          clearable
-        />
-        <div id="errordate"></div>
-        <br /><br />
-        <label class="label" for="add">Add New Members: </label>
-        <div class="dropdown">
-          <n-button class="primary" id="dropbtn">Add your members</n-button>
-          <br />
-          <div class="dropdown-content">
-            <a
-              @click="addMember(email)"
-              v-for="email in membersInProject"
-              :key="email.id"
-              >{{ email }}
-            </a>
-          </div>
-        </div>
-        <br />
-        <label class="label" for="add"
-          >Total Number of Members: {{ memberInMeeting.length }}
-        </label>
-
-        <br />
-        <div id="members"></div>
-      </form>
-      <n-button
-        strong
-        secondary
-        round
-        type="success"
-        id="addMeetingBut"
-        @click="createMeeting()"
+  <div>
+    <n-button id="modalBut" @click="show()"> + Meeting </n-button>
+    <n-modal v-model:show="showModal">
+      <n-card
+        style="width: 600px"
+        title="Add A New Meeting"
+        :bordered="false"
+        size="huge"
+        role="dialog"
+        aria-modal="true"
       >
-        Add &raquo;
-      </n-button>
-    </n-card>
-  </n-modal>
+        <form id="addMemberForm">
+          <label>Meeting Title:</label><br />
+          <n-input
+            type="text"
+            v-model:value="name"
+            size="large"
+            required=""
+            clearable
+          /><br /><br />
+          <label>Meeting Description:</label><br />
+          <n-input
+            round
+            type="textarea"
+            v-model:value="details"
+            size="large"
+            rows="4"
+            required=""
+            clearable
+          />
+          <br /><br />
+          <label>Date and Time:</label>
+          <n-input
+            type="datetime-local"
+            v-model:value="timestamp"
+            size="large"
+            placeholder=""
+            required=""
+            clearable
+          />
+          <div id="errordate"></div>
+          <br /><br />
+          <label class="label" for="add">Add New Members: </label>
+          <div class="dropdown">
+            <n-button class="primary" id="dropbtn">Add your members</n-button>
+            <br />
+            <div class="dropdown-content">
+              <a
+                @click="addMember(email)"
+                v-for="email in membersInProject"
+                :key="email.id"
+                >{{ email }}
+              </a>
+            </div>
+          </div>
+          <br />
+          <label class="label" for="add"
+            >Total Number of Members: {{ memberInMeeting.length }}
+          </label>
+
+          <br />
+          <div id="members"></div>
+        </form>
+        <n-button
+          strong
+          secondary
+          round
+          type="success"
+          id="addMeetingBut"
+          @click="createMeeting()"
+        >
+          Add &raquo;
+        </n-button>
+      </n-card>
+    </n-modal>
+  </div>
 </template>
 
 <script>
@@ -132,7 +134,8 @@ export default defineComponent({
         // console.log(new Date(x).getTime() > new Date().getTime());
         var ts = x.split("T");
         var time = ts[1];
-        this.adjustedTimestamp = dateSelected.toDateString() + ", " + time + "H";
+        this.adjustedTimestamp =
+          dateSelected.toDateString() + ", " + time + "H";
         // console.log(this.adjustedTimestamp);
       }
     },
@@ -209,7 +212,7 @@ export default defineComponent({
           // Add a button in list
           var bu = document.createElement("button");
           bu.type = "button";
-          bu.style = "margin:10px; font-size:120%"
+          bu.style = "margin:10px; font-size:120%";
           bu.id = String(yy.Email);
           if (member === this.user.email) {
             bu.innerHTML = yy.FullName + " (Myself)";
@@ -393,7 +396,6 @@ export default defineComponent({
   width: 47%;
   height: 100%;
 }
-
 
 input,
 textarea {

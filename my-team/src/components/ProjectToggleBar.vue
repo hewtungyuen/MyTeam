@@ -4,34 +4,32 @@
       <InProgressTable />
     </n-tab-pane>
     <n-tab-pane id="completed" name="completed" tab="Completed">
-      <CompletedTable/>
+      <CompletedTable />
     </n-tab-pane>
     <n-tab-pane name="Meetings" tab="Meetings">
-      <MeetingTable/>
+      <MeetingTable />
     </n-tab-pane>
   </n-tabs>
 </template>
 
 <script>
-import InProgressTable from '@/components/InProgressTable.vue';
-import CompletedTable from '@/components/CompletedTable.vue';
-import MeetingTable from '@/components/MeetingTable.vue';
+import InProgressTable from "@/components/InProgressTable.vue";
+import CompletedTable from "@/components/CompletedTable.vue";
+import MeetingTable from "@/components/MeetingTable.vue";
 
 export default {
-  name: 'ProjectToggleBar',
-  components: { 
+  name: "ProjectToggleBar",
+  components: {
     InProgressTable,
     CompletedTable,
-    MeetingTable
-  }
-}
+    MeetingTable,
+  },
+};
 </script>
 
 <style scoped>
-
 .custom-tabs .n-tab-pane .completed {
-  background-color: red ;
+  background-color: red;
   color: red;
 }
-
 </style>
