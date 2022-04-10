@@ -111,96 +111,92 @@ export default {
       }
     });
   },
-  
-    methods:{
-        backHome(){
-            this.$router.push('/HomePage');
-        },
-        async addMember(){
-            let z = await getDoc(doc(db, "Users", this.member));
-            this.member = ""
-            if (z.exists()) {
-            let yy = z.data()
-            console.log(yy)
-            if(this.user.email == yy.Email){
-                alert("You cannot add yourself!")
-            }else{
-              if(this.memberTotal.includes(yy.Email)) {
-                alert("You have already added this member!")
-                return
-              }
-            this.memberTotal.push(String(yy.Email))
-            console.log(this.memberTotal.length)
-            var bu = document.createElement("button")
-            bu.type = "button"
-            bu.className = "memberBut"
-            bu.id = String(yy.Email)
-            bu.style = "margin:10px; font-size:120%"
-            bu.innerHTML = yy.FullName + " &#x2715"
-            let email = String(yy.Email)
-            let array = this.memberTotal
-            bu.onclick = function() {
-                let check = confirm("Going to delete this member!")
-                if (check == true){
-                const index = array.indexOf(email)
-                array.splice(index, 1)
-                this.memberTotal = array
-                console.log(this.memberTotal.length)
-                let elem = document.getElementById(email)
-                elem.remove()
-            }}
-            
-        let memberTable = document.getElementById("members")
-        memberTable.appendChild(bu)
-        }} else {
-            alert("User does not exist!")
+
+  methods: {
+    backHome() {
+      this.$router.push("/HomePage");
+    },
+    async addMember() {
+      let z = await getDoc(doc(db, "Users", this.member));
+      this.member = "";
+      if (z.exists()) {
+        let yy = z.data();
+        console.log(yy);
+        if (this.user.email == yy.Email) {
+          alert("You cannot add yourself!");
+        } else {
+          if (this.memberTotal.includes(yy.Email)) {
+            alert("You have already added this member!");
+            return;
+          }
+          this.memberTotal.push(String(yy.Email));
+          console.log(this.memberTotal.length);
+          var bu = document.createElement("button");
+          bu.type = "button";
+          bu.className = "memberBut";
+          bu.id = String(yy.Email);
+          bu.style = "margin:10px; font-size:120%";
+          bu.innerHTML = yy.FullName + " &#x2715";
+          let email = String(yy.Email);
+          let array = this.memberTotal;
+          bu.onclick = function () {
+            let check = confirm("Going to delete this member!");
+            if (check == true) {
+              const index = array.indexOf(email);
+              array.splice(index, 1);
+              this.memberTotal = array;
+              console.log(this.memberTotal.length);
+              let elem = document.getElementById(email);
+              elem.remove();
+            }
+          };
+
+          let memberTable = document.getElementById("members");
+          memberTable.appendChild(bu);
         }
-        },
-        async createProj(){
-            var projname = this.name;
-            var projdetails = this.details;
-            var projmembers = this.memberTotal;
-            var projleader = String(this.user.email);
-            if(projname == "") {
-                alert("Please input a project name!")
-            }else{
-            alert("Create Project: " + projname)
-            try{
-                const docRef = await addDoc(collection(db, "Projects"), {
-                    Name: projname,
-                    Details: projdetails,
-                    Leader: projleader,
-                    StartDate: new Date().toLocaleDateString(),
-                    Members: projmembers,
-                    Tasks: new Array(),
-                    CompletionStatus: "In Progress",
-                    CompletionDate: ""
-                    });
-                console.log(docRef.id)
-                var projid = docRef.id
-                const leaderRef = doc(db, "Users", projleader)
-                await updateDoc(leaderRef, {
-                    LeadingProjects: arrayUnion(projid)
-                    });
-                for (let i = 0; i < projmembers.length; i++) {
-                    await updateDoc(doc(db,"Users", projmembers[i]), {
-                        Projects: arrayUnion(projid)
-                    })
-                }
-
-
-                
-            }
-            catch(error){
-                console.error("Error adding document:", error);
-            }
-            this.$router.push('/HomePage');
-            }
+      } else {
+        alert("User does not exist!");
+      }
+    },
+    async createProj() {
+      var projname = this.name;
+      var projdetails = this.details;
+      var projmembers = this.memberTotal;
+      var projleader = String(this.user.email);
+      if (projname == "") {
+        alert("Please input a project name!");
+      } else {
+        alert("Create Project: " + projname);
+        try {
+          const docRef = await addDoc(collection(db, "Projects"), {
+            Name: projname,
+            Details: projdetails,
+            Leader: projleader,
+            StartDate: new Date().toLocaleDateString(),
+            Members: projmembers,
+            Tasks: new Array(),
+            CompletionStatus: "In Progress",
+            CompletionDate: "",
+          });
+          console.log(docRef.id);
+          var projid = docRef.id;
+          const leaderRef = doc(db, "Users", projleader);
+          await updateDoc(leaderRef, {
+            LeadingProjects: arrayUnion(projid),
+          });
+          for (let i = 0; i < projmembers.length; i++) {
+            await updateDoc(doc(db, "Users", projmembers[i]), {
+              Projects: arrayUnion(projid),
+            });
+          }
+        } catch (error) {
+          console.error("Error adding document:", error);
         }
-    }
-}
-
-
+        this.$router.push("/HomePage");
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -243,6 +239,6 @@ export default {
   font-size: 170%;
   margin-left: 5px;
   position: relative;
-  top:5px
+  top: 5px;
 }
 </style>

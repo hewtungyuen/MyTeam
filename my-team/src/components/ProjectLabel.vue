@@ -1,16 +1,16 @@
 <template>
-  <div id='body'>
-  <!-- <Header :title = "title"/>  -->
-  <n-card :bordered="false">
-    <!-- <h1>{{ title }}</h1> -->
-    Team Leader: {{ teamleader }}
-    <br />
-    Started on: {{ date }}
-    <br />
-    Team Members: {{ memberTotal }}
-    <br />
-    Details: {{ details }}
-  </n-card>
+  <div id="body">
+    <!-- <Header :title = "title"/>  -->
+    <n-card :bordered="false">
+      <!-- <h1>{{ title }}</h1> -->
+      Team Leader: {{ teamleader }}
+      <br />
+      Started on: {{ date }}
+      <br />
+      Team Members: {{ memberTotal }}
+      <br />
+      Details: {{ details }}
+    </n-card>
   </div>
 </template>
 
@@ -27,7 +27,7 @@ export default {
   // components: {
   //   Header,
   // },
-  
+
   data() {
     return {
       user: false,
@@ -67,52 +67,52 @@ export default {
         this.user = user;
       }
     });
-    
+
     const fetchData = async () => {
       let projectDetails = getDocs(collection(db, "Projects"));
       let userDetails = getDocs(collection(db, "Users"));
 
       projectDetails.then((QuerySnapshot) => {
-      QuerySnapshot.forEach((doc) => {
-        if (doc.id == this.$route.params.id) {
-          console.log("Found the project in database");
-          let yy = doc.data();
-          userDetails.then((GetSnapShot) => {
-            this.memberTotal += "(";
-            GetSnapShot.forEach((item) => {
-              let zz = item.data();
-              if (zz.Email == yy.Leader) {
-                this.teamleader = zz.FullName;
-              }
-
-              yy.Members.forEach((mem) => {
-                if (zz.Email == mem) {
-                  this.memberTotal += zz.FullName + ", ";
+        QuerySnapshot.forEach((doc) => {
+          if (doc.id == this.$route.params.id) {
+            console.log("Found the project in database");
+            let yy = doc.data();
+            userDetails.then((GetSnapShot) => {
+              this.memberTotal += "(";
+              GetSnapShot.forEach((item) => {
+                let zz = item.data();
+                if (zz.Email == yy.Leader) {
+                  this.teamleader = zz.FullName;
                 }
+
+                yy.Members.forEach((mem) => {
+                  if (zz.Email == mem) {
+                    this.memberTotal += zz.FullName + ", ";
+                  }
+                });
               });
-            })
-            // console.log(this.memberTotal);
-            this.memberTotal = this.memberTotal.slice(0,this.memberTotal.length-2);
-            // console.log(this.memberTotal);
-            this.memberTotal += ")";
-          })
+              // console.log(this.memberTotal);
+              this.memberTotal = this.memberTotal.slice(
+                0,
+                this.memberTotal.length - 2
+              );
+              // console.log(this.memberTotal);
+              this.memberTotal += ")";
+            });
 
-          //this.teamleader = "(" + yy.Leader + ")";
-          this.details = yy.Details;
-          this.date = yy.StartDate;
-          this.title = yy.Name;
+            //this.teamleader = "(" + yy.Leader + ")";
+            this.details = yy.Details;
+            this.date = yy.StartDate;
+            this.title = yy.Name;
 
-          // yy.Members.forEach((mem) => {
-          //   this.memberTotal += "(" + mem + ") ";
-          // });
-        }
+            // yy.Members.forEach((mem) => {
+            //   this.memberTotal += "(" + mem + ") ";
+            // });
+          }
+        });
       });
-    });
-
     };
     fetchData();
-
-    
   },
 };
 </script>

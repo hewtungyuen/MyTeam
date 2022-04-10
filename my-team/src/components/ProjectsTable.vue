@@ -1,6 +1,6 @@
 <template>
   <n-space vertical :size="12">
-    <br>
+    <br />
     <!-- <n-space>
       <n-button @click="filterProject">Filter By Project</n-button> 
       <n-button @click="clearFilters">Clear Filters</n-button>
@@ -16,44 +16,43 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref } from "vue";
 // import DeadlinesAndMeetings from '@/components/DeadlinesAndMeetings.vue'
 const columns = [
   {
-    title: 'Task Name',
-    key: 'TaskName',
-    defaultSortOrder: 'ascend',
-    sorter: 'default'
+    title: "Task Name",
+    key: "TaskName",
+    defaultSortOrder: "ascend",
+    sorter: "default",
   },
   {
-    title: 'Progress Status',
-    key: 'ProgressStatus',
-    defaultSortOrder: 'ascend',
-    sorter: 'default'
+    title: "Progress Status",
+    key: "ProgressStatus",
+    defaultSortOrder: "ascend",
+    sorter: "default",
   },
   {
-    title: 'Deadline',
-    key: 'DeadLineString',
-    defaultSortOrder: 'ascend',
-    sorter: 'default'
+    title: "Deadline",
+    key: "DeadLineString",
+    defaultSortOrder: "ascend",
+    sorter: "default",
   },
-
-]
+];
 
 // const data = this.tasksToDisplay
 
 export default defineComponent({
-  props:{
-    tasksToDisplay:Object,
-    empty:Boolean,
+  props: {
+    tasksToDisplay: Object,
+    empty: Boolean,
   },
-  setup () {
-    const tableRef = ref(null)
+  setup() {
+    const tableRef = ref(null);
     return {
       // rowProps:() => {
       //   return{
       //     onClick: () => {
-      //       alert('go to project page') // change cursor 
+      //       alert('go to project page') // change cursor
       //     }
       //   }
       // },
@@ -73,19 +72,19 @@ export default defineComponent({
       // data,
       columns,
       pagination: { pageSize: 3 },
-      rowClassName(row){
+      rowClassName(row) {
         if (new Date(row.DeadLineString) < new Date()) {
-          return 'overdue'
+          return "overdue";
         }
-        return ''
-      }
-    }
-  }
-})
+        return "";
+      },
+    };
+  },
+});
 </script>
 
 <style scoped>
-  :deep(.overdue td) {
-    color: red;
-  }
+:deep(.overdue td) {
+  color: red;
+}
 </style>

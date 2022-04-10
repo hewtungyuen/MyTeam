@@ -3,15 +3,13 @@
 </template>
 
 <script>
-import RegisterBox from "../components/RegisterBox.vue"
+import RegisterBox from "../components/RegisterBox.vue";
 export default {
-    name:"RegisterPage",
-    components: {
-      RegisterBox
-    }
-}
+  name: "RegisterPage",
+  components: {
+    RegisterBox,
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

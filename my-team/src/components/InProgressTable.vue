@@ -1,22 +1,34 @@
 <template>
   <n-input
-            type="text"
-            round
-            placeholder="Enter In Charge name"
-            size="large"
-            v-model:value="searchEmail"
-            autosize
-            style="min-width: 75%"
-            clearable
-          />
-  <n-button strong
-            secondary
-            round
-            type="success" @click = "searchInCharge()" id = "searchBut"> Search </n-button>
-  <n-button strong
-            secondary
-            round
-            type="success" @click = "clearSearch()" id = "searchBut" color="#CF5B42">Clear Search </n-button><br><br>
+    type="text"
+    round
+    placeholder="Enter In Charge name"
+    size="large"
+    v-model:value="searchEmail"
+    autosize
+    style="min-width: 75%"
+    clearable
+  />
+  <n-button
+    strong
+    secondary
+    round
+    type="success"
+    @click="searchInCharge()"
+    id="searchBut"
+  >
+    Search
+  </n-button>
+  <n-button
+    strong
+    secondary
+    round
+    type="success"
+    @click="clearSearch()"
+    id="searchBut"
+    color="#CF5B42"
+    >Clear Search </n-button
+  ><br /><br />
   <n-space vertical :size="12">
     <n-data-table
       ref="table"
@@ -34,10 +46,15 @@ import { NButton, NProgress } from "naive-ui";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from "../firebase.js";
 import { getFirestore } from "firebase/firestore";
-import { collection, getDocs, updateDoc, doc, deleteDoc, arrayRemove} from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  updateDoc,
+  doc,
+  deleteDoc,
+  arrayRemove,
+} from "firebase/firestore";
 const db = getFirestore(firebaseApp);
-
-
 
 export default {
   data() {
@@ -46,40 +63,46 @@ export default {
       email: "",
       column: [],
       data: [],
-      searchEmail: ""
+      searchEmail: "",
     };
   },
   methods: {
     async searchInCharge() {
-      let name = this.searchEmail
-      this.searchEmail = ""
-      this.data = []
-      let collect = await getDocs(collection(db, "Tasks"))
+      let name = this.searchEmail;
+      this.searchEmail = "";
+      this.data = [];
+      let collect = await getDocs(collection(db, "Tasks"));
 
       collect.forEach((doc) => {
-        let yy = doc.data()
-        if (yy.ProjectID == this.$route.params.id &&
-          yy.CompletionStatus == "In Progress") {
-          let check = yy.InChargeName.toLowerCase().includes(name.toLowerCase())
+        let yy = doc.data();
+        if (
+          yy.ProjectID == this.$route.params.id &&
+          yy.CompletionStatus == "In Progress"
+        ) {
+          let check = yy.InChargeName.toLowerCase().includes(
+            name.toLowerCase()
+          );
           if (check) {
-            this.data.push(yy)
+            this.data.push(yy);
           }
         }
-      })
-
+      });
     },
     async clearSearch() {
-      this.name = ""
-      this.data = []
-      let collect = await getDocs(collection(db, "Tasks"))
+      this.name = "";
+      this.data = [];
+      let collect = await getDocs(collection(db, "Tasks"));
 
       collect.forEach((doc) => {
-        let yy = doc.data()
-        if (yy.ProjectID == this.$route.params.id && yy.CompletionStatus == "In Progress") {
-          this.data.push(yy)
+        let yy = doc.data();
+        if (
+          yy.ProjectID == this.$route.params.id &&
+          yy.CompletionStatus == "In Progress"
+        ) {
+          this.data.push(yy);
         }
-      })
-    }
+      });
+    },
   },
   mounted() {
     const auth = getAuth();
@@ -91,26 +114,25 @@ export default {
       }
     });
 
-
     var taskDetails = getDocs(collection(db, "Tasks"));
     this.$store.commit("refreshData");
 
     const createColumns = (email, projID) => {
       return [
         {
-          type: 'expand',
+          type: "expand",
           key: "TaskName",
           expandable: (rowData) => rowData.TaskName,
           renderExpand: (rowData) => {
-            return "Details: " + rowData.Description
-          } 
+            return "Details: " + rowData.Description;
+          },
         },
         {
           title: "Task Name",
           key: "TaskName",
           defaultSortOrder: "ascend",
           sorter: "default",
-          width: 220
+          width: 220,
         },
         {
           title: "In Charge",
@@ -144,92 +166,95 @@ export default {
         {
           title: "Update Status",
           key: "UpdateStatus",
-          render (row) {
+          render(row) {
             if (row.InCharge == email) {
-            return h(
-              NButton,
-              {
-                size: 'small',
-                type: 'info',
-                onClick: () => {
-                  let status = parseInt(row.ProgressStatus);
-                  if (status < 100) {
-                    status += 25; 
-                  }
-                  taskDetails.then((QuerySnapshot) => {
-                    QuerySnapshot.forEach((docs) => {
-                      let yy = docs.data();
-                      
-                      if (row.TaskName == yy.TaskName && row.InCharge == yy.InCharge) {
-                        console.log("yoyo " + email);
-                        let boo = confirm(
-                          "Confirm on updating " + row.TaskName + " ?"
-                        );
+              return h(
+                NButton,
+                {
+                  size: "small",
+                  type: "info",
+                  onClick: () => {
+                    let status = parseInt(row.ProgressStatus);
+                    if (status < 100) {
+                      status += 25;
+                    }
+                    taskDetails.then((QuerySnapshot) => {
+                      QuerySnapshot.forEach((docs) => {
+                        let yy = docs.data();
 
-                        if (boo == true) {
-                          if (status >= 100) {
+                        if (
+                          row.TaskName == yy.TaskName &&
+                          row.InCharge == yy.InCharge
+                        ) {
+                          console.log("yoyo " + email);
+                          let boo = confirm(
+                            "Confirm on updating " + row.TaskName + " ?"
+                          );
+
+                          if (boo == true) {
+                            if (status >= 100) {
+                              updateDoc(doc(db, "Tasks", docs.id), {
+                                CompletionStatus: "Completed",
+                              });
+                            }
+
                             updateDoc(doc(db, "Tasks", docs.id), {
-                              CompletionStatus : "Completed"
-                            })
+                              ProgressStatus: status,
+                            }).then((user) => {
+                              console.log(user);
+                              location.reload();
+                              //this.$forceUpdate();
+                              //this.$router.push('/ProjectPage/' + yy.projectID);
+                            });
                           }
-
-                          updateDoc(doc(db, "Tasks", docs.id), {
-                            ProgressStatus : status,
-                          }).then ((user) => {
-                            console.log(user);
-                            location.reload();
-                            //this.$forceUpdate();
-                            //this.$router.push('/ProjectPage/' + yy.projectID);
-                          });
                         }
-                      }
-                    })
-                  })
-                }
-              },
-              { default: () => 'Update (25%)'}
-            )
-          }
-          }
+                      });
+                    });
+                  },
+                },
+                { default: () => "Update (25%)" }
+              );
+            }
+          },
         },
         {
           title: "Complete Task",
           key: "Complete",
-          render (row) {
+          render(row) {
             if (row.InCharge == email) {
-            return h(
-              NButton,
-              {
-                size: 'small',
-                type: 'success',
-                onClick: () => {
-                  taskDetails.then((QuerySnapshot) => {
-                    QuerySnapshot.forEach((docs) => {
-                      let yy = docs.data();
+              return h(
+                NButton,
+                {
+                  size: "small",
+                  type: "success",
+                  onClick: () => {
+                    taskDetails.then((QuerySnapshot) => {
+                      QuerySnapshot.forEach((docs) => {
+                        let yy = docs.data();
 
-                      if (row.TaskName == yy.TaskName) {
-                        let boo = confirm(
-                          "Confirm on completing " + row.TaskName + " ?"
-                        );
-                        if (boo == true) {
-                          updateDoc(doc(db, "Tasks", docs.id), {
-                            ProgressStatus : 100,
-                            CompletionStatus : "Completed"
-                          }).then ((user) => {
-                            console.log(user);
-                            location.reload();
-                            // this.$router.push('/ProjectPage/' + yy.projectID);
-                          });
+                        if (row.TaskName == yy.TaskName) {
+                          let boo = confirm(
+                            "Confirm on completing " + row.TaskName + " ?"
+                          );
+                          if (boo == true) {
+                            updateDoc(doc(db, "Tasks", docs.id), {
+                              ProgressStatus: 100,
+                              CompletionStatus: "Completed",
+                            }).then((user) => {
+                              console.log(user);
+                              location.reload();
+                              // this.$router.push('/ProjectPage/' + yy.projectID);
+                            });
+                          }
                         }
-                      }
-                    })
-                  })
-                }
-              },
-              { default: () => 'Complete' }
-            )
-          }
-          }
+                      });
+                    });
+                  },
+                },
+                { default: () => "Complete" }
+              );
+            }
+          },
         },
         {
           title: "Delete Task",
@@ -237,10 +262,10 @@ export default {
           render(row) {
             if (row.InCharge == email) {
               return h(
-                NButton, 
+                NButton,
                 {
-                  size: 'small',
-                  type:"error",
+                  size: "small",
+                  type: "error",
                   onClick: () => {
                     taskDetails.then((QuerySnapshot) => {
                       QuerySnapshot.forEach((docs) => {
@@ -252,22 +277,23 @@ export default {
                           );
                           if (boo == true) {
                             updateDoc(doc(db, "Projects", projID), {
-                              Tasks : arrayRemove(docs.id)
-                            })
-
-                            deleteDoc(doc(db, "Tasks", docs.id)
-                            ).then ((user) => {
-                              console.log(user);
-                              location.reload();
-                              // this.$router.push('/ProjectPage/' + yy.projectID);
+                              Tasks: arrayRemove(docs.id),
                             });
+
+                            deleteDoc(doc(db, "Tasks", docs.id)).then(
+                              (user) => {
+                                console.log(user);
+                                location.reload();
+                                // this.$router.push('/ProjectPage/' + yy.projectID);
+                              }
+                            );
                           }
                         }
-                      })
-                    })
-                  }
+                      });
+                    });
+                  },
                 },
-                { default: () => 'Delete' }
+                { default: () => "Delete" }
               );
             }
           },
@@ -275,9 +301,7 @@ export default {
       ];
     };
 
-
     //this.$store.commit("updateColumn", createColumns());
-
 
     taskDetails.then((QuerySnapshot) => {
       const z = [];
@@ -304,23 +328,23 @@ export default {
       pagination: { pageSize: 5 },
       rowClassName(row) {
         if (new Date(row.DeadLine) < new Date()) {
-          return 'overdue'
+          return "overdue";
         }
-        return ''
-      }
+        return "";
+      },
     };
   },
 };
 </script>
 
 <style scoped>
-  :deep(.overdue td) {
-    color: red;
-  }
+:deep(.overdue td) {
+  color: red;
+}
 
-  #searchBut {
-    margin: 10px;
-    position: relative;
-    top: 8px
-  }
+#searchBut {
+  margin: 10px;
+  position: relative;
+  top: 8px;
+}
 </style>

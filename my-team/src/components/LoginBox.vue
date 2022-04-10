@@ -1,41 +1,44 @@
-  <template>
-  
-  
-<div id="rightHalf">
-<div class="row">
-  <div class="container">
-      
-      <div id="logobox">
-        <img alt="logo" src="@/assets/MYTeamLogo.png"/>
-        <h2>Welcome to MYTeam!</h2>
+<template>
+  <div id="rightHalf">
+    <div class="row">
+      <div class="container">
+        <div id="logobox">
+          <img alt="logo" src="@/assets/MYTeamLogo.png" />
+          <h2>Welcome to MYTeam!</h2>
         </div>
-      <n-space vertical>
-        <n-input round v-model:value="email" placeholder="Email" />
-        <n-input
-          round
-          type="password"
-          v-model:value="password"
-          show-password-on="mousedown"
-          placeholder="Password"
-        />
-        <div id ="errormessage1"></div>
-        <div id="belowboxleft">
-        Not registered yet?
-        <router-link to="/RegisterPage">Create an account</router-link>
-        </div>
-        
-        <router-link id = "forgetpass" to="/ForgetPassPage">Forget Password?</router-link>
-        
-        <n-button id="login-btn" round type="primary" v-on:click="login()">
-          Login
-        </n-button>
-      </n-space>
+        <n-space vertical>
+          <n-input round v-model:value="email" placeholder="Email" />
+          <n-input
+            round
+            type="password"
+            v-model:value="password"
+            show-password-on="mousedown"
+            placeholder="Password"
+          />
+          <div id="errormessage1"></div>
+          <div id="belowboxleft">
+            Not registered yet?
+            <router-link to="/RegisterPage">Create an account</router-link>
+          </div>
+
+          <router-link id="forgetpass" to="/ForgetPassPage"
+            >Forget Password?</router-link
+          >
+
+          <n-button id="login-btn" round type="primary" v-on:click="login()">
+            Login
+          </n-button>
+        </n-space>
+      </div>
     </div>
   </div>
-</div>
-<div id="leftHalf">
-    <img id= "backgroundimg" alt="background" src="@/assets/loginbackgroundimg2.jpg"/>
-</div>
+  <div id="leftHalf">
+    <img
+      id="backgroundimg"
+      alt="background"
+      src="@/assets/loginbackgroundimg2.jpg"
+    />
+  </div>
 </template>
 
 <script>
@@ -52,36 +55,35 @@ export default {
   methods: {
     login() {
       console.log("Entered Login");
-      console.log("Email entered: " + this.email)
+      console.log("Email entered: " + this.email);
       const auth = getAuth();
       signInWithEmailAndPassword(auth, this.email, this.password)
         .then((user) => {
           console.log(user.user);
-          this.$router.push({name:"HomePage"})
+          this.$router.push({ name: "HomePage" });
         })
         .catch((error) => {
           console.log("Error in signing in" + error.message);
-          document.getElementById("errormessage1").innerHTML = "Incorrect Email or Password. Try Again"
+          document.getElementById("errormessage1").innerHTML =
+            "Incorrect Email or Password. Try Again";
         });
-      
-      
-
     },
   },
 };
 </script>
 
 <style scoped>
-html, body {
-    height: 100%;
-    padding: 0;
-    margin: 0;
+html,
+body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
 .container {
   /* background: grey; */
-  padding: 15px; 
+  padding: 15px;
   position: absolute;
-  width:60%;
+  width: 60%;
   top: 50%;
   left: 50%;
   -ms-transform: translateX(-50%) translateY(-50%);
@@ -93,21 +95,21 @@ html, body {
   width: 100%;
 }
 #forgetpass {
-  color:rgb(184, 16, 16);
+  color: rgb(184, 16, 16);
 }
 #rightHalf {
-   width: 55%;
-   position: absolute;
-   right: 0px;
-   height: 100%;
+  width: 55%;
+  position: absolute;
+  right: 0px;
+  height: 100%;
 }
 
 #leftHalf {
-   /* background: url(bg-1.jpg); */
-   width: 47%;
-   position: absolute;
-   left: 0px;
-   height: 100%;
+  /* background: url(bg-1.jpg); */
+  width: 47%;
+  position: absolute;
+  left: 0px;
+  height: 100%;
 }
 #logobox {
   /* background-color:red; */
@@ -116,8 +118,8 @@ html, body {
 }
 
 #backgroundimg {
-  height:100%;
-  width:100%;
+  height: 100%;
+  width: 100%;
 }
 
 #belowboxleft {

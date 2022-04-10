@@ -1,13 +1,13 @@
 <template>
-  <h1 class="topheader">{{title}}</h1>
+  <h1 class="topheader">{{ title }}</h1>
 </template>
 
 <script>
 export default {
-    props: {
-        title: String
-        }
-}
+  props: {
+    title: String,
+  },
+};
 </script>
 
 <style scoped>

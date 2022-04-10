@@ -1,20 +1,33 @@
 <template>
-  <n-grid :cols = '2'>
-<n-gi>
-    <img class="profilepic" v-if="this.url != ''" :src="url" />
-    <img class="profilepic" v-else src="../assets/defaultprofile.jpg" />
-</n-gi>
+  <n-grid :cols="2">
     <n-gi>
-    <input
-      style="display: none"
-      type="file"
-      @change="handleUpload"
-      ref="fileInput"
-      accept="image/"
-    />
-    <h2 style="margin-bottom:0px ; margin-top:0px">{{ name }}</h2>
-    <n-button @click="$refs.fileInput.click()" color="#38a169" class = "button" round>Update Photo</n-button><br>
-    <n-button @click="deleteFile()" color="#CF5B42" class = "button" round style="padding-left: 21px; padding-right: 21px">Delete Photo</n-button>
+      <img class="profilepic" v-if="this.url != ''" :src="url" />
+      <img class="profilepic" v-else src="../assets/defaultprofile.jpg" />
+    </n-gi>
+    <n-gi>
+      <input
+        style="display: none"
+        type="file"
+        @change="handleUpload"
+        ref="fileInput"
+        accept="image/"
+      />
+      <h2 style="margin-bottom: 0px; margin-top: 0px">{{ name }}</h2>
+      <n-button
+        @click="$refs.fileInput.click()"
+        color="#38a169"
+        class="button"
+        round
+        >Update Photo</n-button
+      ><br />
+      <n-button
+        @click="deleteFile()"
+        color="#CF5B42"
+        class="button"
+        round
+        style="padding-left: 21px; padding-right: 21px"
+        >Delete Photo</n-button
+      >
     </n-gi>
   </n-grid>
 </template>
@@ -23,7 +36,13 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebaseApp from "../firebase.js";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject  } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 var db = getFirestore(firebaseApp);
 export default {
   data() {
@@ -34,11 +53,8 @@ export default {
       url: "",
     };
   },
-  
-
 
   methods: {
-
     //obtain file data
     handleUpload(event) {
       this.file = event.target.files[0];
@@ -68,24 +84,25 @@ export default {
     },
 
     deleteFile() {
-        let boo = confirm("Are you sure?");
-        if (boo == true) {
+      let boo = confirm("Are you sure?");
+      if (boo == true) {
         const storage = getStorage();
 
         // Create a reference to the file to delete
         const desertRef = ref(storage, "users/" + this.name + "/profile.jpg");
 
         // Delete the file
-        deleteObject(desertRef).then(() => {
-            this.url = ""
-        // File deleted successfully
-        }).catch((error) => {
-            console.log(error)
-        // Uh-oh, an error occurred!
-        });
-        }
+        deleteObject(desertRef)
+          .then(() => {
+            this.url = "";
+            // File deleted successfully
+          })
+          .catch((error) => {
+            console.log(error);
+            // Uh-oh, an error occurred!
+          });
+      }
     },
-
   },
 
   mounted() {
@@ -126,12 +143,9 @@ export default {
   width: 120px;
   border-radius: 100%;
   object-fit: cover;
-  
 }
 
 .button {
-    margin-top: 10px;
+  margin-top: 10px;
 }
-
-
 </style>

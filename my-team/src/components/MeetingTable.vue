@@ -117,7 +117,7 @@ export default defineComponent({
           key: "Status",
           className: "Status",
           defaultSortOrder: "ascend",
-          sorter: "default", 
+          sorter: "default",
         },
         {
           title: "Action",
@@ -125,44 +125,43 @@ export default defineComponent({
           // sorter: "default",
           render(row) {
             if (row.Leader == email && row.Status == "Upcoming") {
-            return h(
-              NButton,
-              {
-                // color: "rgb(183, 20, 20)",
-                color: "red",
-                size: "small",
-                type: "error",
-                onClick: () => {
-                  meetingDetails.then((QuerySnapshot) => {
-                    QuerySnapshot.forEach((docs) => {
-                      let yy = docs.data();
-                      if (row.Name == yy.Name && yy.Status != "Cancelled") {
-                        let boo = confirm(
-                          "Confirm on cancelling " + row.Name + "?"
-                        );
-                        if (boo == true) {
-                          updateDoc(doc(db, "Meetings", docs.id), {
-                            Status: "Cancelled",
-                          }).then((user) => {
-                            console.log(user);
-                            location.reload();
-                          });
+              return h(
+                NButton,
+                {
+                  // color: "rgb(183, 20, 20)",
+                  color: "red",
+                  size: "small",
+                  type: "error",
+                  onClick: () => {
+                    meetingDetails.then((QuerySnapshot) => {
+                      QuerySnapshot.forEach((docs) => {
+                        let yy = docs.data();
+                        if (row.Name == yy.Name && yy.Status != "Cancelled") {
+                          let boo = confirm(
+                            "Confirm on cancelling " + row.Name + "?"
+                          );
+                          if (boo == true) {
+                            updateDoc(doc(db, "Meetings", docs.id), {
+                              Status: "Cancelled",
+                            }).then((user) => {
+                              console.log(user);
+                              location.reload();
+                            });
+                          }
+                        } else if (row.Name == yy.Name) {
+                          alert("The meeting has already been cancelled.");
                         }
-                      } else if (row.Name == yy.Name) {
-                        alert("The meeting has already been cancelled.");
-                      }
-                    })
-                  })
+                      });
+                    });
+                  },
                 },
-              },
-              { default: () => "Cancel Meeting" }
-            );
+                { default: () => "Cancel Meeting" }
+              );
             }
           },
         },
       ];
     };
-    
   },
   methods: {
     typeOf(obj) {
