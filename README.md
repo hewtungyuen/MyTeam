@@ -1,6 +1,5 @@
-# BT3103 (Application Systems Development for Business Analytics) - MyTeam
+# BT3103 Project - MyTeam
 
-<!-- ABOUT THE PROJECT -->
 ## About The Project
 The objective of this project is to develop a web application that serves as a project management
 system, where project teams can use it to easily assign tasks and keep track of each other’s
